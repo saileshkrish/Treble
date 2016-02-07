@@ -26,7 +26,8 @@ class AlbumListTableViewCell: UITableViewCell {
         
         self.textLabel!.textColor = UIColor(white: 1.0, alpha: 0.5)
         self.detailTextLabel!.textColor = UIColor(white: 1.0, alpha: 0.5)
-        
+        self.selectedBackgroundView = UIView()
+        self.selectedBackgroundView?.backgroundColor = UIColor(white: 1.0, alpha: 0.5)
     }
     
     required init?(coder aDecoder: NSCoder) {
