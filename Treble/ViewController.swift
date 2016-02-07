@@ -32,7 +32,6 @@ class ViewController: UIViewController {
     private var horizontalConstraints: [NSLayoutConstraint] = []
     
     private let albumListViewController = AlbumListTableViewController()
-    private var isPresentingAlbumListView: Bool = false
     
     override func loadView() {
         super.loadView()
@@ -44,10 +43,12 @@ class ViewController: UIViewController {
         backgroundImageView.contentMode = .ScaleAspectFill
         backgroundImageView.backgroundColor = .whiteColor()
         
+        imageView.userInteractionEnabled = true
         imageView.contentMode = .ScaleAspectFill
         imageView.layer.cornerRadius = 12.0
         imageView.layer.masksToBounds = true
         imageView.backgroundColor = .whiteColor()
+        musPickerButton.tintColor = .redColor()
         
         self.view.addSubview(containerView) // add one so I can use constraints
         containerView.addSubview(backgroundImageView) // background image that is blurred
@@ -55,7 +56,7 @@ class ViewController: UIViewController {
         containerView.addSubview(vibrancyEffectView) // the vibrancy view where everything else is added
         containerView.addSubview(volumeSlider) // add volume slider here so that it doesn't have the vibrancy effect
         containerView.addSubview(imageView)
-        imageView.addSubview(musPickerButton)
+        containerView.addSubview(musPickerButton)
         
         vibrancyEffectView.contentView.addSubview(songTitleLabel)
         vibrancyEffectView.contentView.addSubview(albumTitleLabel)
@@ -123,9 +124,8 @@ class ViewController: UIViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
         
-        imageView.userInteractionEnabled = true
-        let tapGesture = UITapGestureRecognizer(target: self, action: "showHideAlbumList")
-        imageView.addGestureRecognizer(tapGesture)
+        let tapGesture = UITapGestureRecognizer(target: self, action: "tapGestureRecognizerFired:")
+        self.view.addGestureRecognizer(tapGesture)
         
         playPauseButton.setImage(UIImage.Asset.Play.image, forState: .Normal)
         playPauseButton.addTarget(self, action: "togglePlayOrPause", forControlEvents: .TouchUpInside)
@@ -137,7 +137,6 @@ class ViewController: UIViewController {
         prevTrackButton.addTarget(self, action: "togglePrevTrack", forControlEvents: .TouchUpInside)
         
         musPickerButton.setImage(UIImage.Asset.Music.image, forState: .Normal)
-        musPickerButton.tintColor = .redColor()
         musPickerButton.addTarget(self, action: "presentMusicPicker", forControlEvents: .TouchUpInside)
         
         songTitleLabel.font = .systemFontOfSize(20.0)
@@ -167,33 +166,6 @@ class ViewController: UIViewController {
         return true
     }
     
-    func showHideAlbumList() {
-        if isPresentingAlbumListView {
-            UIView.animateWithDuration(0.5, animations: {
-                self.albumListViewController.view.alpha = 0.0
-                self.imageView.willMoveToSuperview(self.view)
-            }) { bool in
-                self.isPresentingAlbumListView = false
-                self.albumListViewController.removeFromParentViewController()
-                self.albumListViewController.view.removeFromSuperview()
-                self.albumListViewController.didMoveToParentViewController(nil)
-            }
-        } else {
-            self.addChildViewController(self.albumListViewController)
-            self.albumListViewController.view.alpha = 0.0
-            self.imageView.addSubview(self.albumListViewController.view)
-            self.albumListViewController.view.frame = self.imageView.bounds
-            UIView.animateWithDuration(0.5, animations: {
-                self.albumListViewController.view.alpha = 1.0
-                self.imageView.willMoveToSuperview(self.vibrancyEffectView)
-            }) { _ in
-                    self.albumListViewController.didMoveToParentViewController(self)
-                    self.isPresentingAlbumListView = true
-            }
-        }
-    }
-    
-    
     override func updateViewConstraints() {
         if self.view.traitCollection.verticalSizeClass == .Regular {
             horizontalConstraints.forEach   { $0.active = false }
@@ -205,6 +177,34 @@ class ViewController: UIViewController {
         super.updateViewConstraints()
     }
     
+    func tapGestureRecognizerFired(gestureRecognizer: UITapGestureRecognizer) {
+        let locationInView = gestureRecognizer.locationInView(self.view)
+        if imageView.frame.contains(locationInView) && self.childViewControllers.isEmpty {
+            // show albumList view
+            self.addChildViewController(self.albumListViewController)
+            self.albumListViewController.view.alpha = 0.0
+            self.imageView.addSubview(self.albumListViewController.view)
+            self.albumListViewController.view.frame = self.imageView.bounds
+            UIView.animateWithDuration(0.5, animations: {
+                self.albumListViewController.view.alpha = 1.0
+                self.imageView.willMoveToSuperview(self.vibrancyEffectView)
+            }) { _ in
+                self.albumListViewController.didMoveToParentViewController(self)
+            }
+        } else if !imageView.frame.contains(locationInView) && !self.childViewControllers.isEmpty {
+            // hide albumList view
+            UIView.animateWithDuration(0.5, animations: {
+                self.albumListViewController.view.alpha = 0.0
+                self.imageView.willMoveToSuperview(self.view)
+            }) { bool in
+                self.albumListViewController.removeFromParentViewController()
+                self.albumListViewController.view.removeFromSuperview()
+                self.albumListViewController.didMoveToParentViewController(nil)
+            }
+
+        }
+    }
+
     func updateCurrentTrack() {
         guard let songItem = musicPlayer.nowPlayingItem else { return }
         
