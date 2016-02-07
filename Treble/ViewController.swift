@@ -28,12 +28,6 @@ class ViewController: UIViewController {
     private let musPickerButton = UIButton(type: .Custom)
     private let volumeSlider = UISlider()
     
-    private let playImage = UIImage(named: "Play")!.imageWithRenderingMode(.AlwaysTemplate)
-    private let pauseImage = UIImage(named: "Pause")!.imageWithRenderingMode(.AlwaysTemplate)
-    private let nextImage = UIImage(named: "Next")!.imageWithRenderingMode(.AlwaysTemplate)
-    private let prevImage = UIImage(named: "Prev")!.imageWithRenderingMode(.AlwaysTemplate)
-    private let musicIcon = UIImage(named: "Music")!.imageWithRenderingMode(.AlwaysTemplate)
-    
     private var verticalConstraints: [NSLayoutConstraint] = []
     private var horizontalConstraints: [NSLayoutConstraint] = []
     
@@ -42,9 +36,11 @@ class ViewController: UIViewController {
     
     override func loadView() {
         super.loadView()
+        
         let blurEffect = UIBlurEffect(style: .Dark)
         backgroundBlurView = UIVisualEffectView(effect: blurEffect)
         vibrancyEffectView = UIVisualEffectView(effect: UIVibrancyEffect(forBlurEffect: blurEffect))
+        
         backgroundImageView.contentMode = .ScaleAspectFill
         backgroundImageView.backgroundColor = .whiteColor()
         
@@ -53,96 +49,64 @@ class ViewController: UIViewController {
         imageView.layer.masksToBounds = true
         imageView.backgroundColor = .whiteColor()
         
-        playPauseButton.setImage(playImage, forState: .Normal)
-        playPauseButton.addTarget(self, action: "togglePlayOrPause", forControlEvents: .TouchUpInside)
-        
-        nextTrackButton.setImage(nextImage, forState: .Normal)
-        nextTrackButton.addTarget(self, action: "toggleNextTrack", forControlEvents: .TouchUpInside)
-        
-        prevTrackButton.setImage(prevImage, forState: .Normal)
-        prevTrackButton.addTarget(self, action: "togglePrevTrack", forControlEvents: .TouchUpInside)
-        
-        musPickerButton.setImage(musicIcon, forState: .Normal)
-        musPickerButton.tintColor = .redColor()
-        musPickerButton.addTarget(self, action: "presentMusicPicker", forControlEvents: .TouchUpInside)
-        
-        self.view.addSubview(containerView)
-        containerView.addSubview(backgroundImageView)
-        containerView.addSubview(backgroundBlurView)
-        containerView.addSubview(vibrancyEffectView)
+        self.view.addSubview(containerView) // add one so I can use constraints
+        containerView.addSubview(backgroundImageView) // background image that is blurred
+        containerView.addSubview(backgroundBlurView) // blur view that blurs the image
+        containerView.addSubview(vibrancyEffectView) // the vibrancy view where everything else is added
+        containerView.addSubview(volumeSlider) // add volume slider here so that it doesn't have the vibrancy effect
         containerView.addSubview(imageView)
+        imageView.addSubview(musPickerButton)
+        
         vibrancyEffectView.contentView.addSubview(songTitleLabel)
         vibrancyEffectView.contentView.addSubview(albumTitleLabel)
         vibrancyEffectView.contentView.addSubview(playPauseButton)
         vibrancyEffectView.contentView.addSubview(prevTrackButton)
         vibrancyEffectView.contentView.addSubview(nextTrackButton)
-        containerView.addSubview(volumeSlider)
-        imageView.addSubview(musPickerButton)
         
-        containerView.translatesAutoresizingMaskIntoConstraints = false
-        backgroundImageView.translatesAutoresizingMaskIntoConstraints = false
-        backgroundBlurView.translatesAutoresizingMaskIntoConstraints = false
-        vibrancyEffectView.translatesAutoresizingMaskIntoConstraints = false
-        imageView.translatesAutoresizingMaskIntoConstraints = false
-        songTitleLabel.translatesAutoresizingMaskIntoConstraints = false
-        albumTitleLabel.translatesAutoresizingMaskIntoConstraints = false
-        playPauseButton.translatesAutoresizingMaskIntoConstraints = false
-        prevTrackButton.translatesAutoresizingMaskIntoConstraints = false
-        nextTrackButton.translatesAutoresizingMaskIntoConstraints = false
-        musPickerButton.translatesAutoresizingMaskIntoConstraints = false
-        volumeSlider.translatesAutoresizingMaskIntoConstraints = false
+        [containerView, backgroundImageView, backgroundBlurView, vibrancyEffectView, imageView, musPickerButton, volumeSlider, songTitleLabel, albumTitleLabel, playPauseButton, prevTrackButton, nextTrackButton].forEach {
+            $0.translatesAutoresizingMaskIntoConstraints = false
+        }
         
-        containerView.constrain(.Leading, .Equal, to: self.view, .Leading)
-        containerView.constrain(.Trailing, .Equal, to: self.view, .Trailing)
-        containerView.constrain(.Top, .Equal, to: self.view, .Top)
-        containerView.constrain(.Bottom, .Equal, to: self.view, .Bottom)
-        
-        backgroundImageView.constrain(.Height, .Equal, to: containerView, .Height)
-        backgroundImageView.constrain(.Width, .Equal, to: containerView, .Width)
-        backgroundBlurView.constrain(.Height, .Equal, to: containerView, .Height)
-        backgroundBlurView.constrain(.Width, .Equal, to: containerView, .Width)
-        vibrancyEffectView.constrain(.Height, .Equal, to: containerView, .Height)
-        vibrancyEffectView.constrain(.Width, .Equal, to: containerView, .Width)
-        
-        let buttonSize: CGFloat = 48.0, margin: CGFloat = 24.0
+        containerView.constrain(to: self.view)
+        backgroundBlurView.constrain(to: containerView)
+        backgroundImageView.constrain(to: containerView)
+        vibrancyEffectView.constrain(to: containerView)
         
         self.verticalConstraints = [
             imageView.constrain(.Height, .Equal, to: containerView, .Width, plus: -24.0, active: false),
-            imageView.constrain(.Width, .Equal, to: containerView, .Width, plus: -24.0, active: false),
-            imageView.constrain(.CenterX, .Equal, to: containerView, .CenterX, active: false),
+            imageView.constrain(.Width,  .Equal, to: containerView, .Width, plus: -24.0, active: false),
             imageView.constrain(.Top, .Equal, to: containerView, .Top, plus: 24.0, active: false),
-            songTitleLabel.constrain(.Leading, .Equal, to: containerView, .Leading, active: false),
-            songTitleLabel.constrain(.Trailing, .Equal, to: containerView, .Trailing, active: false),
-            songTitleLabel.constrain(.Top, .Equal, to: imageView, .Bottom, plus: 32.0, active: false),
+            imageView.constrain(.CenterX, .Equal, to: containerView, .CenterX, active: false),
+            songTitleLabel.constrain(.Leading, .Equal, to: imageView, .Leading, active: false),
+            songTitleLabel.constrain(.Trailing, .Equal, to: imageView, .Trailing, active: false),
+            songTitleLabel.constrain(.Top, .Equal, to: imageView, .Bottom, plus: 28.0, active: false)
         ]
         
         self.horizontalConstraints = [
             imageView.constrain(.Height, .Equal, to: containerView, .Height, plus: -24.0, active: false),
-            imageView.constrain(.Width, .Equal, to: containerView, .Height, plus: -24.0, active: false),
-            imageView.constrain(.CenterY, .Equal, to: containerView, .CenterY, active: false),
+            imageView.constrain(.Width,  .Equal, to: containerView, .Height, plus: -24.0, active: false),
             imageView.constrain(.Leading, .Equal, to: containerView, .Leading, plus: 24.0, active: false),
-            songTitleLabel.constrain(.Leading, .Equal, to: imageView, .Trailing, active: false),
-            songTitleLabel.constrain(.Trailing, .Equal, to: containerView, .Trailing, active: false),
-            songTitleLabel.constrain(.Top, .Equal, to: containerView, .Top, plus: 48.0, active: false),
+            imageView.constrain(.CenterY, .Equal, to: containerView, .CenterY, active: false),
+            songTitleLabel.constrain(.Leading, .Equal, to: imageView, .Trailing, plus: 24.0, active: false),
+            songTitleLabel.constrain(.Trailing, .Equal, to: containerView, .Trailing, plus: -24.0, atPriority: 400, active: false),
+            songTitleLabel.constrain(.Top, .Equal, to: containerView, .Top, plus: 28.0, active: false)
         ]
         
-        musPickerButton.constrain(.Height, .Equal, to: buttonSize)
-        musPickerButton.constrain(.Width, .Equal, to: buttonSize)
-        musPickerButton.constrain(.Leading, .Equal, to: imageView, .Leading, plus: 8.0)
-        musPickerButton.constrain(.Bottom, .Equal, to: imageView, .Bottom, plus: -8.0)
+        let buttonSize: CGFloat = 48.0, margin: CGFloat = 24.0
         
-        playPauseButton.constrain(.Height, .Equal, to: buttonSize)
-        playPauseButton.constrain(.Width, .Equal, to: buttonSize)
-        prevTrackButton.constrain(.Height, .Equal, to: buttonSize)
-        prevTrackButton.constrain(.Width, .Equal, to: buttonSize)
-        nextTrackButton.constrain(.Height, .Equal, to: buttonSize)
-        nextTrackButton.constrain(.Width, .Equal, to: buttonSize)
+        musPickerButton.constrainSize(to: buttonSize)
+        playPauseButton.constrainSize(to: buttonSize)
+        prevTrackButton.constrainSize(to: buttonSize)
+        nextTrackButton.constrainSize(to: buttonSize)
         
-        albumTitleLabel.constrain(.Leading, .Equal, to: songTitleLabel, .Leading)
+        musPickerButton.constrain(.Bottom, .Equal, to: imageView, .Bottom)
+        musPickerButton.constrain(.Left, .Equal, to: imageView, .Left)
+        
+        albumTitleLabel.constrain(.Leading,  .Equal, to: songTitleLabel, .Leading)
         albumTitleLabel.constrain(.Trailing, .Equal, to: songTitleLabel, .Trailing)
-        albumTitleLabel.constrain(.CenterY, .Equal, to: songTitleLabel, .CenterY, plus: 28.0)
+        albumTitleLabel.constrain(.Top, .Equal, to: songTitleLabel, .Bottom, plus: 16.0)
         
-        playPauseButton.constrain(.Top, .Equal, to: albumTitleLabel, .Top, plus: 48.0)
+        playPauseButton.constrain(.Top, .Equal, to: albumTitleLabel, .Bottom, plus: margin)
         playPauseButton.constrain(.CenterX, .Equal, to: songTitleLabel, .CenterX)
         
         nextTrackButton.constrain(.Leading, .Equal, to: playPauseButton, .Trailing, plus: margin)
@@ -150,12 +114,10 @@ class ViewController: UIViewController {
         prevTrackButton.constrain(.Trailing, .Equal, to: playPauseButton, .Leading, plus: -margin)
         prevTrackButton.constrain(.CenterY, .Equal, to: playPauseButton, .CenterY)
         
-        volumeSlider.constrain(.CenterX, .Equal, to: albumTitleLabel, .CenterX)
-        volumeSlider.constrain(.CenterY, .Equal, to: playPauseButton, .CenterY, plus: 64.0)
         volumeSlider.constrain(.Leading, .Equal, to: albumTitleLabel, .Leading, plus: margin)
         volumeSlider.constrain(.Trailing, .Equal, to: albumTitleLabel, .Trailing, plus: -margin)
+        volumeSlider.constrain(.Top, .Equal, to: playPauseButton, .Bottom, plus: 64.0)
         
-        self.updateConstraints()
     }
     
     override func viewDidLoad() {
@@ -164,6 +126,19 @@ class ViewController: UIViewController {
         imageView.userInteractionEnabled = true
         let tapGesture = UITapGestureRecognizer(target: self, action: "showHideAlbumList")
         imageView.addGestureRecognizer(tapGesture)
+        
+        playPauseButton.setImage(.Play, forState: .Normal)
+        playPauseButton.addTarget(self, action: "togglePlayOrPause", forControlEvents: .TouchUpInside)
+        
+        nextTrackButton.setImage(.Next, forState: .Normal)
+        nextTrackButton.addTarget(self, action: "toggleNextTrack", forControlEvents: .TouchUpInside)
+        
+        prevTrackButton.setImage(.Prev, forState: .Normal)
+        prevTrackButton.addTarget(self, action: "togglePrevTrack", forControlEvents: .TouchUpInside)
+        
+        musPickerButton.setImage(.Music, forState: .Normal)
+        musPickerButton.tintColor = .redColor()
+        musPickerButton.addTarget(self, action: "presentMusicPicker", forControlEvents: .TouchUpInside)
         
         songTitleLabel.font = .systemFontOfSize(20.0)
         songTitleLabel.textAlignment = .Center
@@ -185,7 +160,7 @@ class ViewController: UIViewController {
     
     override func traitCollectionDidChange(previousTraitCollection: UITraitCollection?) {
         super.traitCollectionDidChange(previousTraitCollection)
-        self.updateConstraints()
+        self.updateViewConstraints()
     }
     
     override func prefersStatusBarHidden() -> Bool {
@@ -218,7 +193,8 @@ class ViewController: UIViewController {
         }
     }
     
-    func updateConstraints() {
+    
+    override func updateViewConstraints() {
         if self.view.traitCollection.verticalSizeClass == .Regular {
             horizontalConstraints.forEach   { $0.active = false }
             verticalConstraints.forEach     { $0.active = true }
@@ -226,6 +202,7 @@ class ViewController: UIViewController {
             verticalConstraints.forEach     { $0.active = false }
             horizontalConstraints.forEach   { $0.active = true }
         }
+        super.updateViewConstraints()
     }
     
     func updateCurrentTrack() {
@@ -265,8 +242,8 @@ class ViewController: UIViewController {
     
     func updatePlaybackState() {
         switch musicPlayer.playbackState {
-        case .Playing: playPauseButton.setImage(pauseImage, forState: .Normal)
-        case .Paused:  playPauseButton.setImage(playImage,  forState: .Normal)
+        case .Playing: playPauseButton.setImage(.Pause, forState: .Normal)
+        case .Paused:  playPauseButton.setImage(.Play,  forState: .Normal)
         default:       break
         }
     }
@@ -318,24 +295,4 @@ extension ViewController: MPMediaPickerControllerDelegate {
     }
     
 }
-
-private extension UIView {
-    
-    func constrain(attribute: NSLayoutAttribute, _ relation: NSLayoutRelation, to otherView: UIView, _ otherAttribute: NSLayoutAttribute, times multiplier: CGFloat = 1, plus constant: CGFloat = 0, atPriority priority: UILayoutPriority = UILayoutPriorityRequired, identifier: String? = nil, active: Bool = true) -> NSLayoutConstraint {
-        let constraint = NSLayoutConstraint(item: self, attribute: attribute, relatedBy: relation, toItem: otherView, attribute: otherAttribute, multiplier: multiplier, constant: constant)
-        constraint.priority = priority
-        constraint.identifier = identifier
-        constraint.active = active
-        return constraint
-    }
-    
-    func constrain(attribute: NSLayoutAttribute, _ relation: NSLayoutRelation, to constant: CGFloat, atPriority priority: UILayoutPriority = UILayoutPriorityRequired, identifier: String? = nil) -> NSLayoutConstraint {
-        let constraint = NSLayoutConstraint(item: self, attribute: attribute, relatedBy: relation, toItem: nil, attribute: .NotAnAttribute, multiplier: 0, constant: constant)
-        constraint.priority = priority
-        constraint.identifier = identifier
-        constraint.active = true
-        return constraint
-    }
-}
-
 
