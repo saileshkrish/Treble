@@ -89,7 +89,7 @@ class ViewController: UIViewController {
             imageView.constrain(.CenterY, .Equal, to: containerView, .CenterY, active: false),
             songTitleLabel.constrain(.Leading, .Equal, to: imageView, .Trailing, plus: 24.0, active: false),
             songTitleLabel.constrain(.Trailing, .Equal, to: containerView, .Trailing, plus: -24.0, atPriority: 400, active: false),
-            songTitleLabel.constrain(.Top, .Equal, to: containerView, .Top, plus: 28.0, active: false)
+            songTitleLabel.constrain(.Top, .Equal, to: containerView, .Top, plus: 64.0, active: false)
         ]
         
         let buttonSize: CGFloat = 48.0, margin: CGFloat = 24.0
@@ -127,16 +127,16 @@ class ViewController: UIViewController {
         let tapGesture = UITapGestureRecognizer(target: self, action: "showHideAlbumList")
         imageView.addGestureRecognizer(tapGesture)
         
-        playPauseButton.setImage(.Play, forState: .Normal)
+        playPauseButton.setImage(UIImage.Asset.Play.image, forState: .Normal)
         playPauseButton.addTarget(self, action: "togglePlayOrPause", forControlEvents: .TouchUpInside)
         
-        nextTrackButton.setImage(.Next, forState: .Normal)
+        nextTrackButton.setImage(UIImage.Asset.Next.image, forState: .Normal)
         nextTrackButton.addTarget(self, action: "toggleNextTrack", forControlEvents: .TouchUpInside)
         
-        prevTrackButton.setImage(.Prev, forState: .Normal)
+        prevTrackButton.setImage(UIImage.Asset.Prev.image, forState: .Normal)
         prevTrackButton.addTarget(self, action: "togglePrevTrack", forControlEvents: .TouchUpInside)
         
-        musPickerButton.setImage(.Music, forState: .Normal)
+        musPickerButton.setImage(UIImage.Asset.Music.image, forState: .Normal)
         musPickerButton.tintColor = .redColor()
         musPickerButton.addTarget(self, action: "presentMusicPicker", forControlEvents: .TouchUpInside)
         
@@ -242,8 +242,8 @@ class ViewController: UIViewController {
     
     func updatePlaybackState() {
         switch musicPlayer.playbackState {
-        case .Playing: playPauseButton.setImage(.Pause, forState: .Normal)
-        case .Paused:  playPauseButton.setImage(.Play,  forState: .Normal)
+        case .Playing: playPauseButton.setImage(UIImage.Asset.Pause.image, forState: .Normal)
+        case .Paused:  playPauseButton.setImage(UIImage.Asset.Play.image,  forState: .Normal)
         default:       break
         }
     }
@@ -295,4 +295,3 @@ extension ViewController: MPMediaPickerControllerDelegate {
     }
     
 }
-
