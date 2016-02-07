@@ -48,7 +48,10 @@ class ViewController: UIViewController {
         imageView.layer.cornerRadius = 12.0
         imageView.layer.masksToBounds = true
         imageView.backgroundColor = .whiteColor()
-        musPickerButton.tintColor = .redColor()
+        
+        musPickerButton.backgroundColor = UIColor(white: 1.0, alpha: 0.2)
+        musPickerButton.layer.masksToBounds = true
+        
         
         self.view.addSubview(containerView) // add one so I can use constraints
         containerView.addSubview(backgroundImageView) // background image that is blurred
@@ -56,8 +59,8 @@ class ViewController: UIViewController {
         containerView.addSubview(vibrancyEffectView) // the vibrancy view where everything else is added
         containerView.addSubview(volumeSlider) // add volume slider here so that it doesn't have the vibrancy effect
         containerView.addSubview(imageView)
-        containerView.addSubview(musPickerButton)
         
+        vibrancyEffectView.contentView.addSubview(musPickerButton)
         vibrancyEffectView.contentView.addSubview(songTitleLabel)
         vibrancyEffectView.contentView.addSubview(albumTitleLabel)
         vibrancyEffectView.contentView.addSubview(playPauseButton)
@@ -72,6 +75,24 @@ class ViewController: UIViewController {
         backgroundBlurView.constrain(to: containerView)
         backgroundImageView.constrain(to: containerView)
         vibrancyEffectView.constrain(to: containerView)
+        
+        let rect = CGRect(origin: .zero, size: CGSize(width: self.view.frame.width, height: self.view.frame.width))
+        let hole = CGRect(x: 0.0, y: self.view.frame.width-72.0, width: 48.0, height: 48.0)
+
+        
+        let layer = CAShapeLayer()
+        let mutablePath = CGPathCreateMutable()
+        CGPathAddRect(mutablePath, nil, hole)
+        CGPathAddRect(mutablePath, nil, rect)
+        layer.path = mutablePath
+        layer.fillRule = kCAFillRuleEvenOdd
+        self.imageView.layer.mask = layer
+        
+        let buttonFrame = CGRect(x: 0.0, y: 0.0, width: 48.0, height: 48.0)
+        let path = UIBezierPath(roundedRect: buttonFrame, byRoundingCorners: .BottomLeft, cornerRadii: CGSize(width: 12, height: 12))
+        let maskLayer = CAShapeLayer()
+        maskLayer.path = path.CGPath
+        musPickerButton.layer.mask = maskLayer
         
         self.verticalConstraints = [
             imageView.constrain(.Height, .Equal, to: containerView, .Width, plus: -24.0, active: false),
@@ -138,7 +159,6 @@ class ViewController: UIViewController {
         prevTrackButton.addTarget(self, action: "togglePrevTrack", forControlEvents: .TouchUpInside)
         
         musPickerButton.setImage(UIImage.Asset.Music.image, forState: .Normal)
-        musPickerButton.addTarget(self, action: "presentMusicPicker", forControlEvents: .TouchUpInside)
         
         songTitleLabel.font = .systemFontOfSize(20.0)
         songTitleLabel.textAlignment = .Center
@@ -180,7 +200,9 @@ class ViewController: UIViewController {
     
     func tapGestureRecognizerFired(gestureRecognizer: UITapGestureRecognizer) {
         let locationInView = gestureRecognizer.locationInView(self.view)
-        if imageView.frame.contains(locationInView) && self.childViewControllers.isEmpty {
+        if musPickerButton.frame.contains(locationInView) {
+            self.presentMusicPicker()
+        } else if imageView.frame.contains(locationInView) && self.childViewControllers.isEmpty {
             // show albumList view
             self.addChildViewController(self.albumListViewController)
             self.albumListViewController.view.alpha = 0.0
