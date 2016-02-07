@@ -49,6 +49,9 @@ class AlbumListTableViewController: UITableViewController {
     
     override func tableView(tableView: UITableView, didSelectRowAtIndexPath indexPath: NSIndexPath) {
         tableView.deselectRowAtIndexPath(indexPath, animated: true)
+        guard indexPath.row != indexOfCurrentTrack else { return }
+        let newItem = trackList[indexPath.row]
+        musicPlayer.nowPlayingItem = newItem
     }
     
     override func tableView(tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
