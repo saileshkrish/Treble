@@ -18,12 +18,9 @@ class AlbumListTableViewController: UITableViewController {
     var currentTrack: MPMediaItem! {
         didSet {
             self.trackList = musicPlayer.query.items ?? []
-            self.indexOfCurrentTrack = trackList.indexOf(currentTrack) ?? 0
             self.tableView.reloadData()
         }
     }
-    
-    private var indexOfCurrentTrack: Int = 0
     
     override func loadView() {
         super.loadView()
@@ -49,7 +46,7 @@ class AlbumListTableViewController: UITableViewController {
     
     override func tableView(tableView: UITableView, didSelectRowAtIndexPath indexPath: NSIndexPath) {
         tableView.deselectRowAtIndexPath(indexPath, animated: true)
-        guard indexPath.row != indexOfCurrentTrack else { return }
+        guard indexPath.row != musicPlayer.indexOfNowPlayingItem else { return }
         let newItem = trackList[indexPath.row]
         musicPlayer.nowPlayingItem = newItem
     }
@@ -61,7 +58,7 @@ class AlbumListTableViewController: UITableViewController {
     override func tableView(tableView: UITableView, cellForRowAtIndexPath indexPath: NSIndexPath) -> UITableViewCell {
         let cell = tableView.dequeueReusableCellWithIdentifier(reuseIdentifier, forIndexPath: indexPath) as! AlbumListTableViewCell
         if let title = trackList[indexPath.row].valueForProperty(MPMediaItemPropertyTitle) as? String {
-            cell.textLabel!.text = (indexPath.row == indexOfCurrentTrack ? "▶️ " : "") + "\(title)"
+            cell.textLabel!.text = (indexPath.row == musicPlayer.indexOfNowPlayingItem ? "▶️ " : "") + "\(title)"
         }
         
         if let duration = trackList[indexPath.row].valueForProperty(MPMediaItemPropertyPlaybackDuration) as? Double {
