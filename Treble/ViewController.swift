@@ -125,6 +125,7 @@ class ViewController: UIViewController {
         super.viewDidLoad()
         
         let tapGesture = UITapGestureRecognizer(target: self, action: "tapGestureRecognizerFired:")
+        tapGesture.cancelsTouchesInView = false
         self.view.addGestureRecognizer(tapGesture)
         
         playPauseButton.setImage(UIImage.Asset.Play.image, forState: .Normal)
