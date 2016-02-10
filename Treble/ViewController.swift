@@ -26,7 +26,9 @@ class ViewController: UIViewController {
     private let nextTrackButton = UIButton(type: .Custom)
     private let prevTrackButton = UIButton(type: .Custom)
     private let musPickerButton = UIButton(type: .Custom)
-    private let volumeSlider = UISlider()
+    private let volumeSlider: UISlider = {
+        return MPVolumeView().subviews.filter { $0 is UISlider }.map { $0 as! UISlider }.first!
+    }()
     
     private var verticalConstraints: [NSLayoutConstraint] = []
     private var horizontalConstraints: [NSLayoutConstraint] = []
@@ -168,11 +170,6 @@ class ViewController: UIViewController {
         albumTitleLabel.font = .systemFontOfSize(15.0, weight: UIFontWeightThin)
         albumTitleLabel.textAlignment = .Center
         
-        volumeSlider.minimumValue = 0.0
-        volumeSlider.maximumValue = 1.0
-        volumeSlider.value = AVAudioSession.sharedInstance().outputVolume
-        volumeSlider.addTarget(self, action: "adjustVolume:", forControlEvents: .ValueChanged)
-        
         self.updateCurrentTrack()
         
         NSNotificationCenter.defaultCenter().addObserver(self, selector: "updateCurrentTrack", name: MPMusicPlayerControllerNowPlayingItemDidChangeNotification, object: musicPlayer)
@@ -292,15 +289,6 @@ class ViewController: UIViewController {
         musicPickerViewController.delegate = self
         musicPickerViewController.allowsPickingMultipleItems = true
         self.presentViewController(musicPickerViewController, animated: true, completion: nil)
-    }
-    
-    func adjustVolume(slider: UISlider) {
-        let currentVolume = slider.value
-        for subview in MPVolumeView().subviews {
-            guard let slider = subview as? UISlider else { continue }
-            slider.setValue(currentVolume, animated: true)
-            slider.sendActionsForControlEvents(.TouchUpInside)
-        }
     }
 
 }
