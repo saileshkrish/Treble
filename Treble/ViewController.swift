@@ -33,7 +33,7 @@ class ViewController: UIViewController {
     private var verticalConstraints: [NSLayoutConstraint] = []
     private var horizontalConstraints: [NSLayoutConstraint] = []
     
-    private let albumListViewController = MusicQueueViewController()
+    private let musicQueueViewController = MusicQueueViewController()
     
     override func loadView() {
         super.loadView()
@@ -151,7 +151,8 @@ class ViewController: UIViewController {
         
         let tapGesture = UITapGestureRecognizer(target: self, action: "tapGestureRecognizerFired:")
         tapGesture.cancelsTouchesInView = false
-        self.view.addGestureRecognizer(tapGesture)
+        tapGesture.delegate = self
+        imageView.addGestureRecognizer(tapGesture)
         
         playPauseButton.setImage(UIImage.Asset.Play.image, forState: .Normal)
         playPauseButton.addTarget(self, action: "togglePlayOrPause", forControlEvents: .TouchUpInside)
@@ -199,39 +200,41 @@ class ViewController: UIViewController {
     
     func tapGestureRecognizerFired(gestureRecognizer: UITapGestureRecognizer) {
         let locationInView = gestureRecognizer.locationInView(self.view)
-        if musPickerButton.frame.contains(locationInView) {
-            self.presentMusicPicker()
-        } else if imageView.frame.contains(locationInView) && self.childViewControllers.isEmpty {
-            // show albumList view
-            self.addChildViewController(self.albumListViewController)
-            self.albumListViewController.view.alpha = 0.0
-            self.imageView.addSubview(self.albumListViewController.view)
-            self.albumListViewController.view.frame = self.imageView.bounds
+        
+        guard !musPickerButton.frame.contains(locationInView) else {
+            self.presentMusicPicker() // tapped on music picker button, present that instead
+            return
+        }
+        
+        if self.childViewControllers.isEmpty { // show albumList view
+            self.addChildViewController(self.musicQueueViewController)
+            self.musicQueueViewController.view.alpha = 0.0
+            self.imageView.addSubview(self.musicQueueViewController.view)
+            self.musicQueueViewController.view.frame = self.imageView.bounds
             UIView.animateWithDuration(0.5, animations: {
-                self.albumListViewController.view.alpha = 1.0
+                self.musicQueueViewController.view.alpha = 1.0
                 self.imageView.willMoveToSuperview(self.vibrancyEffectView)
             }) { _ in
-                self.albumListViewController.didMoveToParentViewController(self)
+                self.musicQueueViewController.didMoveToParentViewController(self)
             }
-        } else if !imageView.frame.contains(locationInView) && !self.childViewControllers.isEmpty {
-            // hide albumList view
+        } else { // hide albumList view
             UIView.animateWithDuration(0.5, animations: {
-                self.albumListViewController.view.alpha = 0.0
+                self.musicQueueViewController.view.alpha = 0.0
                 self.imageView.willMoveToSuperview(self.view)
             }) { bool in
-                self.albumListViewController.removeFromParentViewController()
-                self.albumListViewController.view.removeFromSuperview()
-                self.albumListViewController.didMoveToParentViewController(nil)
+                self.musicQueueViewController.removeFromParentViewController()
+                self.musicQueueViewController.view.removeFromSuperview()
+                self.musicQueueViewController.didMoveToParentViewController(nil)
             }
-
         }
+
     }
 
     func updateCurrentTrack() {
         guard let songItem = musicPlayer.nowPlayingItem else { return }
         
         self.updatePlaybackState()
-        self.albumListViewController.currentTrack = songItem
+        self.musicQueueViewController.currentTrack = songItem
         self.songTitleLabel.text = songItem.valueForProperty(MPMediaItemPropertyTitle) as? String
         let albumTitle = songItem.valueForProperty(MPMediaItemPropertyAlbumTitle) as! String
         let artistTitle = songItem.valueForProperty(MPMediaItemPropertyArtist) as! String
@@ -291,6 +294,17 @@ class ViewController: UIViewController {
         self.presentViewController(musicPickerViewController, animated: true, completion: nil)
     }
 
+}
+
+extension ViewController: UIGestureRecognizerDelegate {
+    
+    func gestureRecognizer(gestureRecognizer: UIGestureRecognizer, shouldReceiveTouch touch: UITouch) -> Bool {
+        guard !self.childViewControllers.isEmpty else { return true }
+        let tapLocation = touch.locationInView(self.view)
+        guard let _ = musicQueueViewController.tableView.indexPathForRowAtPoint(tapLocation) else { return true }
+        return false
+    }
+    
 }
 
 extension ViewController: MPMediaPickerControllerDelegate {
