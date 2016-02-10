@@ -78,21 +78,23 @@ class ViewController: UIViewController {
         
         let rect = CGRect(origin: .zero, size: CGSize(width: self.view.frame.width, height: self.view.frame.width))
         let hole = CGRect(x: 0.0, y: self.view.frame.width-72.0, width: 48.0, height: 48.0)
-
-        
-        let layer = CAShapeLayer()
-        let mutablePath = CGPathCreateMutable()
-        CGPathAddRect(mutablePath, nil, hole)
-        CGPathAddRect(mutablePath, nil, rect)
-        layer.path = mutablePath
-        layer.fillRule = kCAFillRuleEvenOdd
-        self.imageView.layer.mask = layer
-        
         let buttonFrame = CGRect(x: 0.0, y: 0.0, width: 48.0, height: 48.0)
-        let path = UIBezierPath(roundedRect: buttonFrame, byRoundingCorners: .BottomLeft, cornerRadii: CGSize(width: 12, height: 12))
-        let maskLayer = CAShapeLayer()
-        maskLayer.path = path.CGPath
-        musPickerButton.layer.mask = maskLayer
+        
+        self.imageView.layer.mask = {
+            let mask = CAShapeLayer()
+            let path = UIBezierPath(rect: rect)
+            path.appendPath(UIBezierPath(rect: hole).bezierPathByReversingPath())
+            mask.path = path.CGPath
+            return mask
+        }()
+        
+        
+        musPickerButton.layer.mask = {
+            let path = UIBezierPath(roundedRect: buttonFrame, byRoundingCorners: .BottomLeft, cornerRadii: CGSize(width: 12, height: 12))
+            let maskLayer = CAShapeLayer()
+            maskLayer.path = path.CGPath
+            return maskLayer
+        }()
         
         self.verticalConstraints = [
             imageView.constrain(.Height, .Equal, to: containerView, .Width, plus: -24.0, active: false),
