@@ -33,7 +33,7 @@ class ViewController: UIViewController {
     private var verticalConstraints: [NSLayoutConstraint] = []
     private var horizontalConstraints: [NSLayoutConstraint] = []
     
-    private let albumListViewController = AlbumListTableViewController()
+    private let albumListViewController = MusicQueueViewController()
     
     override func loadView() {
         super.loadView()

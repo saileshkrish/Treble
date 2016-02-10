@@ -1,5 +1,5 @@
 //
-//  AlbumListTableViewController.swift
+//  MusicQueueViewController.swift
 //  Treble
 //
 //  Created by Andy Liang on 2016-02-05.
@@ -9,8 +9,8 @@
 import UIKit
 import MediaPlayer
 
-let reuseIdentifier = "reuseIdentifier"
-class AlbumListTableViewController: UITableViewController {
+private let reuseIdentifier = "reuseIdentifier"
+class MusicQueueViewController: UITableViewController {
     
     private let musicPlayer = MPMusicPlayerController.systemMusicPlayer()
     private var trackList: [MPMediaItem] = []
@@ -25,7 +25,7 @@ class AlbumListTableViewController: UITableViewController {
     override func loadView() {
         super.loadView()
         self.tableView.backgroundColor = .clearColor()
-        self.tableView.tableFooterView = UITableView()
+        self.tableView.tableFooterView = UIView()
         let blurView = UIVisualEffectView(effect: UIBlurEffect(style: .Dark))
         self.tableView.backgroundView = blurView
         self.tableView.separatorEffect = UIVibrancyEffect(forBlurEffect: UIBlurEffect(style: .Dark))
@@ -33,15 +33,11 @@ class AlbumListTableViewController: UITableViewController {
     
     override func viewDidLoad() {
         super.viewDidLoad()
-        self.tableView.registerClass(AlbumListTableViewCell.self, forCellReuseIdentifier: reuseIdentifier)
+        self.tableView.registerClass(MusicQueueItemCell.self, forCellReuseIdentifier: reuseIdentifier)
     }
     
     override func numberOfSectionsInTableView(tableView: UITableView) -> Int {
         return 1
-    }
-    
-    override func tableView(tableView: UITableView, titleForHeaderInSection section: Int) -> String? {
-        return currentTrack?.valueForProperty(MPMediaItemPropertyAlbumTitle) as? String
     }
     
     override func tableView(tableView: UITableView, didSelectRowAtIndexPath indexPath: NSIndexPath) {
@@ -52,11 +48,11 @@ class AlbumListTableViewController: UITableViewController {
     }
     
     override func tableView(tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        return musicPlayer.count ?? 0
+        return musicPlayer.count
     }
     
     override func tableView(tableView: UITableView, cellForRowAtIndexPath indexPath: NSIndexPath) -> UITableViewCell {
-        let cell = tableView.dequeueReusableCellWithIdentifier(reuseIdentifier, forIndexPath: indexPath) as! AlbumListTableViewCell
+        let cell = tableView.dequeueReusableCellWithIdentifier(reuseIdentifier, forIndexPath: indexPath) as! MusicQueueItemCell
         if let title = trackList[indexPath.row].valueForProperty(MPMediaItemPropertyTitle) as? String {
             cell.textLabel!.text = (indexPath.row == musicPlayer.indexOfNowPlayingItem ? "▶️ " : "") + "\(title)"
         }
