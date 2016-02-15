@@ -143,7 +143,6 @@ class ViewController: UIViewController {
         volumeSlider.constrain(.Leading, .Equal, to: albumTitleLabel, .Leading, plus: margin)
         volumeSlider.constrain(.Trailing, .Equal, to: albumTitleLabel, .Trailing, plus: -margin)
         volumeSlider.constrain(.Top, .Equal, to: playPauseButton, .Bottom, plus: 64.0)
-        
     }
     
     override func viewDidLoad() {
@@ -151,8 +150,7 @@ class ViewController: UIViewController {
         
         let tapGesture = UITapGestureRecognizer(target: self, action: "tapGestureRecognizerFired:")
         tapGesture.cancelsTouchesInView = false
-        tapGesture.delegate = self
-        imageView.addGestureRecognizer(tapGesture)
+        self.imageView.addGestureRecognizer(tapGesture)
         
         playPauseButton.setImage(UIImage.Asset.Play.image, forState: .Normal)
         playPauseButton.addTarget(self, action: "togglePlayOrPause", forControlEvents: .TouchUpInside)
@@ -199,6 +197,7 @@ class ViewController: UIViewController {
     }
     
     func tapGestureRecognizerFired(gestureRecognizer: UITapGestureRecognizer) {
+        
         let locationInView = gestureRecognizer.locationInView(self.view)
         
         guard !musPickerButton.frame.contains(locationInView) else {
@@ -217,7 +216,7 @@ class ViewController: UIViewController {
             }) { _ in
                 self.musicQueueViewController.didMoveToParentViewController(self)
             }
-        } else { // hide albumList view
+        } else  { // hide albumList view
             UIView.animateWithDuration(0.5, animations: {
                 self.musicQueueViewController.view.alpha = 0.0
                 self.imageView.willMoveToSuperview(self.view)
@@ -294,17 +293,6 @@ class ViewController: UIViewController {
         self.presentViewController(musicPickerViewController, animated: true, completion: nil)
     }
 
-}
-
-extension ViewController: UIGestureRecognizerDelegate {
-    
-    func gestureRecognizer(gestureRecognizer: UIGestureRecognizer, shouldReceiveTouch touch: UITouch) -> Bool {
-        guard !self.childViewControllers.isEmpty else { return true }
-        let tapLocation = touch.locationInView(self.view)
-        guard let _ = musicQueueViewController.tableView.indexPathForRowAtPoint(tapLocation) else { return true }
-        return false
-    }
-    
 }
 
 extension ViewController: MPMediaPickerControllerDelegate {
