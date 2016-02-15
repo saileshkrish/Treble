@@ -22,21 +22,11 @@ class MusicQueueItemCell: UITableViewCell {
     
     private func commonInit() {
         self.backgroundColor = .clearColor()
-        self.textLabel!.removeFromSuperview()
-        self.detailTextLabel!.removeFromSuperview()
-        
-        let vibrancyView = UIVisualEffectView(effect: UIVibrancyEffect(forBlurEffect: UIBlurEffect(style: .Dark)))
-        vibrancyView.frame = self.bounds
-        vibrancyView.autoresizingMask = [.FlexibleHeight, .FlexibleWidth]
-        self.contentView.addSubview(vibrancyView)
-        
-        vibrancyView.contentView.addSubview(self.textLabel!)
-        vibrancyView.contentView.addSubview(self.detailTextLabel!)
-        
         self.textLabel!.textColor = UIColor(white: 1.0, alpha: 0.5)
         self.detailTextLabel!.textColor = UIColor(white: 1.0, alpha: 0.5)
+        
         self.selectedBackgroundView = UIView()
-        self.selectedBackgroundView?.backgroundColor = UIColor(white: 1.0, alpha: 0.5)
+        self.selectedBackgroundView!.backgroundColor = UIColor(white: 1.0, alpha: 0.5)
     }
     
 }
