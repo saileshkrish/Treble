@@ -53,8 +53,9 @@ class MusicQueueViewController: UITableViewController {
     
     override func tableView(tableView: UITableView, cellForRowAtIndexPath indexPath: NSIndexPath) -> UITableViewCell {
         let cell = tableView.dequeueReusableCellWithIdentifier(reuseIdentifier, forIndexPath: indexPath) as! MusicQueueItemCell
-        if var title = trackList[indexPath.row].valueForProperty(MPMediaItemPropertyTitle) as? String {
-            if indexPath.row == musicPlayer.indexOfNowPlayingItem { title.insert("▶️", atIndex: title.startIndex) }
+        if var title = trackList[indexPath.row].valueForProperty(MPMediaItemPropertyTitle) as? String,
+            let currentTitle = musicPlayer.nowPlayingItem?.valueForKey(MPMediaItemPropertyTitle) as? String {
+            if title == currentTitle { title.insert("▶️", atIndex: title.startIndex) }
             cell.textLabel!.text = title
         }
         
