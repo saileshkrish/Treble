@@ -114,7 +114,7 @@ class ViewController: UIViewController {
             imageView.constrain(.Leading, .Equal, to: containerView, .Leading, plus: 24.0, active: false),
             imageView.constrain(.CenterY, .Equal, to: containerView, .CenterY, active: false),
             songTitleLabel.constrain(.Leading, .Equal, to: imageView, .Trailing, plus: 24.0, active: false),
-            songTitleLabel.constrain(.Trailing, .Equal, to: containerView, .Trailing, plus: -24.0, atPriority: 400, active: false),
+            songTitleLabel.constrain(.Trailing, .Equal, to: containerView, .Trailing, plus: -24.0, active: false),
             songTitleLabel.constrain(.Top, .Equal, to: containerView, .Top, plus: 64.0, active: false)
         ]
         
