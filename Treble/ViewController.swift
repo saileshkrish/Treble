@@ -148,18 +148,18 @@ class ViewController: UIViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
         
-        let tapGesture = UITapGestureRecognizer(target: self, action: "tapGestureRecognizerFired:")
+        let tapGesture = UITapGestureRecognizer(target: self, action: #selector(ViewController.tapGestureRecognizerFired(_:)))
         tapGesture.cancelsTouchesInView = false
         self.imageView.addGestureRecognizer(tapGesture)
         
         playPauseButton.setImage(UIImage.Asset.Play.image, forState: .Normal)
-        playPauseButton.addTarget(self, action: "togglePlayOrPause", forControlEvents: .TouchUpInside)
+        playPauseButton.addTarget(self, action: #selector(ViewController.togglePlayOrPause), forControlEvents: .TouchUpInside)
         
         nextTrackButton.setImage(UIImage.Asset.Next.image, forState: .Normal)
-        nextTrackButton.addTarget(self, action: "toggleNextTrack", forControlEvents: .TouchUpInside)
+        nextTrackButton.addTarget(self, action: #selector(ViewController.toggleNextTrack), forControlEvents: .TouchUpInside)
         
         prevTrackButton.setImage(UIImage.Asset.Prev.image, forState: .Normal)
-        prevTrackButton.addTarget(self, action: "togglePrevTrack", forControlEvents: .TouchUpInside)
+        prevTrackButton.addTarget(self, action: #selector(ViewController.togglePrevTrack), forControlEvents: .TouchUpInside)
         
         musPickerButton.setImage(UIImage.Asset.Music.image, forState: .Normal)
         
@@ -171,8 +171,8 @@ class ViewController: UIViewController {
         
         self.updateCurrentTrack()
         
-        NSNotificationCenter.defaultCenter().addObserver(self, selector: "updateCurrentTrack", name: MPMusicPlayerControllerNowPlayingItemDidChangeNotification, object: musicPlayer)
-        NSNotificationCenter.defaultCenter().addObserver(self, selector: "updatePlaybackState", name: MPMusicPlayerControllerPlaybackStateDidChangeNotification, object: musicPlayer)
+        NSNotificationCenter.defaultCenter().addObserver(self, selector: #selector(ViewController.updateCurrentTrack), name: MPMusicPlayerControllerNowPlayingItemDidChangeNotification, object: musicPlayer)
+        NSNotificationCenter.defaultCenter().addObserver(self, selector: #selector(ViewController.updatePlaybackState), name: MPMusicPlayerControllerPlaybackStateDidChangeNotification, object: musicPlayer)
         musicPlayer.beginGeneratingPlaybackNotifications()
     }
     
