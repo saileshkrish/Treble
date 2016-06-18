@@ -28,6 +28,8 @@
 	<array>
 		<string>armv7</string>
 	</array>
+	<key>NSAppleMusicUsageDescription</key>
+	<string>Treble is a music player that relies on your Music Library, please provide Music access to Treble.</string>
 	<key>UISupportedInterfaceOrientations</key>
 	<array>
 		<string>UIInterfaceOrientationPortrait</string>

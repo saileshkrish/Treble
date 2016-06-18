@@ -42,8 +42,8 @@ class MusicQueueViewController: UITableViewController {
     
     override func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
         tableView.deselectRow(at: indexPath, animated: true)
-        guard (indexPath as NSIndexPath).row != musicPlayer.indexOfNowPlayingItem else { return }
-        let newItem = trackList[(indexPath as NSIndexPath).row]
+        guard indexPath.row != musicPlayer.indexOfNowPlayingItem else { return }
+        let newItem = trackList[indexPath.row]
         musicPlayer.nowPlayingItem = newItem
     }
     
@@ -53,13 +53,16 @@ class MusicQueueViewController: UITableViewController {
     
     override func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         let cell = tableView.dequeueReusableCell(withIdentifier: reuseIdentifier, for: indexPath) as! MusicQueueItemCell
-        if var title = trackList[(indexPath as NSIndexPath).row].value(forProperty: MPMediaItemPropertyTitle) as? String,
+        if var title = trackList[indexPath.row].value(forProperty: MPMediaItemPropertyTitle) as? String,
             let currentTitle = musicPlayer.nowPlayingItem?.value(forKey: MPMediaItemPropertyTitle) as? String {
-            if title == currentTitle { title.insert("▶️", at: title.startIndex) }
+            
+            if title == currentTitle {
+                title = "▶︎ \(title)"
+            }
             cell.textLabel!.text = title
         }
         
-        if let duration = trackList[(indexPath as NSIndexPath).row].value(forProperty: MPMediaItemPropertyPlaybackDuration) as? Double {
+        if let duration = trackList[indexPath.row].value(forProperty: MPMediaItemPropertyPlaybackDuration) as? Double {
             cell.detailTextLabel!.text = duration.stringRepresentation
         }
         return cell
