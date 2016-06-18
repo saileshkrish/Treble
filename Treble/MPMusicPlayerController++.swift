@@ -16,9 +16,9 @@ extension MPMusicPlayerController {
     }
     
     var internalController: MPMediaItemCollection? {
-        let internalController = self.valueForKey("_internal")!
-        let itemCollection = internalController.valueForKey("_itemCollection")
-        print(itemCollection, internalController.valueForKey("_musicPlayerController"))
+        let internalController = self.value(forKey: "_internal")!
+        let itemCollection = internalController.value(forKey: "_itemCollection")
+        print(itemCollection, internalController.value(forKey: "_musicPlayerController"))
         return itemCollection as? MPMediaItemCollection
     }
     

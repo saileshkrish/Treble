@@ -11,7 +11,7 @@ import UIKit
 class MusicQueueItemCell: UITableViewCell {
     
     override init(style: UITableViewCellStyle, reuseIdentifier: String?) {
-        super.init(style: .Value1, reuseIdentifier: reuseIdentifier)
+        super.init(style: .value1, reuseIdentifier: reuseIdentifier)
         self.commonInit()
     }
     
@@ -21,7 +21,7 @@ class MusicQueueItemCell: UITableViewCell {
     }
     
     private func commonInit() {
-        self.backgroundColor = .clearColor()
+        self.backgroundColor = .clear()
         self.textLabel!.textColor = UIColor(white: 1.0, alpha: 0.5)
         self.detailTextLabel!.textColor = UIColor(white: 1.0, alpha: 0.5)
         

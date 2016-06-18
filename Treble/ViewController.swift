@@ -22,10 +22,10 @@ class ViewController: UIViewController {
     private var backgroundBlurView: UIVisualEffectView!
     private var vibrancyEffectView: UIVisualEffectView!
     
-    private let playPauseButton = UIButton(type: .Custom)
-    private let nextTrackButton = UIButton(type: .Custom)
-    private let prevTrackButton = UIButton(type: .Custom)
-    private let musPickerButton = UIButton(type: .Custom)
+    private let playPauseButton = UIButton(type: .custom)
+    private let nextTrackButton = UIButton(type: .custom)
+    private let prevTrackButton = UIButton(type: .custom)
+    private let musPickerButton = UIButton(type: .custom)
     private let volumeSlider: UISlider = {
         return MPVolumeView().subviews.filter { $0 is UISlider }.map { $0 as! UISlider }.first!
     }()
@@ -38,18 +38,18 @@ class ViewController: UIViewController {
     override func loadView() {
         super.loadView()
         
-        let blurEffect = UIBlurEffect(style: .Dark)
+        let blurEffect = UIBlurEffect(style: .dark)
         backgroundBlurView = UIVisualEffectView(effect: blurEffect)
-        vibrancyEffectView = UIVisualEffectView(effect: UIVibrancyEffect(forBlurEffect: blurEffect))
+        vibrancyEffectView = UIVisualEffectView(effect: UIVibrancyEffect(blurEffect: blurEffect))
         
-        backgroundImageView.contentMode = .ScaleAspectFill
-        backgroundImageView.backgroundColor = .whiteColor()
+        backgroundImageView.contentMode = .scaleAspectFill
+        backgroundImageView.backgroundColor = .white()
         
-        imageView.userInteractionEnabled = true
-        imageView.contentMode = .ScaleAspectFill
+        imageView.isUserInteractionEnabled = true
+        imageView.contentMode = .scaleAspectFill
         imageView.layer.cornerRadius = 12.0
         imageView.layer.masksToBounds = true
-        imageView.backgroundColor = .whiteColor()
+        imageView.backgroundColor = .white()
         
         musPickerButton.backgroundColor = UIColor(white: 1.0, alpha: 0.2)
         musPickerButton.layer.masksToBounds = true
@@ -85,37 +85,37 @@ class ViewController: UIViewController {
         self.imageView.layer.mask = {
             let mask = CAShapeLayer()
             let path = UIBezierPath(rect: rect)
-            path.appendPath(UIBezierPath(rect: hole).bezierPathByReversingPath())
-            mask.path = path.CGPath
+            path.append(UIBezierPath(rect: hole).reversing())
+            mask.path = path.cgPath
             return mask
         }()
         
         
         musPickerButton.layer.mask = {
-            let path = UIBezierPath(roundedRect: buttonFrame, byRoundingCorners: .BottomLeft, cornerRadii: CGSize(width: 12, height: 12))
+            let path = UIBezierPath(roundedRect: buttonFrame, byRoundingCorners: .bottomLeft, cornerRadii: CGSize(width: 12, height: 12))
             let maskLayer = CAShapeLayer()
-            maskLayer.path = path.CGPath
+            maskLayer.path = path.cgPath
             return maskLayer
         }()
         
         self.verticalConstraints = [
-            imageView.constrain(.Height, .Equal, to: containerView, .Width, plus: -24.0, active: false),
-            imageView.constrain(.Width,  .Equal, to: containerView, .Width, plus: -24.0, active: false),
-            imageView.constrain(.Top, .Equal, to: containerView, .Top, plus: 24.0, active: false),
-            imageView.constrain(.CenterX, .Equal, to: containerView, .CenterX, active: false),
-            songTitleLabel.constrain(.Leading, .Equal, to: imageView, .Leading, active: false),
-            songTitleLabel.constrain(.Trailing, .Equal, to: imageView, .Trailing, active: false),
-            songTitleLabel.constrain(.Top, .Equal, to: imageView, .Bottom, plus: 28.0, active: false)
+            imageView.constrain(.height, .equal, to: containerView, .width, plus: -24.0, active: false),
+            imageView.constrain(.width,  .equal, to: containerView, .width, plus: -24.0, active: false),
+            imageView.constrain(.top, .equal, to: containerView, .top, plus: 24.0, active: false),
+            imageView.constrain(.centerX, .equal, to: containerView, .centerX, active: false),
+            songTitleLabel.constrain(.leading, .equal, to: imageView, .leading, active: false),
+            songTitleLabel.constrain(.trailing, .equal, to: imageView, .trailing, active: false),
+            songTitleLabel.constrain(.top, .equal, to: imageView, .bottom, plus: 28.0, active: false)
         ]
         
         self.horizontalConstraints = [
-            imageView.constrain(.Height, .Equal, to: containerView, .Height, plus: -24.0, active: false),
-            imageView.constrain(.Width,  .Equal, to: containerView, .Height, plus: -24.0, active: false),
-            imageView.constrain(.Leading, .Equal, to: containerView, .Leading, plus: 24.0, active: false),
-            imageView.constrain(.CenterY, .Equal, to: containerView, .CenterY, active: false),
-            songTitleLabel.constrain(.Leading, .Equal, to: imageView, .Trailing, plus: 24.0, active: false),
-            songTitleLabel.constrain(.Trailing, .Equal, to: containerView, .Trailing, plus: -24.0, active: false),
-            songTitleLabel.constrain(.Top, .Equal, to: containerView, .Top, plus: 64.0, active: false)
+            imageView.constrain(.height, .equal, to: containerView, .height, plus: -24.0, active: false),
+            imageView.constrain(.width,  .equal, to: containerView, .height, plus: -24.0, active: false),
+            imageView.constrain(.leading, .equal, to: containerView, .leading, plus: 24.0, active: false),
+            imageView.constrain(.centerY, .equal, to: containerView, .centerY, active: false),
+            songTitleLabel.constrain(.leading, .equal, to: imageView, .trailing, plus: 24.0, active: false),
+            songTitleLabel.constrain(.trailing, .equal, to: containerView, .trailing, plus: -24.0, active: false),
+            songTitleLabel.constrain(.top, .equal, to: containerView, .top, plus: 64.0, active: false)
         ]
         
         let buttonSize: CGFloat = 48.0, margin: CGFloat = 24.0
@@ -125,24 +125,24 @@ class ViewController: UIViewController {
         prevTrackButton.constrainSize(to: buttonSize)
         nextTrackButton.constrainSize(to: buttonSize)
         
-        musPickerButton.constrain(.Bottom, .Equal, to: imageView, .Bottom)
-        musPickerButton.constrain(.Left, .Equal, to: imageView, .Left)
+        musPickerButton.constrain(.bottom, .equal, to: imageView, .bottom)
+        musPickerButton.constrain(.left, .equal, to: imageView, .left)
         
-        albumTitleLabel.constrain(.Leading,  .Equal, to: songTitleLabel, .Leading)
-        albumTitleLabel.constrain(.Trailing, .Equal, to: songTitleLabel, .Trailing)
-        albumTitleLabel.constrain(.Top, .Equal, to: songTitleLabel, .Bottom, plus: 16.0)
+        albumTitleLabel.constrain(.leading,  .equal, to: songTitleLabel, .leading)
+        albumTitleLabel.constrain(.trailing, .equal, to: songTitleLabel, .trailing)
+        albumTitleLabel.constrain(.top, .equal, to: songTitleLabel, .bottom, plus: 16.0)
         
-        playPauseButton.constrain(.Top, .Equal, to: albumTitleLabel, .Bottom, plus: margin)
-        playPauseButton.constrain(.CenterX, .Equal, to: songTitleLabel, .CenterX)
+        playPauseButton.constrain(.top, .equal, to: albumTitleLabel, .bottom, plus: margin)
+        playPauseButton.constrain(.centerX, .equal, to: songTitleLabel, .centerX)
         
-        nextTrackButton.constrain(.Leading, .Equal, to: playPauseButton, .Trailing, plus: margin)
-        nextTrackButton.constrain(.CenterY, .Equal, to: playPauseButton, .CenterY)
-        prevTrackButton.constrain(.Trailing, .Equal, to: playPauseButton, .Leading, plus: -margin)
-        prevTrackButton.constrain(.CenterY, .Equal, to: playPauseButton, .CenterY)
+        nextTrackButton.constrain(.leading, .equal, to: playPauseButton, .trailing, plus: margin)
+        nextTrackButton.constrain(.centerY, .equal, to: playPauseButton, .centerY)
+        prevTrackButton.constrain(.trailing, .equal, to: playPauseButton, .leading, plus: -margin)
+        prevTrackButton.constrain(.centerY, .equal, to: playPauseButton, .centerY)
         
-        volumeSlider.constrain(.Leading, .Equal, to: albumTitleLabel, .Leading, plus: margin)
-        volumeSlider.constrain(.Trailing, .Equal, to: albumTitleLabel, .Trailing, plus: -margin)
-        volumeSlider.constrain(.Top, .Equal, to: playPauseButton, .Bottom, plus: 64.0)
+        volumeSlider.constrain(.leading, .equal, to: albumTitleLabel, .leading, plus: margin)
+        volumeSlider.constrain(.trailing, .equal, to: albumTitleLabel, .trailing, plus: -margin)
+        volumeSlider.constrain(.top, .equal, to: playPauseButton, .bottom, plus: 64.0)
     }
     
     override func viewDidLoad() {
@@ -152,31 +152,31 @@ class ViewController: UIViewController {
         tapGesture.cancelsTouchesInView = false
         self.imageView.addGestureRecognizer(tapGesture)
         
-        playPauseButton.setImage(UIImage.Asset.Play.image, forState: .Normal)
-        playPauseButton.addTarget(self, action: #selector(ViewController.togglePlayOrPause), forControlEvents: .TouchUpInside)
+        playPauseButton.setImage(UIImage.Asset.Play.image, for: UIControlState())
+        playPauseButton.addTarget(self, action: #selector(ViewController.togglePlayOrPause), for: .touchUpInside)
         
-        nextTrackButton.setImage(UIImage.Asset.Next.image, forState: .Normal)
-        nextTrackButton.addTarget(self, action: #selector(ViewController.toggleNextTrack), forControlEvents: .TouchUpInside)
+        nextTrackButton.setImage(UIImage.Asset.Next.image, for: UIControlState())
+        nextTrackButton.addTarget(self, action: #selector(ViewController.toggleNextTrack), for: .touchUpInside)
         
-        prevTrackButton.setImage(UIImage.Asset.Prev.image, forState: .Normal)
-        prevTrackButton.addTarget(self, action: #selector(ViewController.togglePrevTrack), forControlEvents: .TouchUpInside)
+        prevTrackButton.setImage(UIImage.Asset.Prev.image, for: UIControlState())
+        prevTrackButton.addTarget(self, action: #selector(ViewController.togglePrevTrack), for: .touchUpInside)
         
-        musPickerButton.setImage(UIImage.Asset.Music.image, forState: .Normal)
+        musPickerButton.setImage(UIImage.Asset.Music.image, for: UIControlState())
         
-        songTitleLabel.font = .systemFontOfSize(20.0)
-        songTitleLabel.textAlignment = .Center
+        songTitleLabel.font = .systemFont(ofSize: 20.0)
+        songTitleLabel.textAlignment = .center
         
-        albumTitleLabel.font = .systemFontOfSize(15.0, weight: UIFontWeightThin)
-        albumTitleLabel.textAlignment = .Center
+        albumTitleLabel.font = .systemFont(ofSize: 15.0, weight: UIFontWeightThin)
+        albumTitleLabel.textAlignment = .center
         
         self.updateCurrentTrack()
         
-        NSNotificationCenter.defaultCenter().addObserver(self, selector: #selector(ViewController.updateCurrentTrack), name: MPMusicPlayerControllerNowPlayingItemDidChangeNotification, object: musicPlayer)
-        NSNotificationCenter.defaultCenter().addObserver(self, selector: #selector(ViewController.updatePlaybackState), name: MPMusicPlayerControllerPlaybackStateDidChangeNotification, object: musicPlayer)
+        NotificationCenter.default().addObserver(self, selector: #selector(ViewController.updateCurrentTrack), name: NSNotification.Name.MPMusicPlayerControllerNowPlayingItemDidChange, object: musicPlayer)
+        NotificationCenter.default().addObserver(self, selector: #selector(ViewController.updatePlaybackState), name: NSNotification.Name.MPMusicPlayerControllerPlaybackStateDidChange, object: musicPlayer)
         musicPlayer.beginGeneratingPlaybackNotifications()
     }
     
-    override func traitCollectionDidChange(previousTraitCollection: UITraitCollection?) {
+    override func traitCollectionDidChange(_ previousTraitCollection: UITraitCollection?) {
         super.traitCollectionDidChange(previousTraitCollection)
         self.updateViewConstraints()
     }
@@ -186,19 +186,19 @@ class ViewController: UIViewController {
     }
     
     override func updateViewConstraints() {
-        if self.view.traitCollection.verticalSizeClass == .Regular {
-            horizontalConstraints.forEach   { $0.active = false }
-            verticalConstraints.forEach     { $0.active = true }
+        if self.view.traitCollection.verticalSizeClass == .regular {
+            horizontalConstraints.forEach   { $0.isActive = false }
+            verticalConstraints.forEach     { $0.isActive = true }
         } else {
-            verticalConstraints.forEach     { $0.active = false }
-            horizontalConstraints.forEach   { $0.active = true }
+            verticalConstraints.forEach     { $0.isActive = false }
+            horizontalConstraints.forEach   { $0.isActive = true }
         }
         super.updateViewConstraints()
     }
     
-    func tapGestureRecognizerFired(gestureRecognizer: UITapGestureRecognizer) {
+    func tapGestureRecognizerFired(_ gestureRecognizer: UITapGestureRecognizer) {
         
-        let locationInView = gestureRecognizer.locationInView(self.view)
+        let locationInView = gestureRecognizer.location(in: self.view)
         
         guard !musPickerButton.frame.contains(locationInView) else {
             self.presentMusicPicker() // tapped on music picker button, present that instead
@@ -210,20 +210,20 @@ class ViewController: UIViewController {
             self.musicQueueViewController.view.alpha = 0.0
             self.imageView.addSubview(self.musicQueueViewController.view)
             self.musicQueueViewController.view.frame = self.imageView.bounds
-            UIView.animateWithDuration(0.5, animations: {
+            UIView.animate(withDuration: 0.5, animations: {
                 self.musicQueueViewController.view.alpha = 1.0
-                self.imageView.willMoveToSuperview(self.vibrancyEffectView)
+                self.imageView.willMove(toSuperview: self.vibrancyEffectView)
             }) { _ in
-                self.musicQueueViewController.didMoveToParentViewController(self)
+                self.musicQueueViewController.didMove(toParentViewController: self)
             }
         } else  { // hide albumList view
-            UIView.animateWithDuration(0.5, animations: {
+            UIView.animate(withDuration: 0.5, animations: {
                 self.musicQueueViewController.view.alpha = 0.0
-                self.imageView.willMoveToSuperview(self.view)
+                self.imageView.willMove(toSuperview: self.view)
             }) { bool in
                 self.musicQueueViewController.removeFromParentViewController()
                 self.musicQueueViewController.view.removeFromSuperview()
-                self.musicQueueViewController.didMoveToParentViewController(nil)
+                self.musicQueueViewController.didMove(toParentViewController: nil)
             }
         }
 
@@ -234,19 +234,19 @@ class ViewController: UIViewController {
         
         self.updatePlaybackState()
         self.musicQueueViewController.currentTrack = songItem
-        self.songTitleLabel.text = songItem.valueForProperty(MPMediaItemPropertyTitle) as? String
-        let albumTitle = songItem.valueForProperty(MPMediaItemPropertyAlbumTitle) as! String
-        let artistTitle = songItem.valueForProperty(MPMediaItemPropertyArtist) as! String
+        self.songTitleLabel.text = songItem.value(forProperty: MPMediaItemPropertyTitle) as? String
+        let albumTitle = songItem.value(forProperty: MPMediaItemPropertyAlbumTitle) as! String
+        let artistTitle = songItem.value(forProperty: MPMediaItemPropertyArtist) as! String
         self.albumTitleLabel.text = "\(artistTitle) • \(albumTitle)"
 
-        if let artwork = songItem.valueForProperty(MPMediaItemPropertyArtwork) as? MPMediaItemArtwork, let image = artwork.imageWithSize(self.view.frame.size) {
+        if let artwork = songItem.value(forProperty: MPMediaItemPropertyArtwork) as? MPMediaItemArtwork, let image = artwork.image(at: self.view.frame.size) {
             let isDarkColor = image.averageColor.isDarkColor
-            let blurEffect = isDarkColor ? UIBlurEffect(style: .Light) : UIBlurEffect(style: .Dark)
-            UIView.animateWithDuration(0.8, delay: 0.0, options: .CurveEaseInOut, animations: {
+            let blurEffect = isDarkColor ? UIBlurEffect(style: .light) : UIBlurEffect(style: .dark)
+            UIView.animate(withDuration: 0.8, delay: 0.0, options: UIViewAnimationOptions(), animations: {
                 self.imageView.image = image
                 self.backgroundImageView.image = image
                 self.backgroundBlurView.effect = blurEffect
-                self.vibrancyEffectView.effect = UIVibrancyEffect(forBlurEffect: blurEffect)
+                self.vibrancyEffectView.effect = UIVibrancyEffect(blurEffect: blurEffect)
                 self.volumeSlider.tintColor = image.averageColor
                 }) { bool in
                     self.setNeedsStatusBarAppearanceUpdate()
@@ -257,8 +257,8 @@ class ViewController: UIViewController {
     func togglePlayOrPause() {
         guard let _ = musicPlayer.nowPlayingItem else { return }
         switch musicPlayer.playbackState {
-        case .Playing: musicPlayer.pause()
-        case .Paused:  musicPlayer.play()
+        case .playing: musicPlayer.pause()
+        case .paused:  musicPlayer.play()
         default:       break
         }
         self.updatePlaybackState()
@@ -266,8 +266,8 @@ class ViewController: UIViewController {
     
     func updatePlaybackState() {
         switch musicPlayer.playbackState {
-        case .Playing: playPauseButton.setImage(UIImage.Asset.Pause.image, forState: .Normal)
-        case .Paused:  playPauseButton.setImage(UIImage.Asset.Play.image,  forState: .Normal)
+        case .playing: playPauseButton.setImage(UIImage.Asset.Pause.image, for: UIControlState())
+        case .paused:  playPauseButton.setImage(UIImage.Asset.Play.image,  for: UIControlState())
         default:       break
         }
     }
@@ -287,26 +287,26 @@ class ViewController: UIViewController {
     }
     
     func presentMusicPicker() {
-        let musicPickerViewController = MPMediaPickerController(mediaTypes: .Music)
+        let musicPickerViewController = MPMediaPickerController(mediaTypes: .music)
         musicPickerViewController.delegate = self
         musicPickerViewController.allowsPickingMultipleItems = true
-        self.presentViewController(musicPickerViewController, animated: true, completion: nil)
+        self.present(musicPickerViewController, animated: true, completion: nil)
     }
 
 }
 
 extension ViewController: MPMediaPickerControllerDelegate {
     
-    func mediaPicker(mediaPicker: MPMediaPickerController, didPickMediaItems mediaItemCollection: MPMediaItemCollection) {
-        self.musicPlayer.setQueueWithItemCollection(mediaItemCollection)
-        mediaPicker.dismissViewControllerAnimated(true) {
+    func mediaPicker(_ mediaPicker: MPMediaPickerController, didPickMediaItems mediaItemCollection: MPMediaItemCollection) {
+        self.musicPlayer.setQueue(with: mediaItemCollection)
+        mediaPicker.dismiss(animated: true) {
             self.musicPlayer.play()
             self.updateCurrentTrack()
         }
     }
     
-    func mediaPickerDidCancel(mediaPicker: MPMediaPickerController) {
-        mediaPicker.dismissViewControllerAnimated(true, completion: nil)
+    func mediaPickerDidCancel(_ mediaPicker: MPMediaPickerController) {
+        mediaPicker.dismiss(animated: true, completion: nil)
     }
     
 }

@@ -27,7 +27,7 @@ extension UIImage {
 extension UIImage.Asset {
     
     var image: UIImage {
-        return UIImage(asset: self).imageWithRenderingMode(.AlwaysTemplate)
+        return UIImage(asset: self).withRenderingMode(.alwaysTemplate)
     }
     
 }

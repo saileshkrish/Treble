@@ -24,42 +24,42 @@ class MusicQueueViewController: UITableViewController {
     
     override func loadView() {
         super.loadView()
-        self.tableView.backgroundColor = .clearColor()
+        self.tableView.backgroundColor = .clear()
         self.tableView.tableFooterView = UIView()
-        let blurView = UIVisualEffectView(effect: UIBlurEffect(style: .Dark))
+        let blurView = UIVisualEffectView(effect: UIBlurEffect(style: .dark))
         self.tableView.backgroundView = blurView
-        self.tableView.separatorEffect = UIVibrancyEffect(forBlurEffect: UIBlurEffect(style: .Dark))
+        self.tableView.separatorEffect = UIVibrancyEffect(blurEffect: UIBlurEffect(style: .dark))
     }
     
     override func viewDidLoad() {
         super.viewDidLoad()
-        self.tableView.registerClass(MusicQueueItemCell.self, forCellReuseIdentifier: reuseIdentifier)
+        self.tableView.register(MusicQueueItemCell.self, forCellReuseIdentifier: reuseIdentifier)
     }
     
-    override func numberOfSectionsInTableView(tableView: UITableView) -> Int {
+    override func numberOfSections(in tableView: UITableView) -> Int {
         return 1
     }
     
-    override func tableView(tableView: UITableView, didSelectRowAtIndexPath indexPath: NSIndexPath) {
-        tableView.deselectRowAtIndexPath(indexPath, animated: true)
-        guard indexPath.row != musicPlayer.indexOfNowPlayingItem else { return }
-        let newItem = trackList[indexPath.row]
+    override func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
+        tableView.deselectRow(at: indexPath, animated: true)
+        guard (indexPath as NSIndexPath).row != musicPlayer.indexOfNowPlayingItem else { return }
+        let newItem = trackList[(indexPath as NSIndexPath).row]
         musicPlayer.nowPlayingItem = newItem
     }
     
-    override func tableView(tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
+    override func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
         return musicPlayer.count
     }
     
-    override func tableView(tableView: UITableView, cellForRowAtIndexPath indexPath: NSIndexPath) -> UITableViewCell {
-        let cell = tableView.dequeueReusableCellWithIdentifier(reuseIdentifier, forIndexPath: indexPath) as! MusicQueueItemCell
-        if var title = trackList[indexPath.row].valueForProperty(MPMediaItemPropertyTitle) as? String,
-            let currentTitle = musicPlayer.nowPlayingItem?.valueForKey(MPMediaItemPropertyTitle) as? String {
-            if title == currentTitle { title.insert("▶️", atIndex: title.startIndex) }
+    override func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
+        let cell = tableView.dequeueReusableCell(withIdentifier: reuseIdentifier, for: indexPath) as! MusicQueueItemCell
+        if var title = trackList[(indexPath as NSIndexPath).row].value(forProperty: MPMediaItemPropertyTitle) as? String,
+            let currentTitle = musicPlayer.nowPlayingItem?.value(forKey: MPMediaItemPropertyTitle) as? String {
+            if title == currentTitle { title.insert("▶️", at: title.startIndex) }
             cell.textLabel!.text = title
         }
         
-        if let duration = trackList[indexPath.row].valueForProperty(MPMediaItemPropertyPlaybackDuration) as? Double {
+        if let duration = trackList[(indexPath as NSIndexPath).row].value(forProperty: MPMediaItemPropertyPlaybackDuration) as? Double {
             cell.detailTextLabel!.text = duration.stringRepresentation
         }
         return cell
@@ -67,7 +67,7 @@ class MusicQueueViewController: UITableViewController {
 
 }
 
-private extension NSTimeInterval {
+private extension TimeInterval {
     
     var stringRepresentation: String {
         let interval = Int(self)

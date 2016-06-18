@@ -11,30 +11,32 @@ import UIKit
 extension UIView {
     
     func constrain(to view: UIView) {
-        self.constrain(.Leading, .Equal, to: view, .Leading)
-        self.constrain(.Trailing, .Equal, to: view, .Trailing)
-        self.constrain(.Top, .Equal, to: view, .Top)
-        self.constrain(.Bottom, .Equal, to: view, .Bottom)
+        self.constrain(.leading, .equal, to: view, .leading)
+        self.constrain(.trailing, .equal, to: view, .trailing)
+        self.constrain(.top, .equal, to: view, .top)
+        self.constrain(.bottom, .equal, to: view, .bottom)
     }
     
     func constrainSize(to value: CGFloat) {
-        self.constrain(.Width, .Equal, to: value)
-        self.constrain(.Height, .Equal, to: value)
+        self.constrain(.width, .equal, to: value)
+        self.constrain(.height, .equal, to: value)
     }
     
-    func constrain(attribute: NSLayoutAttribute, _ relation: NSLayoutRelation, to otherView: UIView, _ otherAttribute: NSLayoutAttribute, times multiplier: CGFloat = 1, plus constant: CGFloat = 0, atPriority priority: UILayoutPriority = UILayoutPriorityRequired, identifier: String? = nil, active: Bool = true) -> NSLayoutConstraint {
+    @discardableResult
+    func constrain(_ attribute: NSLayoutAttribute, _ relation: NSLayoutRelation, to otherView: UIView, _ otherAttribute: NSLayoutAttribute, times multiplier: CGFloat = 1, plus constant: CGFloat = 0, atPriority priority: UILayoutPriority = UILayoutPriorityRequired, identifier: String? = nil, active: Bool = true) -> NSLayoutConstraint {
         let constraint = NSLayoutConstraint(item: self, attribute: attribute, relatedBy: relation, toItem: otherView, attribute: otherAttribute, multiplier: multiplier, constant: constant)
         constraint.priority = priority
         constraint.identifier = identifier
-        constraint.active = active
+        constraint.isActive = active
         return constraint
     }
     
-    func constrain(attribute: NSLayoutAttribute, _ relation: NSLayoutRelation, to constant: CGFloat, atPriority priority: UILayoutPriority = UILayoutPriorityRequired, identifier: String? = nil) -> NSLayoutConstraint {
-        let constraint = NSLayoutConstraint(item: self, attribute: attribute, relatedBy: relation, toItem: nil, attribute: .NotAnAttribute, multiplier: 0, constant: constant)
+    @discardableResult
+    func constrain(_ attribute: NSLayoutAttribute, _ relation: NSLayoutRelation, to constant: CGFloat, atPriority priority: UILayoutPriority = UILayoutPriorityRequired, identifier: String? = nil) -> NSLayoutConstraint {
+        let constraint = NSLayoutConstraint(item: self, attribute: attribute, relatedBy: relation, toItem: nil, attribute: .notAnAttribute, multiplier: 0, constant: constant)
         constraint.priority = priority
         constraint.identifier = identifier
-        constraint.active = true
+        constraint.isActive = true
         return constraint
     }
     
