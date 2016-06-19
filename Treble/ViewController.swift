@@ -108,11 +108,11 @@ class ViewController: UIViewController {
         nextTrackButton.constrainSize(to: buttonSize)
         
         
-        musPickerButton.constrain(.top, .equal, to: playPauseButton, .bottom)
-        musPickerButton.constrain(.left, .equal, to: imageView, .left)
+        musPickerButton.constrain(.bottom, .equal, to: volumeSlider, .top, plus: -10)
+        musPickerButton.constrain(.left, .equal, to: volumeSlider, .left)
         
         musQueueButton.constrain(.top, .equal, to: musPickerButton, .top)
-        musQueueButton.constrain(.right, .equal, to: imageView, .right)
+        musQueueButton.constrain(.right, .equal, to: volumeSlider, .right)
         
         albumTitleLabel.constrain(.leading,  .equal, to: songTitleLabel, .leading)
         albumTitleLabel.constrain(.trailing, .equal, to: songTitleLabel, .trailing)
