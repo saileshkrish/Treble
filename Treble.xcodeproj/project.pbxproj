@@ -10,6 +10,7 @@
 		A129346D1C657282008664BA /* TrackItemCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = A129346C1C657282008664BA /* TrackItemCell.swift */; };
 		A12934761C65BD9A008664BA /* ColourArt.swift in Sources */ = {isa = PBXBuildFile; fileRef = A12934751C65BD9A008664BA /* ColourArt.swift */; };
 		A1430F681D161594006FC070 /* TrackListPresentationController.swift in Sources */ = {isa = PBXBuildFile; fileRef = A1430F671D161594006FC070 /* TrackListPresentationController.swift */; };
+		A15A86F01D1697C300A863E5 /* UIFont++.swift in Sources */ = {isa = PBXBuildFile; fileRef = A15A86EF1D1697C300A863E5 /* UIFont++.swift */; };
 		A1A1A15A1C651F41004EE091 /* TrackListViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = A1A1A1591C651F41004EE091 /* TrackListViewController.swift */; };
 		A1A57FAA1C670396003D59E0 /* UIView.Constraints.swift in Sources */ = {isa = PBXBuildFile; fileRef = A1A57FA91C670396003D59E0 /* UIView.Constraints.swift */; };
 		A1D183F11C645F780017DDE0 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = A1D183F01C645F780017DDE0 /* AppDelegate.swift */; };
@@ -23,6 +24,7 @@
 		A129346C1C657282008664BA /* TrackItemCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = TrackItemCell.swift; sourceTree = "<group>"; };
 		A12934751C65BD9A008664BA /* ColourArt.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ColourArt.swift; sourceTree = "<group>"; };
 		A1430F671D161594006FC070 /* TrackListPresentationController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = TrackListPresentationController.swift; sourceTree = "<group>"; };
+		A15A86EF1D1697C300A863E5 /* UIFont++.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "UIFont++.swift"; sourceTree = "<group>"; };
 		A1A1A1591C651F41004EE091 /* TrackListViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = TrackListViewController.swift; sourceTree = "<group>"; };
 		A1A57FA91C670396003D59E0 /* UIView.Constraints.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = UIView.Constraints.swift; sourceTree = "<group>"; };
 		A1D183ED1C645F780017DDE0 /* Treble.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Treble.app; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -50,6 +52,7 @@
 		A12934731C6592F3008664BA /* Extensions */ = {
 			isa = PBXGroup;
 			children = (
+				A15A86EF1D1697C300A863E5 /* UIFont++.swift */,
 				A1A57FA91C670396003D59E0 /* UIView.Constraints.swift */,
 			);
 			name = Extensions;
@@ -188,6 +191,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				A15A86F01D1697C300A863E5 /* UIFont++.swift in Sources */,
 				A1D183F31C645F780017DDE0 /* ViewController.swift in Sources */,
 				A1430F681D161594006FC070 /* TrackListPresentationController.swift in Sources */,
 				A12934761C65BD9A008664BA /* ColourArt.swift in Sources */,
