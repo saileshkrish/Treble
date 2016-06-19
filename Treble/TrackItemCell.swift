@@ -1,5 +1,5 @@
 //
-//  MusicQueueItemCell.swift
+//  TrackItemCell.swift
 //  Treble
 //
 //  Created by Andy Liang on 2016-02-05.
@@ -8,7 +8,7 @@
 
 import UIKit
 
-class MusicQueueItemCell: UITableViewCell {
+class TrackItemCell: UITableViewCell {
     
     override init(style: UITableViewCellStyle, reuseIdentifier: String?) {
         super.init(style: .value1, reuseIdentifier: reuseIdentifier)

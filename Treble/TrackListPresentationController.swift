@@ -1,5 +1,5 @@
 //
-//  MusicQueuePresentationController.swift
+//  TrackListPresentationController.swift
 //  Treble
 //
 //  Created by Andy Liang on 2016-06-18.
@@ -8,14 +8,14 @@
 
 import UIKit
 
-class MusicQueuePresentationController: UIPresentationController {
+class TrackListPresentationController: UIPresentationController {
     
     private let dimmingView = UIView()
     
     override init(presentedViewController: UIViewController, presenting presentingViewController: UIViewController?) {
         super.init(presentedViewController: presentedViewController, presenting: presentingViewController)
         dimmingView.frame = presentedViewController.view.bounds
-        let tapGesture = UITapGestureRecognizer(target: self, action: #selector(MusicQueuePresentationController.dimmingViewTapped(_:)))
+        let tapGesture = UITapGestureRecognizer(target: self, action: #selector(TrackListPresentationController.dimmingViewTapped(_:)))
         dimmingView.addGestureRecognizer(tapGesture)
     }
     

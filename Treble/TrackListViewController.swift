@@ -1,5 +1,5 @@
 //
-//  MusicQueueViewController.swift
+//  TrackListViewController.swift
 //  Treble
 //
 //  Created by Andy Liang on 2016-02-05.
@@ -10,7 +10,7 @@ import UIKit
 import MediaPlayer
 
 private let reuseIdentifier = "reuseIdentifier"
-class MusicQueueViewController: UITableViewController {
+class TrackListViewController: UITableViewController {
     
     private let musicPlayer = MPMusicPlayerController.systemMusicPlayer()
     private var trackList: [MPMediaItem] = []
@@ -40,7 +40,7 @@ class MusicQueueViewController: UITableViewController {
     
     override func viewDidLoad() {
         super.viewDidLoad()
-        tableView.register(MusicQueueItemCell.self, forCellReuseIdentifier: reuseIdentifier)
+        tableView.register(TrackItemCell.self, forCellReuseIdentifier: reuseIdentifier)
     }
     
     override func viewWillTransition(to size: CGSize, with coordinator: UIViewControllerTransitionCoordinator) {
@@ -90,10 +90,10 @@ class MusicQueueViewController: UITableViewController {
 
 }
 
-extension MusicQueueViewController: UIViewControllerTransitioningDelegate {
+extension TrackListViewController: UIViewControllerTransitioningDelegate {
     
     func presentationController(forPresentedViewController presented: UIViewController, presenting: UIViewController?, sourceViewController source: UIViewController) -> UIPresentationController? {
-        return MusicQueuePresentationController(presentedViewController: presented, presenting: presenting)
+        return TrackListPresentationController(presentedViewController: presented, presenting: presenting)
     }
 }
 

@@ -7,10 +7,10 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
-		A129346D1C657282008664BA /* MusicQueueItemCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = A129346C1C657282008664BA /* MusicQueueItemCell.swift */; };
+		A129346D1C657282008664BA /* TrackItemCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = A129346C1C657282008664BA /* TrackItemCell.swift */; };
 		A12934761C65BD9A008664BA /* ColourArt.swift in Sources */ = {isa = PBXBuildFile; fileRef = A12934751C65BD9A008664BA /* ColourArt.swift */; };
-		A1430F681D161594006FC070 /* MusicQueuePresentationController.swift in Sources */ = {isa = PBXBuildFile; fileRef = A1430F671D161594006FC070 /* MusicQueuePresentationController.swift */; };
-		A1A1A15A1C651F41004EE091 /* MusicQueueViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = A1A1A1591C651F41004EE091 /* MusicQueueViewController.swift */; };
+		A1430F681D161594006FC070 /* TrackListPresentationController.swift in Sources */ = {isa = PBXBuildFile; fileRef = A1430F671D161594006FC070 /* TrackListPresentationController.swift */; };
+		A1A1A15A1C651F41004EE091 /* TrackListViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = A1A1A1591C651F41004EE091 /* TrackListViewController.swift */; };
 		A1A57FAA1C670396003D59E0 /* UIView.Constraints.swift in Sources */ = {isa = PBXBuildFile; fileRef = A1A57FA91C670396003D59E0 /* UIView.Constraints.swift */; };
 		A1D183F11C645F780017DDE0 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = A1D183F01C645F780017DDE0 /* AppDelegate.swift */; };
 		A1D183F31C645F780017DDE0 /* ViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = A1D183F21C645F780017DDE0 /* ViewController.swift */; };
@@ -20,10 +20,10 @@
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
-		A129346C1C657282008664BA /* MusicQueueItemCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MusicQueueItemCell.swift; sourceTree = "<group>"; };
+		A129346C1C657282008664BA /* TrackItemCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = TrackItemCell.swift; sourceTree = "<group>"; };
 		A12934751C65BD9A008664BA /* ColourArt.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ColourArt.swift; sourceTree = "<group>"; };
-		A1430F671D161594006FC070 /* MusicQueuePresentationController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MusicQueuePresentationController.swift; sourceTree = "<group>"; };
-		A1A1A1591C651F41004EE091 /* MusicQueueViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MusicQueueViewController.swift; sourceTree = "<group>"; };
+		A1430F671D161594006FC070 /* TrackListPresentationController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = TrackListPresentationController.swift; sourceTree = "<group>"; };
+		A1A1A1591C651F41004EE091 /* TrackListViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = TrackListViewController.swift; sourceTree = "<group>"; };
 		A1A57FA91C670396003D59E0 /* UIView.Constraints.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = UIView.Constraints.swift; sourceTree = "<group>"; };
 		A1D183ED1C645F780017DDE0 /* Treble.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Treble.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		A1D183F01C645F780017DDE0 /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
@@ -74,16 +74,6 @@
 			name = ColourArt;
 			sourceTree = "<group>";
 		};
-		A169A2E11C65F904005BBBEB /* MusicQueue View */ = {
-			isa = PBXGroup;
-			children = (
-				A1A1A1591C651F41004EE091 /* MusicQueueViewController.swift */,
-				A129346C1C657282008664BA /* MusicQueueItemCell.swift */,
-				A1430F671D161594006FC070 /* MusicQueuePresentationController.swift */,
-			);
-			name = "MusicQueue View";
-			sourceTree = "<group>";
-		};
 		A1D183E41C645F780017DDE0 = {
 			isa = PBXGroup;
 			children = (
@@ -105,7 +95,9 @@
 			children = (
 				A1D183F01C645F780017DDE0 /* AppDelegate.swift */,
 				A1D183F21C645F780017DDE0 /* ViewController.swift */,
-				A169A2E11C65F904005BBBEB /* MusicQueue View */,
+				A1A1A1591C651F41004EE091 /* TrackListViewController.swift */,
+				A129346C1C657282008664BA /* TrackItemCell.swift */,
+				A1430F671D161594006FC070 /* TrackListPresentationController.swift */,
 				A12934771C65DF46008664BA /* ColourArt */,
 				A1D184061C6465480017DDE0 /* ImageEffects */,
 				A12934731C6592F3008664BA /* Extensions */,
@@ -197,13 +189,13 @@
 			buildActionMask = 2147483647;
 			files = (
 				A1D183F31C645F780017DDE0 /* ViewController.swift in Sources */,
-				A1430F681D161594006FC070 /* MusicQueuePresentationController.swift in Sources */,
+				A1430F681D161594006FC070 /* TrackListPresentationController.swift in Sources */,
 				A12934761C65BD9A008664BA /* ColourArt.swift in Sources */,
 				A1A57FAA1C670396003D59E0 /* UIView.Constraints.swift in Sources */,
-				A1A1A15A1C651F41004EE091 /* MusicQueueViewController.swift in Sources */,
+				A1A1A15A1C651F41004EE091 /* TrackListViewController.swift in Sources */,
 				A1D183F11C645F780017DDE0 /* AppDelegate.swift in Sources */,
 				A1D184051C6465440017DDE0 /* UIImageEffects.m in Sources */,
-				A129346D1C657282008664BA /* MusicQueueItemCell.swift in Sources */,
+				A129346D1C657282008664BA /* TrackItemCell.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

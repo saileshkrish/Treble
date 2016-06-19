@@ -35,7 +35,7 @@ class ViewController: UIViewController {
     private var verticalConstraints: [NSLayoutConstraint] = []
     private var horizontalConstraints: [NSLayoutConstraint] = []
     
-    private lazy var musicQueueViewController: MusicQueueViewController = MusicQueueViewController()
+    private lazy var trackListView: TrackListViewController = TrackListViewController()
     
     override func loadView() {
         super.loadView()
@@ -80,9 +80,9 @@ class ViewController: UIViewController {
         vibrancyEffectView.constrain(to: containerView)
         
         self.verticalConstraints = [
-            imageView.constrain(.height, .equal, to: containerView, .width, plus: -24.0, active: false),
-            imageView.constrain(.width,  .equal, to: containerView, .width, plus: -24.0, active: false),
-            imageView.constrain(.top, .equal, to: containerView, .top, plus: 24.0, active: false),
+            imageView.constrain(.height, .equal, to: containerView, .width, plus: -48, active: false),
+            imageView.constrain(.width,  .equal, to: containerView, .width, plus: -48, active: false),
+            imageView.constrain(.top, .equal, to: containerView, .top, plus: 36, active: false),
             imageView.constrain(.centerX, .equal, to: containerView, .centerX, active: false),
             songTitleLabel.constrain(.leading, .equal, to: imageView, .leading, active: false),
             songTitleLabel.constrain(.trailing, .equal, to: imageView, .trailing, active: false),
@@ -90,8 +90,8 @@ class ViewController: UIViewController {
         ]
         
         self.horizontalConstraints = [
-            imageView.constrain(.height, .equal, to: containerView, .height, plus: -24.0, active: false),
-            imageView.constrain(.width,  .equal, to: containerView, .height, plus: -24.0, active: false),
+            imageView.constrain(.height, .equal, to: containerView, .height, plus: -48, active: false),
+            imageView.constrain(.width,  .equal, to: containerView, .height, plus: -48, active: false),
             imageView.constrain(.leading, .equal, to: containerView, .leading, plus: 24.0, active: false),
             imageView.constrain(.centerY, .equal, to: containerView, .centerY, active: false),
             songTitleLabel.constrain(.leading, .equal, to: imageView, .trailing, plus: 24.0, active: false),
@@ -106,7 +106,6 @@ class ViewController: UIViewController {
         playPauseButton.constrainSize(to: buttonSize)
         prevTrackButton.constrainSize(to: buttonSize)
         nextTrackButton.constrainSize(to: buttonSize)
-        
         
         musPickerButton.constrain(.bottom, .equal, to: volumeSlider, .top, plus: -10)
         musPickerButton.constrain(.left, .equal, to: volumeSlider, .left)
@@ -155,9 +154,6 @@ class ViewController: UIViewController {
         albumTitleLabel.font = .systemFont(ofSize: 15.0, weight: UIFontWeightThin)
         albumTitleLabel.textAlignment = .center
         
-        musicQueueViewController.modalPresentationStyle = .custom
-        musicQueueViewController.transitioningDelegate = musicQueueViewController
-        
         self.updateCurrentTrack()
         
         NotificationCenter.default().addObserver(self, selector: #selector(ViewController.updateCurrentTrack), name: .MPMusicPlayerControllerNowPlayingItemDidChange, object: musicPlayer)
@@ -186,21 +182,23 @@ class ViewController: UIViewController {
     }
     
     func presentMusicQueueList() {
-        self.present(musicQueueViewController, animated: true, completion: nil)
+        trackListView.currentTrack = musicPlayer.nowPlayingItem
+        trackListView.modalPresentationStyle = .custom
+        trackListView.transitioningDelegate = trackListView
+        self.present(trackListView, animated: true, completion: nil)
     }
 
     func updateCurrentTrack() {
         guard let songItem = musicPlayer.nowPlayingItem else { return }
         
         self.updatePlaybackState()
-        self.musicQueueViewController.currentTrack = songItem
         self.songTitleLabel.text = songItem.title
         self.albumTitleLabel.text = "\(songItem.artist!) • \(songItem.albumTitle!)"
 
         guard let artwork = songItem.artwork, let image = artwork.image(at: self.view.frame.size) else { return }
         let isDarkColor = image.averageColor.isDarkColor
         let blurEffect = isDarkColor ? UIBlurEffect(style: .light) : UIBlurEffect(style: .dark)
-        UIView.animate(withDuration: 0.8, animations: {
+        UIView.animate(withDuration: 0.5, animations: {
             self.imageView.image = image
             self.backgroundImageView.image = image
             self.backgroundBlurView.effect = blurEffect
