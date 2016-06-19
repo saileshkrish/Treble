@@ -43,14 +43,9 @@ class TrackListViewController: UITableViewController {
         tableView.register(TrackItemCell.self, forCellReuseIdentifier: reuseIdentifier)
     }
     
-    override func viewWillTransition(to size: CGSize, with coordinator: UIViewControllerTransitionCoordinator) {
-        self.preferredContentSize = CGSize(width: self.traitCollection.userInterfaceIdiom == .pad ? 320 : self.tableView.frame.width,
-                                           height: min(self.tableView.contentSize.height, size.height*0.8))
-    }
-    
     func updatePreferredContentSize() {
         let height = UIDevice.current().orientation == .portrait ? UIScreen.main().bounds.height*0.8 : UIScreen.main().bounds.width*0.8
-        self.preferredContentSize = CGSize(width: self.traitCollection.userInterfaceIdiom == .pad ? 320 : self.tableView.frame.width,
+        self.preferredContentSize = CGSize(width: UIDevice.current().userInterfaceIdiom == .pad ? 320 : self.tableView.frame.width,
                                            height: min(self.tableView.contentSize.height, height))
     }
     

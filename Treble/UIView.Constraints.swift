@@ -32,11 +32,11 @@ extension UIView {
     }
     
     @discardableResult
-    func constrain(_ attribute: NSLayoutAttribute, _ relation: NSLayoutRelation, to constant: CGFloat, atPriority priority: UILayoutPriority = UILayoutPriorityRequired, identifier: String? = nil) -> NSLayoutConstraint {
+    func constrain(_ attribute: NSLayoutAttribute, _ relation: NSLayoutRelation, to constant: CGFloat, atPriority priority: UILayoutPriority = UILayoutPriorityRequired, identifier: String? = nil, active: Bool = true) -> NSLayoutConstraint {
         let constraint = NSLayoutConstraint(item: self, attribute: attribute, relatedBy: relation, toItem: nil, attribute: .notAnAttribute, multiplier: 0, constant: constant)
         constraint.priority = priority
         constraint.identifier = identifier
-        constraint.isActive = true
+        constraint.isActive = active
         return constraint
     }
     
