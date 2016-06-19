@@ -24,16 +24,25 @@ class MusicQueueViewController: UITableViewController {
     
     override func loadView() {
         super.loadView()
+        self.tableView.rowHeight = 64.0
         self.tableView.backgroundColor = .clear()
         self.tableView.tableFooterView = UIView()
-        let blurView = UIVisualEffectView(effect: UIBlurEffect(style: .dark))
-        self.tableView.backgroundView = blurView
+        self.tableView.backgroundView = UIVisualEffectView(effect: UIBlurEffect(style: .dark))
         self.tableView.separatorEffect = UIVibrancyEffect(blurEffect: UIBlurEffect(style: .dark))
     }
     
     override func viewDidLoad() {
         super.viewDidLoad()
         self.tableView.register(MusicQueueItemCell.self, forCellReuseIdentifier: reuseIdentifier)
+        self.updatePreferredContentSize()
+    }
+    
+    override func viewWillTransition(to size: CGSize, with coordinator: UIViewControllerTransitionCoordinator) {
+        self.updatePreferredContentSize()
+    }
+    
+    func updatePreferredContentSize() {
+         self.preferredContentSize = CGSize(width: self.traitCollection.userInterfaceIdiom == .pad ? 320 : self.tableView.contentSize.width, height: min(self.tableView.contentSize.height, self.tableView.frame.height-100))
     }
     
     override func numberOfSections(in tableView: UITableView) -> Int {
@@ -62,12 +71,16 @@ class MusicQueueViewController: UITableViewController {
             cell.textLabel!.text = title
         }
         
-        if let duration = trackList[indexPath.row].value(forProperty: MPMediaItemPropertyPlaybackDuration) as? Double {
-            cell.detailTextLabel!.text = duration.stringRepresentation
-        }
         return cell
     }
 
+}
+
+extension MusicQueueViewController: UIViewControllerTransitioningDelegate {
+    
+    func presentationController(forPresentedViewController presented: UIViewController, presenting: UIViewController?, sourceViewController source: UIViewController) -> UIPresentationController? {
+        return MusicQueuePresentationController(presentedViewController: presented, presenting: presenting)
+    }
 }
 
 private extension TimeInterval {
