@@ -44,11 +44,14 @@ class MusicQueueViewController: UITableViewController {
     }
     
     override func viewWillTransition(to size: CGSize, with coordinator: UIViewControllerTransitionCoordinator) {
-        self.updatePreferredContentSize()
+        self.preferredContentSize = CGSize(width: self.traitCollection.userInterfaceIdiom == .pad ? 320 : self.tableView.frame.width,
+                                           height: min(self.tableView.contentSize.height, size.height*0.8))
     }
     
     func updatePreferredContentSize() {
-        self.preferredContentSize = CGSize(width: self.traitCollection.userInterfaceIdiom == .pad ? 320 : self.tableView.contentSize.width, height: min(self.tableView.contentSize.height, UIScreen.main().bounds.height-100))
+        let height = UIDevice.current().orientation == .portrait ? UIScreen.main().bounds.height*0.8 : UIScreen.main().bounds.width*0.8
+        self.preferredContentSize = CGSize(width: self.traitCollection.userInterfaceIdiom == .pad ? 320 : self.tableView.frame.width,
+                                           height: min(self.tableView.contentSize.height, height))
     }
     
     override func numberOfSections(in tableView: UITableView) -> Int {
@@ -63,8 +66,10 @@ class MusicQueueViewController: UITableViewController {
     override func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
         tableView.deselectRow(at: indexPath, animated: true)
         guard indexPath.row != self.indexOfNowPlayingItem else { return }
-        let newItem = trackList[indexPath.row]
-        musicPlayer.nowPlayingItem = newItem
+        let selectedTrack = trackList[indexPath.row]
+        musicPlayer.setQueue(with: MPMediaItemCollection(items: trackList))
+        self.musicPlayer.nowPlayingItem = selectedTrack
+        self.dismiss(animated: true, completion: self.musicPlayer.play)
     }
     
     override func tableView(_ tableView: UITableView, titleForHeaderInSection section: Int) -> String? {
