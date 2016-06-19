@@ -36,6 +36,7 @@ class TrackListViewController: UITableViewController {
         tableView.tableFooterView = UIView()
         tableView.backgroundView = UIVisualEffectView(effect: UIBlurEffect(style: .dark))
         tableView.separatorEffect = UIVibrancyEffect(blurEffect: UIBlurEffect(style: .dark))
+        tableView.separatorInset.left = 32
     }
     
     override func viewDidLoad() {
@@ -76,10 +77,9 @@ class TrackListViewController: UITableViewController {
     }
     
     override func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
-        let cell = tableView.dequeueReusableCell(withIdentifier: reuseIdentifier, for: indexPath)
-        cell.textLabel!.text = indexPath.row == indexOfNowPlayingItem
-            ? "▶︎ \(trackList[indexPath.row].title!)"
-            : trackList[indexPath.row].title!
+        let cell = tableView.dequeueReusableCell(withIdentifier: reuseIdentifier, for: indexPath) as! TrackItemCell
+        cell.textLabel!.text = trackList[indexPath.row].title!
+        cell.indexString = indexPath.row == indexOfNowPlayingItem ? "▶︎" : "\(indexPath.row+1)"
         return cell
     }
 

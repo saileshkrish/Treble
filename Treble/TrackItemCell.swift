@@ -10,6 +10,16 @@ import UIKit
 
 class TrackItemCell: UITableViewCell {
     
+    var indexString: String = "" {
+        didSet {
+            self.indexLabel.text = indexString
+            self.indexLabel.textColor = Int(indexString) == nil ? .white() : UIColor(white: 1.0, alpha: 0.50)
+            self.textLabel!.textColor = Int(indexString) == nil ? .white() : UIColor(white: 1.0, alpha: 0.75)
+        }
+    }
+    
+    let indexLabel: UILabel = UILabel()
+    
     override init(style: UITableViewCellStyle, reuseIdentifier: String?) {
         super.init(style: .value1, reuseIdentifier: reuseIdentifier)
         self.commonInit()
@@ -21,12 +31,20 @@ class TrackItemCell: UITableViewCell {
     }
     
     private func commonInit() {
-        self.backgroundColor = .clear()
-        self.textLabel!.textColor = UIColor(white: 1.0, alpha: 0.75)
-        self.textLabel!.font = .preferredFont(forTextStyle: UIFontTextStyleTitle3)
+        backgroundColor = .clear()
+        selectedBackgroundView = UIView()
+        selectedBackgroundView!.backgroundColor = UIColor(white: 1.0, alpha: 0.1)
         
-        self.selectedBackgroundView = UIView()
-        self.selectedBackgroundView!.backgroundColor = UIColor(white: 1.0, alpha: 0.1)
+        textLabel!.textColor = UIColor(white: 1.0, alpha: 0.75)
+        textLabel!.font = .preferredFont(forTextStyle: UIFontTextStyleBody)
+        
+        contentView.addSubview(indexLabel)
+        indexLabel.textColor = UIColor(white: 1.0, alpha: 0.5)
+        indexLabel.font = .preferredFont(forTextStyle: UIFontTextStyleTitle3)
+        indexLabel.translatesAutoresizingMaskIntoConstraints = false
+        indexLabel.textAlignment = .right
+        indexLabel.constrain(.leading, .equal, to: contentView, .leading, plus: 8)
+        indexLabel.constrain(.height, .equal, to: contentView, .height)
     }
     
 }
