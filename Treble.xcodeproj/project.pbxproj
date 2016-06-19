@@ -8,7 +8,6 @@
 
 /* Begin PBXBuildFile section */
 		A129346D1C657282008664BA /* MusicQueueItemCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = A129346C1C657282008664BA /* MusicQueueItemCell.swift */; };
-		A12934701C658FEC008664BA /* MPMusicPlayerController++.swift in Sources */ = {isa = PBXBuildFile; fileRef = A129346F1C658FEC008664BA /* MPMusicPlayerController++.swift */; };
 		A12934761C65BD9A008664BA /* ColourArt.swift in Sources */ = {isa = PBXBuildFile; fileRef = A12934751C65BD9A008664BA /* ColourArt.swift */; };
 		A1430F681D161594006FC070 /* MusicQueuePresentationController.swift in Sources */ = {isa = PBXBuildFile; fileRef = A1430F671D161594006FC070 /* MusicQueuePresentationController.swift */; };
 		A1A1A15A1C651F41004EE091 /* MusicQueueViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = A1A1A1591C651F41004EE091 /* MusicQueueViewController.swift */; };
@@ -22,8 +21,6 @@
 
 /* Begin PBXFileReference section */
 		A129346C1C657282008664BA /* MusicQueueItemCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MusicQueueItemCell.swift; sourceTree = "<group>"; };
-		A129346E1C658A97008664BA /* MediaPlayer++.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "MediaPlayer++.h"; sourceTree = "<group>"; };
-		A129346F1C658FEC008664BA /* MPMusicPlayerController++.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "MPMusicPlayerController++.swift"; sourceTree = "<group>"; };
 		A12934751C65BD9A008664BA /* ColourArt.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ColourArt.swift; sourceTree = "<group>"; };
 		A1430F671D161594006FC070 /* MusicQueuePresentationController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MusicQueuePresentationController.swift; sourceTree = "<group>"; };
 		A1A1A1591C651F41004EE091 /* MusicQueueViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MusicQueueViewController.swift; sourceTree = "<group>"; };
@@ -54,8 +51,6 @@
 			isa = PBXGroup;
 			children = (
 				A1A57FA91C670396003D59E0 /* UIView.Constraints.swift */,
-				A129346E1C658A97008664BA /* MediaPlayer++.h */,
-				A129346F1C658FEC008664BA /* MPMusicPlayerController++.swift */,
 			);
 			name = Extensions;
 			sourceTree = "<group>";
@@ -207,7 +202,6 @@
 				A1A57FAA1C670396003D59E0 /* UIView.Constraints.swift in Sources */,
 				A1A1A15A1C651F41004EE091 /* MusicQueueViewController.swift in Sources */,
 				A1D183F11C645F780017DDE0 /* AppDelegate.swift in Sources */,
-				A12934701C658FEC008664BA /* MPMusicPlayerController++.swift in Sources */,
 				A1D184051C6465440017DDE0 /* UIImageEffects.m in Sources */,
 				A129346D1C657282008664BA /* MusicQueueItemCell.swift in Sources */,
 			);

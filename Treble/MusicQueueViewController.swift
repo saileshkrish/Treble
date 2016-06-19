@@ -17,24 +17,30 @@ class MusicQueueViewController: UITableViewController {
     
     var currentTrack: MPMediaItem! {
         didSet {
-            self.trackList = musicPlayer.query.items ?? []
-            self.tableView.reloadData()
+            defer {
+                self.tableView.reloadData()
+                self.updatePreferredContentSize()
+            }
+            
+            self.trackList = []
+            guard let album = currentTrack.albumTitle else { return }
+            let predicate = MPMediaPropertyPredicate(value: album, forProperty: MPMediaItemPropertyAlbumTitle)
+            self.trackList = MPMediaQuery(filterPredicates: [predicate]).items!
         }
     }
     
     override func loadView() {
         super.loadView()
-        self.tableView.rowHeight = 64.0
-        self.tableView.backgroundColor = .clear()
-        self.tableView.tableFooterView = UIView()
-        self.tableView.backgroundView = UIVisualEffectView(effect: UIBlurEffect(style: .dark))
-        self.tableView.separatorEffect = UIVibrancyEffect(blurEffect: UIBlurEffect(style: .dark))
+        tableView.rowHeight = 48
+        tableView.backgroundColor = .clear()
+        tableView.tableFooterView = UIView()
+        tableView.backgroundView = UIVisualEffectView(effect: UIBlurEffect(style: .dark))
+        tableView.separatorEffect = UIVibrancyEffect(blurEffect: UIBlurEffect(style: .dark))
     }
     
     override func viewDidLoad() {
         super.viewDidLoad()
-        self.tableView.register(MusicQueueItemCell.self, forCellReuseIdentifier: reuseIdentifier)
-        self.updatePreferredContentSize()
+        tableView.register(MusicQueueItemCell.self, forCellReuseIdentifier: reuseIdentifier)
     }
     
     override func viewWillTransition(to size: CGSize, with coordinator: UIViewControllerTransitionCoordinator) {
@@ -42,35 +48,38 @@ class MusicQueueViewController: UITableViewController {
     }
     
     func updatePreferredContentSize() {
-         self.preferredContentSize = CGSize(width: self.traitCollection.userInterfaceIdiom == .pad ? 320 : self.tableView.contentSize.width, height: min(self.tableView.contentSize.height, self.tableView.frame.height-100))
+        self.preferredContentSize = CGSize(width: self.traitCollection.userInterfaceIdiom == .pad ? 320 : self.tableView.contentSize.width, height: min(self.tableView.contentSize.height, UIScreen.main().bounds.height-100))
     }
     
     override func numberOfSections(in tableView: UITableView) -> Int {
         return 1
     }
     
+    var indexOfNowPlayingItem: Int {
+        guard let title = musicPlayer.nowPlayingItem?.title else { return -1 }
+        return self.trackList.map { $0.title! }.index(of: title) ?? -1
+    }
+    
     override func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
         tableView.deselectRow(at: indexPath, animated: true)
-        guard indexPath.row != musicPlayer.indexOfNowPlayingItem else { return }
+        guard indexPath.row != self.indexOfNowPlayingItem else { return }
         let newItem = trackList[indexPath.row]
         musicPlayer.nowPlayingItem = newItem
     }
     
+    override func tableView(_ tableView: UITableView, titleForHeaderInSection section: Int) -> String? {
+        return currentTrack.albumTitle
+    }
+    
     override func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        return musicPlayer.count
+        return trackList.count
     }
     
     override func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
-        let cell = tableView.dequeueReusableCell(withIdentifier: reuseIdentifier, for: indexPath) as! MusicQueueItemCell
-        if var title = trackList[indexPath.row].value(forProperty: MPMediaItemPropertyTitle) as? String,
-            let currentTitle = musicPlayer.nowPlayingItem?.value(forKey: MPMediaItemPropertyTitle) as? String {
-            
-            if title == currentTitle {
-                title = "▶︎ \(title)"
-            }
-            cell.textLabel!.text = title
-        }
-        
+        let cell = tableView.dequeueReusableCell(withIdentifier: reuseIdentifier, for: indexPath)
+        cell.textLabel!.text = indexPath.row == indexOfNowPlayingItem
+            ? "▶︎ \(trackList[indexPath.row].title!)"
+            : trackList[indexPath.row].title!
         return cell
     }
 

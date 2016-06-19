@@ -22,11 +22,11 @@ class MusicQueueItemCell: UITableViewCell {
     
     private func commonInit() {
         self.backgroundColor = .clear()
-        self.textLabel!.textColor = UIColor(white: 1.0, alpha: 0.5)
-        self.textLabel!.font = UIFont.preferredFont(forTextStyle: UIFontTextStyleTitle3)
+        self.textLabel!.textColor = UIColor(white: 1.0, alpha: 0.75)
+        self.textLabel!.font = .preferredFont(forTextStyle: UIFontTextStyleTitle3)
         
         self.selectedBackgroundView = UIView()
-        self.selectedBackgroundView!.backgroundColor = UIColor(white: 1.0, alpha: 0.5)
+        self.selectedBackgroundView!.backgroundColor = UIColor(white: 1.0, alpha: 0.1)
     }
     
 }

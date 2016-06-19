@@ -35,7 +35,7 @@ class ViewController: UIViewController {
     private var verticalConstraints: [NSLayoutConstraint] = []
     private var horizontalConstraints: [NSLayoutConstraint] = []
     
-    private let musicQueueViewController = MusicQueueViewController()
+    private lazy var musicQueueViewController: MusicQueueViewController = MusicQueueViewController()
     
     override func loadView() {
         super.loadView()
