@@ -247,13 +247,14 @@ class ViewController: UIViewController {
     
     func presentMusicQueueList() {
         trackListView.currentTrack = musicPlayer.nowPlayingItem
-        trackListView.modalPresentationStyle = UIDevice.current().userInterfaceIdiom == .pad ? .popover : .custom
-        trackListView.popoverPresentationController?.backgroundColor = .clear()
-        trackListView.popoverPresentationController?.sourceView = trackListButton
-        trackListView.popoverPresentationController?.sourceRect = CGRect(x: 0, y: trackListButton.frame.height/2, width: 0, height: 0)
-        trackListView.popoverPresentationController?.permittedArrowDirections = .any
-        trackListView.transitioningDelegate = trackListView
-        self.present(trackListView, animated: true, completion: nil)
+        let viewController = UINavigationController(rootViewController: trackListView)
+        viewController.modalPresentationStyle = UIDevice.current().userInterfaceIdiom == .pad ? .popover : .custom
+        viewController.popoverPresentationController?.backgroundColor = .clear()
+        viewController.popoverPresentationController?.sourceView = trackListButton
+        viewController.popoverPresentationController?.sourceRect = CGRect(x: 0, y: trackListButton.frame.height/2, width: 0, height: 0)
+        viewController.popoverPresentationController?.permittedArrowDirections = .any
+        viewController.transitioningDelegate = trackListView
+        self.present(viewController, animated: true, completion: nil)
     }
     
     func presentMusicPicker() {
