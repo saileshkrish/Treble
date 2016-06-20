@@ -12,19 +12,19 @@ extension UIFont {
     
     enum TextStyle: String {
         
-        case Title1
-        case Title2
-        case Title3
-        case Headline
-        case Subheadline
-        case Body
-        case Callout
-        case Footnote
-        case Caption1
-        case Caption2
+        case title1
+        case title2
+        case title3
+        case headline
+        case subheadline
+        case body
+        case callout
+        case footnote
+        case caption1
+        case caption2
         
         var rawValue: String {
-            return "UICTFontTextStyle\(self)"
+            return "UICTFontTextStyle\("\(self)".capitalized)"
         }
 
     }

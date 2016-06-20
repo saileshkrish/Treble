@@ -154,10 +154,10 @@ class ViewController: UIViewController {
         trackListButton.setBackgroundImage(#imageLiteral(resourceName: "List"), for: UIControlState())
         trackListButton.addTarget(self, action: #selector(ViewController.presentMusicQueueList), for: .touchUpInside)
         
-        songTitleLabel.font = .preferredFont(for: .Title1)
+        songTitleLabel.font = .preferredFont(for: .title1)
         songTitleLabel.textAlignment = .center
         
-        albumTitleLabel.font = .preferredFont(for: .Body)
+        albumTitleLabel.font = .preferredFont(for: .body)
         albumTitleLabel.textAlignment = .center
         
         self.updateCurrentTrack()

@@ -36,11 +36,11 @@ class TrackItemCell: UITableViewCell {
         selectedBackgroundView!.backgroundColor = UIColor(white: 1.0, alpha: 0.1)
         
         textLabel!.textColor = UIColor(white: 1.0, alpha: 0.75)
-        textLabel!.font = .preferredFont(for: .Body)
+        textLabel!.font = .preferredFont(for: .body)
         
         contentView.addSubview(indexLabel)
         indexLabel.textColor = UIColor(white: 1.0, alpha: 0.5)
-        indexLabel.font = .preferredFont(for: .Title3)
+        indexLabel.font = .preferredFont(for: .title3)
         indexLabel.translatesAutoresizingMaskIntoConstraints = false
         indexLabel.textAlignment = .right
         indexLabel.constrain(.leading, .equal, to: contentView, .leading, plus: 8)
