@@ -17,7 +17,6 @@
 		A1D183F31C645F780017DDE0 /* ViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = A1D183F21C645F780017DDE0 /* ViewController.swift */; };
 		A1D183F81C645F780017DDE0 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = A1D183F71C645F780017DDE0 /* Assets.xcassets */; };
 		A1D183FB1C645F780017DDE0 /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = A1D183F91C645F780017DDE0 /* LaunchScreen.storyboard */; };
-		A1D184051C6465440017DDE0 /* UIImageEffects.m in Sources */ = {isa = PBXBuildFile; fileRef = A1D184041C6465440017DDE0 /* UIImageEffects.m */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -33,9 +32,6 @@
 		A1D183F71C645F780017DDE0 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		A1D183FA1C645F780017DDE0 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/LaunchScreen.storyboard; sourceTree = "<group>"; };
 		A1D183FC1C645F780017DDE0 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
-		A1D184021C6465440017DDE0 /* Treble-Bridging-Header.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "Treble-Bridging-Header.h"; sourceTree = "<group>"; };
-		A1D184031C6465440017DDE0 /* UIImageEffects.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = UIImageEffects.h; sourceTree = "<group>"; };
-		A1D184041C6465440017DDE0 /* UIImageEffects.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = UIImageEffects.m; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -64,7 +60,6 @@
 				A1D183F91C645F780017DDE0 /* LaunchScreen.storyboard */,
 				A1D183F71C645F780017DDE0 /* Assets.xcassets */,
 				A1D183FC1C645F780017DDE0 /* Info.plist */,
-				A1D184021C6465440017DDE0 /* Treble-Bridging-Header.h */,
 			);
 			name = "Supporting Files";
 			sourceTree = "<group>";
@@ -102,20 +97,10 @@
 				A129346C1C657282008664BA /* TrackItemCell.swift */,
 				A1430F671D161594006FC070 /* TrackListPresentationController.swift */,
 				A12934771C65DF46008664BA /* ColourArt */,
-				A1D184061C6465480017DDE0 /* ImageEffects */,
 				A12934731C6592F3008664BA /* Extensions */,
 				A12934741C6592FE008664BA /* Supporting Files */,
 			);
 			path = Treble;
-			sourceTree = "<group>";
-		};
-		A1D184061C6465480017DDE0 /* ImageEffects */ = {
-			isa = PBXGroup;
-			children = (
-				A1D184031C6465440017DDE0 /* UIImageEffects.h */,
-				A1D184041C6465440017DDE0 /* UIImageEffects.m */,
-			);
-			name = ImageEffects;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -198,7 +183,6 @@
 				A1A57FAA1C670396003D59E0 /* UIView.Constraints.swift in Sources */,
 				A1A1A15A1C651F41004EE091 /* TrackListViewController.swift in Sources */,
 				A1D183F11C645F780017DDE0 /* AppDelegate.swift in Sources */,
-				A1D184051C6465440017DDE0 /* UIImageEffects.m in Sources */,
 				A129346D1C657282008664BA /* TrackItemCell.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -310,7 +294,6 @@
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
 				PRODUCT_BUNDLE_IDENTIFIER = com.andyliang.Treble;
 				PRODUCT_NAME = "$(TARGET_NAME)";
-				SWIFT_OBJC_BRIDGING_HEADER = "Treble/Treble-Bridging-Header.h";
 				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
 				SWIFT_VERSION = 3.0;
 			};
@@ -326,7 +309,6 @@
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
 				PRODUCT_BUNDLE_IDENTIFIER = com.andyliang.Treble;
 				PRODUCT_NAME = "$(TARGET_NAME)";
-				SWIFT_OBJC_BRIDGING_HEADER = "Treble/Treble-Bridging-Header.h";
 				SWIFT_OPTIMIZATION_LEVEL = "-Owholemodule";
 				SWIFT_VERSION = 3.0;
 			};
