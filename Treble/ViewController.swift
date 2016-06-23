@@ -8,6 +8,20 @@
 
 import UIKit
 import MediaPlayer
+import AVFoundation
+
+enum MusicType {
+    case file
+    case library
+}
+
+enum MetadataKey {
+    case title
+    case albumTitle
+    case artist
+    case type
+    case creator
+}
 
 class ViewController: UIViewController {
     
@@ -26,7 +40,12 @@ class ViewController: UIViewController {
     private let nextTrackButton = UIButton(type: .custom)
     private let prevTrackButton = UIButton(type: .custom)
     private let musPickerButton = UIButton(type: .custom)
+    private let icloudDocButton = UIButton(type: .custom)
     private let trackListButton = UIButton(type: .custom)
+    
+    private var audioPlayer: AVPlayer!
+    
+    private var musicType: MusicType = .library
     
     private let volumeSlider: UISlider = {
         return MPVolumeView().subviews.filter { $0 is UISlider }.map { $0 as! UISlider }.first!
@@ -68,8 +87,9 @@ class ViewController: UIViewController {
         vibrancyEffectView.contentView.addSubview(prevTrackButton)
         vibrancyEffectView.contentView.addSubview(nextTrackButton)
         vibrancyEffectView.contentView.addSubview(trackListButton)
+        vibrancyEffectView.contentView.addSubview(icloudDocButton)
         
-        let views = [containerView, backgroundImageView, backgroundView, vibrancyEffectView, imageView, musPickerButton, volumeSlider, songTitleLabel, albumTitleLabel, playPauseButton, prevTrackButton, nextTrackButton, trackListButton]
+        let views = [containerView, backgroundImageView, backgroundView, vibrancyEffectView, imageView, musPickerButton, volumeSlider, songTitleLabel, albumTitleLabel, playPauseButton, prevTrackButton, nextTrackButton, trackListButton, icloudDocButton]
             
         views.forEach {
             $0.translatesAutoresizingMaskIntoConstraints = false
@@ -108,13 +128,17 @@ class ViewController: UIViewController {
         let buttonSize: CGFloat = 48.0, margin: CGFloat = 24.0
         
         musPickerButton.constrainSize(to: 36)
-        trackListButton.constrainSize (to: 36)
+        trackListButton.constrainSize(to: 36)
+        icloudDocButton.constrainSize(to: 36)
         playPauseButton.constrainSize(to: buttonSize)
         prevTrackButton.constrainSize(to: buttonSize)
         nextTrackButton.constrainSize(to: buttonSize)
         
         musPickerButton.constrain(.bottom, .equal, to: volumeSlider, .top, plus: -10)
         musPickerButton.constrain(.left, .equal, to: volumeSlider, .left)
+        
+        icloudDocButton.constrain(.top, .equal, to: musPickerButton, .top)
+        icloudDocButton.constrain(.centerX, .equal, to: volumeSlider, .centerX)
         
         trackListButton.constrain(.top, .equal, to: musPickerButton, .top)
         trackListButton.constrain(.right, .equal, to: volumeSlider, .right)
@@ -153,6 +177,9 @@ class ViewController: UIViewController {
         
         trackListButton.setBackgroundImage(#imageLiteral(resourceName: "List"), for: UIControlState())
         trackListButton.addTarget(self, action: #selector(ViewController.presentMusicQueueList), for: .touchUpInside)
+        
+        icloudDocButton.setBackgroundImage(#imageLiteral(resourceName: "Cloud"), for: UIControlState())
+        icloudDocButton.addTarget(self, action: #selector(ViewController.presentCloudDocPicker), for: .touchUpInside)
         
         songTitleLabel.font = .preferredFont(for: .title1)
         songTitleLabel.textAlignment = .center
@@ -193,15 +220,53 @@ class ViewController: UIViewController {
         }
         super.updateViewConstraints()
     }
-
+    
     func updateCurrentTrack() {
-        guard let songItem = musicPlayer.nowPlayingItem else { return }
+        switch musicType {
+        case .file:
+            guard let currentItem = self.audioPlayer.currentItem else { return }
+            self.updatePlaybackState()
+            var metadata: [MetadataKey: String] = [:]
+            var albumImage: UIImage?
+            
+            for format in currentItem.asset.availableMetadataFormats {
+                for item in currentItem.asset.metadata(forFormat: format) where item.commonKey != nil {
+                    switch item.commonKey! {
+                    case "artist":
+                        metadata[.artist] = item.value as? String
+                    case "title":
+                        metadata[.title] = item.value as? String
+                    case "albumName":
+                        metadata[.albumTitle] = item.value as? String
+                    case "type":
+                        metadata[.type] = item.value as? String
+                    case "creator":
+                        metadata[.creator] = item.value as? String
+                    case "artwork":
+                        guard let data: Data = item.value as? Data, let image = UIImage(data: data) else { continue }
+                        albumImage = image
+                    default:
+                        print("no-tag", item.commonKey!)
+                    }
+                }
+            }
+            self.songTitleLabel.text = metadata[.title]
+            self.albumTitleLabel.text = "\(metadata[.artist]!) • \(metadata[.albumTitle]!)"
+            guard let image = albumImage else { return }
+            self.updateAlbumImage(to: image)
+            
+        case .library:
+            guard let songItem = musicPlayer.nowPlayingItem else { return }
+            self.updatePlaybackState()
+            self.songTitleLabel.text = songItem.title
+            self.albumTitleLabel.text = "\(songItem.artist!) • \(songItem.albumTitle!)"
+            guard let artwork = songItem.artwork, let image = artwork.image(at: self.view.frame.size) else { return }
+            self.updateAlbumImage(to: image)
+        }
         
-        self.updatePlaybackState()
-        self.songTitleLabel.text = songItem.title
-        self.albumTitleLabel.text = "\(songItem.artist!) • \(songItem.albumTitle!)"
-
-        guard let artwork = songItem.artwork, let image = artwork.image(at: self.view.frame.size) else { return }
+    }
+    
+    func updateAlbumImage(to image: UIImage) {
         let isDarkColor = image.averageColor.isDarkColor
         let blurEffect = isDarkColor ? UIBlurEffect(style: .light) : UIBlurEffect(style: .dark)
         UIView.animate(withDuration: 0.5) {
@@ -214,20 +279,39 @@ class ViewController: UIViewController {
     }
     
     func togglePlayOrPause() {
-        guard let _ = musicPlayer.nowPlayingItem else { return }
-        switch musicPlayer.playbackState {
-        case .playing: musicPlayer.pause()
-        case .paused:  musicPlayer.play()
-        default:       break
+        switch musicType {
+        case .library:
+            guard let _ = musicPlayer.nowPlayingItem else { return }
+            switch musicPlayer.playbackState {
+            case .playing: musicPlayer.pause()
+            case .paused:  musicPlayer.play()
+            default:       break
+            }
+        case .file:
+            guard let _ = audioPlayer.currentItem else { return }
+            if audioPlayer.rate == 0 {
+                audioPlayer.play()
+            } else {
+                audioPlayer.pause()
+            }
         }
         self.updatePlaybackState()
     }
     
     func updatePlaybackState() {
-        switch musicPlayer.playbackState {
-        case .playing: playPauseButton.setBackgroundImage(#imageLiteral(resourceName: "Pause"), for: UIControlState())
-        case .paused:  playPauseButton.setBackgroundImage(#imageLiteral(resourceName: "Play"),  for: UIControlState())
-        default:       break
+        switch musicType {
+        case .library:
+            switch musicPlayer.playbackState {
+            case .playing: playPauseButton.setBackgroundImage(#imageLiteral(resourceName: "Pause"), for: UIControlState())
+            case .paused:  playPauseButton.setBackgroundImage(#imageLiteral(resourceName: "Play"),  for: UIControlState())
+            default:       break
+            }
+        case .file:
+            if audioPlayer.rate == 0 { // is paused
+                playPauseButton.setBackgroundImage(#imageLiteral(resourceName: "Play"),  for: UIControlState())
+            } else {
+                playPauseButton.setBackgroundImage(#imageLiteral(resourceName: "Pause"), for: UIControlState())
+            }
         }
     }
     
@@ -237,12 +321,19 @@ class ViewController: UIViewController {
     }
     
     func togglePrevTrack() {
-        guard let _ = musicPlayer.nowPlayingItem else { return }
-        if musicPlayer.currentPlaybackTime < 5.0 {
-            musicPlayer.skipToPreviousItem()
-        } else {
-            musicPlayer.skipToBeginning()
+        switch musicType {
+        case .library:
+            guard let _ = musicPlayer.nowPlayingItem else { return }
+            if musicPlayer.currentPlaybackTime < 5.0 {
+                musicPlayer.skipToPreviousItem()
+            } else {
+                musicPlayer.skipToBeginning()
+            }
+        case .file:
+            guard let _ = audioPlayer.currentItem else { return }
+            audioPlayer.seek(to: kCMTimeZero)
         }
+        
     }
     
     func presentMusicQueueList() {
@@ -264,6 +355,12 @@ class ViewController: UIViewController {
         musicPickerViewController.showsCloudItems = true
         self.present(musicPickerViewController, animated: true, completion: nil)
     }
+    
+    func presentCloudDocPicker() {
+        let documentPicker = UIDocumentPickerViewController(documentTypes: ["public.audio"], in: .import)
+        documentPicker.delegate = self
+        self.present(documentPicker, animated: true, completion: nil)
+    }
 
 }
 
@@ -273,12 +370,36 @@ extension ViewController: MPMediaPickerControllerDelegate {
         self.musicPlayer.setQueue(with: mediaItemCollection)
         mediaPicker.dismiss(animated: true) {
             self.musicPlayer.play()
+            self.musicType = .library
             self.updateCurrentTrack()
         }
     }
     
     func mediaPickerDidCancel(_ mediaPicker: MPMediaPickerController) {
         mediaPicker.dismiss(animated: true, completion: nil)
+    }
+    
+}
+
+extension ViewController: UIDocumentPickerDelegate {
+
+    func documentPickerWasCancelled(_ controller: UIDocumentPickerViewController) {
+        controller.dismiss(animated: true, completion: nil)
+    }
+    
+    func documentPicker(_ controller: UIDocumentPickerViewController, didPickDocumentAt url: URL) {
+        guard controller.documentPickerMode == .import else { return }
+        do {
+            try AVAudioSession.sharedInstance().setCategory(AVAudioSessionCategoryPlayback)
+            let audioItem = AVPlayerItem(url: UIDocument(fileURL: url).presentedItemURL!)
+            self.audioPlayer = AVPlayer(playerItem: audioItem)
+            self.audioPlayer.play()
+            self.musicType = .file
+            self.updateCurrentTrack()
+        } catch {
+            print(error)
+        }
+        
     }
     
 }

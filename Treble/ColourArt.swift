@@ -42,9 +42,9 @@ extension UIColor {
         let fg = compareColor.cgColor.components
         let threshold: CGFloat = 0.25
         
-        if fabs((bg?[0])! - (fg?[0])!) > threshold || fabs((bg?[1])! - (fg?[1])!) > threshold || fabs((bg?[2])! - (fg?[2])!) > threshold {
-            if fabs((bg?[0])! - (bg?[1])!) < 0.03 && fabs((bg?[0])! - (bg?[2])!) < 0.03 {
-                if fabs((fg?[0])! - (fg?[1])!) < 0.03 && fabs((fg?[0])! - (fg?[2])!) < 0.03 {
+        if fabs(bg![0] - fg![0]) > threshold || fabs(bg![1] - fg![1]) > threshold || fabs(bg![2] - fg![2]) > threshold {
+            if fabs(bg![0] - bg![1]) < 0.03 && fabs(bg![0] - bg![2]) < 0.03 {
+                if fabs(fg![0] - fg![1]) < 0.03 && fabs(fg![0] - fg![2]) < 0.03 {
                     return false
                 }
             }
@@ -101,11 +101,10 @@ extension UIImage {
     }
     
     func resize(_ newSize: CGSize) -> UIImage {
-        UIGraphicsBeginImageContextWithOptions(newSize, false, 0)
-        self.draw(in: CGRect(origin: .zero, size: newSize))
-        let result = UIGraphicsGetImageFromCurrentImageContext()
-        UIGraphicsEndImageContext()
-        return result!
+        let renderer = UIGraphicsImageRenderer(size: newSize)
+        return renderer.image { imageContext in
+            self.draw(in: CGRect(origin: .zero, size: newSize))
+        }
     }
     
     func getColors() -> ColourArt {
