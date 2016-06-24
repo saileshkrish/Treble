@@ -44,11 +44,15 @@ class ViewController: UIViewController {
     private let trackListButton = UIButton(type: .custom)
     
     private var audioPlayer: AVPlayer!
+    private var audioFileName: String?
+    private var audioArtistName: String?
     
     private var musicType: MusicType = .library
     
     private let volumeSlider: UISlider = {
-        return MPVolumeView().subviews.filter { $0 is UISlider }.map { $0 as! UISlider }.first!
+        let slider = MPVolumeView().subviews.filter { $0 is UISlider }.map { $0 as! UISlider }.first!
+        slider.isUserInteractionEnabled = true
+        return slider
     }()
     
     private var verticalConstraints: [NSLayoutConstraint] = []
@@ -138,7 +142,7 @@ class ViewController: UIViewController {
         musPickerButton.constrain(.left, .equal, to: volumeSlider, .left)
         
         icloudDocButton.constrain(.top, .equal, to: musPickerButton, .top)
-        icloudDocButton.constrain(.centerX, .equal, to: volumeSlider, .centerX)
+        icloudDocButton.constrain(.centerX, .equal, to: albumTitleLabel, .centerX)
         
         trackListButton.constrain(.top, .equal, to: musPickerButton, .top)
         trackListButton.constrain(.right, .equal, to: volumeSlider, .right)
@@ -181,7 +185,7 @@ class ViewController: UIViewController {
         icloudDocButton.setBackgroundImage(#imageLiteral(resourceName: "Cloud"), for: UIControlState())
         icloudDocButton.addTarget(self, action: #selector(ViewController.presentCloudDocPicker), for: .touchUpInside)
         
-        songTitleLabel.font = .preferredFont(for: .title1)
+        songTitleLabel.font = .preferredFont(for: .title2)
         songTitleLabel.textAlignment = .center
         
         albumTitleLabel.font = .preferredFont(for: .body)
@@ -246,14 +250,15 @@ class ViewController: UIViewController {
                         guard let data: Data = item.value as? Data, let image = UIImage(data: data) else { continue }
                         albumImage = image
                     default:
-                        print("no-tag", item.commonKey!)
+                        print("no-tag", item.commonKey)
                     }
                 }
             }
-            self.songTitleLabel.text = metadata[.title]
-            self.albumTitleLabel.text = "\(metadata[.artist]!) • \(metadata[.albumTitle]!)"
-            guard let image = albumImage else { return }
-            self.updateAlbumImage(to: image)
+            self.songTitleLabel.text = metadata[.title] ?? audioFileName!
+            let artistName = metadata[.artist] ?? audioArtistName ?? ""
+            let albumTitle = metadata[.albumTitle] ?? ""
+            self.albumTitleLabel.text = artistName.isEmpty ? albumTitle : (artistName + (!albumTitle.isEmpty ? " – \(albumTitle)" : ""))
+            self.updateAlbumImage(to: albumImage)
             
         case .library:
             guard let songItem = musicPlayer.nowPlayingItem else { return }
@@ -266,7 +271,12 @@ class ViewController: UIViewController {
         
     }
     
-    func updateAlbumImage(to image: UIImage) {
+    func updateAlbumImage(to image: UIImage?) {
+        guard let image = image else {
+            self.imageView.image = nil
+            self.backgroundImageView.image = nil
+            return
+        }
         let isDarkColor = image.averageColor.isDarkColor
         let blurEffect = isDarkColor ? UIBlurEffect(style: .light) : UIBlurEffect(style: .dark)
         UIView.animate(withDuration: 0.5) {
@@ -392,6 +402,15 @@ extension ViewController: UIDocumentPickerDelegate {
         do {
             try AVAudioSession.sharedInstance().setCategory(AVAudioSessionCategoryPlayback)
             let audioItem = AVPlayerItem(url: UIDocument(fileURL: url).presentedItemURL!)
+            let url = try url.deletingPathExtension()
+            let fullName = url.lastPathComponent!
+            if fullName.components(separatedBy: "-").count == 2 {
+                let components = fullName.components(separatedBy: "-")
+                audioArtistName = components[0]
+                audioFileName = components[1]
+            } else {
+                audioFileName = fullName
+            }
             self.audioPlayer = AVPlayer(playerItem: audioItem)
             self.audioPlayer.play()
             self.musicType = .file
