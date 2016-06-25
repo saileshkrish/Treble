@@ -270,7 +270,7 @@ class ViewController: UIViewController {
             guard let currentItem = self.audioPlayer.currentItem else { return }
             self.updatePlaybackState()
             var metadata: [MetadataKey: String] = [:]
-            var albumImage: UIImage?
+            var albumImage: UIImage = #imageLiteral(resourceName: "image")
             
             for format in currentItem.asset.availableMetadataFormats {
                 for item in currentItem.asset.metadata(forFormat: format) where item.commonKey != nil {
@@ -305,15 +305,10 @@ class ViewController: UIViewController {
                 MPMediaItemPropertyArtist: artistName,
                 MPMediaItemPropertyAlbumTitle: albumTitle,
                 MPMediaItemPropertyPlaybackDuration: currentItem.asset.duration.seconds,
-                MPNowPlayingInfoPropertyPlaybackRate: NSNumber(value: 1)
+                MPNowPlayingInfoPropertyPlaybackRate: NSNumber(value: 1),
+                MPMediaItemPropertyArtwork: MPMediaItemArtwork(boundsSize: albumImage.size) { return albumImage.resize($0) }
             ]
-            
-            if let albumImage = albumImage {
-                MPNowPlayingInfoCenter.default().nowPlayingInfo![MPMediaItemPropertyArtwork] = MPMediaItemArtwork(boundsSize: albumImage.size) {
-                    return albumImage.resize($0)
-                }
-            }
-            
+
         case .library:
             guard let songItem = musicPlayer.nowPlayingItem else { return }
             self.updatePlaybackState()
@@ -326,11 +321,7 @@ class ViewController: UIViewController {
     }
     
     func updateAlbumImage(to image: UIImage?) {
-        guard let image = image else {
-            self.imageView.image = nil
-            self.backgroundImageView.image = nil
-            return
-        }
+        let image = image ?? #imageLiteral(resourceName: "image")
         let isDarkColor = image.averageColor.isDarkColor
         let blurEffect = isDarkColor ? UIBlurEffect(style: .light) : UIBlurEffect(style: .dark)
         UIView.animate(withDuration: 0.5) {
