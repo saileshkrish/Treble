@@ -67,6 +67,7 @@ class ViewController: UIViewController {
         backgroundImageView.backgroundColor = .white()
         
         volumeSlider.showsRouteButton = false
+        volumeSlider.sizeToFit()
         
         imageView.isUserInteractionEnabled = true
         imageView.contentMode = .scaleAspectFill
@@ -135,7 +136,7 @@ class ViewController: UIViewController {
         prevTrackButton.constrainSize(to: buttonSize)
         nextTrackButton.constrainSize(to: buttonSize)
         
-        musPickerButton.constrain(.bottom, .equal, to: volumeSlider, .top, plus: -10)
+        musPickerButton.constrain(.bottom, .equal, to: volumeSlider, .top, plus: -16)
         musPickerButton.constrain(.left, .equal, to: volumeSlider, .left)
         
         icloudDocButton.constrain(.top, .equal, to: musPickerButton, .top)
@@ -158,7 +159,8 @@ class ViewController: UIViewController {
         
         volumeSlider.constrain(.leading, .equal, to: albumTitleLabel, .leading, plus: margin)
         volumeSlider.constrain(.trailing, .equal, to: albumTitleLabel, .trailing, plus: -margin)
-        volumeSlider.constrain(.top, .equal, to: playPauseButton, .bottom, plus: 64.0)
+        volumeSlider.constrain(.top, .equal, to: playPauseButton, .bottom, plus: 80.0)
+        volumeSlider.constrain(.height, .equal, to: volumeSlider.frame.height)
     }
     
     override func viewDidLoad() {
