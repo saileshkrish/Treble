@@ -47,7 +47,24 @@ class ViewController: UIViewController {
     private var audioFileName: String?
     private var audioArtistName: String?
     
-    private var musicType: MusicType = .library
+    private var musicType: MusicType = .library {
+        didSet {
+            do {
+                switch musicType {
+                case .file:
+                    try AVAudioSession.sharedInstance().setCategory(AVAudioSessionCategoryPlayback)
+                    try AVAudioSession.sharedInstance().setActive(true)
+                    UIApplication.shared().beginReceivingRemoteControlEvents()
+                case .library:
+                    try AVAudioSession.sharedInstance().setActive(false)
+                    UIApplication.shared().endReceivingRemoteControlEvents()
+                }
+            } catch {
+                print(error)
+            }
+            
+        }
+    }
     private let volumeSlider: MPVolumeView = MPVolumeView()
     
     private var verticalConstraints: [NSLayoutConstraint] = []
@@ -167,7 +184,7 @@ class ViewController: UIViewController {
         super.viewDidLoad()
         
         playPauseButton.setBackgroundImage(#imageLiteral(resourceName: "Play"), for: UIControlState())
-        playPauseButton.addTarget(self, action: #selector(ViewController.togglePlayOrPause), for: .touchUpInside)
+        playPauseButton.addTarget(self, action: #selector(ViewController.togglePlayback), for: .touchUpInside)
         
         nextTrackButton.setBackgroundImage(#imageLiteral(resourceName: "Next"), for: UIControlState())
         nextTrackButton.addTarget(self, action: #selector(ViewController.toggleNextTrack), for: .touchUpInside)
@@ -191,10 +208,12 @@ class ViewController: UIViewController {
         albumTitleLabel.textAlignment = .center
         
         self.updateCurrentTrack()
+        self.setupMediaRemote()
         
         NotificationCenter.default().addObserver(self, selector: #selector(ViewController.updateCurrentTrack), name: .MPMusicPlayerControllerNowPlayingItemDidChange, object: musicPlayer)
         NotificationCenter.default().addObserver(self, selector: #selector(ViewController.updatePlaybackState), name: .MPMusicPlayerControllerPlaybackStateDidChange, object: musicPlayer)
         musicPlayer.beginGeneratingPlaybackNotifications()
+        
     }
     
     override func viewWillTransition(to size: CGSize, with coordinator: UIViewControllerTransitionCoordinator) {
@@ -222,6 +241,27 @@ class ViewController: UIViewController {
             break
         }
         super.updateViewConstraints()
+    }
+    
+    func setupMediaRemote() {
+        MPRemoteCommandCenter.shared().togglePlayPauseCommand.isEnabled = true
+        MPRemoteCommandCenter.shared().togglePlayPauseCommand.addTarget { _ in
+            self.togglePlayback()
+            return .success
+        }
+        
+        MPRemoteCommandCenter.shared().playCommand.isEnabled = true
+        MPRemoteCommandCenter.shared().playCommand.addTarget { _ in
+            self.togglePlayback()
+            return .success
+        }
+        
+        MPRemoteCommandCenter.shared().pauseCommand.isEnabled = true
+        MPRemoteCommandCenter.shared().pauseCommand.addTarget { _ in
+            self.togglePlayback()
+            return .success
+        }
+        
     }
     
     func updateCurrentTrack() {
@@ -253,11 +293,26 @@ class ViewController: UIViewController {
                     }
                 }
             }
-            self.songTitleLabel.text = metadata[.title] ?? audioFileName!
+            
+            self.songTitleLabel.text = metadata[.title] ?? audioFileName ?? ""
             let artistName = metadata[.artist] ?? audioArtistName ?? ""
             let albumTitle = metadata[.albumTitle] ?? ""
             self.albumTitleLabel.text = artistName.isEmpty ? albumTitle : (artistName + (!albumTitle.isEmpty ? " – \(albumTitle)" : ""))
             self.updateAlbumImage(to: albumImage)
+            
+            MPNowPlayingInfoCenter.default().nowPlayingInfo = [
+                MPMediaItemPropertyTitle: metadata[.title] ?? audioFileName!,
+                MPMediaItemPropertyArtist: artistName,
+                MPMediaItemPropertyAlbumTitle: albumTitle,
+                MPMediaItemPropertyPlaybackDuration: currentItem.asset.duration.seconds,
+                MPNowPlayingInfoPropertyPlaybackRate: NSNumber(value: 1)
+            ]
+            
+            if let albumImage = albumImage {
+                MPNowPlayingInfoCenter.default().nowPlayingInfo![MPMediaItemPropertyArtwork] = MPMediaItemArtwork(boundsSize: albumImage.size) {
+                    return albumImage.resize($0)
+                }
+            }
             
         case .library:
             guard let songItem = musicPlayer.nowPlayingItem else { return }
@@ -287,7 +342,7 @@ class ViewController: UIViewController {
         }
     }
     
-    func togglePlayOrPause() {
+    func togglePlayback() {
         switch musicType {
         case .library:
             guard let _ = musicPlayer.nowPlayingItem else { return }
@@ -399,7 +454,6 @@ extension ViewController: UIDocumentPickerDelegate {
     func documentPicker(_ controller: UIDocumentPickerViewController, didPickDocumentAt url: URL) {
         guard controller.documentPickerMode == .import else { return }
         do {
-            try AVAudioSession.sharedInstance().setCategory(AVAudioSessionCategoryPlayback)
             let audioItem = AVPlayerItem(url: UIDocument(fileURL: url).presentedItemURL!)
             let url = try url.deletingPathExtension()
             let fullName = url.lastPathComponent!
@@ -410,9 +464,11 @@ extension ViewController: UIDocumentPickerDelegate {
             } else {
                 audioFileName = fullName
             }
+            
+            self.musicType = .file
             self.audioPlayer = AVPlayer(playerItem: audioItem)
             self.audioPlayer.play()
-            self.musicType = .file
+            
             self.updateCurrentTrack()
         } catch {
             print(error)
