@@ -19,10 +19,10 @@
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <subviews>
                             <imageView userInteractionEnabled="NO" contentMode="scaleToFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" image="Treble" translatesAutoresizingMaskIntoConstraints="NO" id="vdA-ia-vgA">
-                                <rect key="frame" x="123" y="269" width="128" height="128"/>
+                                <rect key="frame" x="124" y="270" width="128" height="128"/>
                             </imageView>
                         </subviews>
-                        <color key="backgroundColor" cocoaTouchSystemColor="darkTextColor"/>
+                        <color key="backgroundColor" red="0.0" green="0.0" blue="0.0" alpha="1" colorSpace="calibratedRGB"/>
                         <constraints>
                             <constraint firstItem="vdA-ia-vgA" firstAttribute="centerX" secondItem="Ze5-6b-2t3" secondAttribute="centerX" id="fkh-mf-AKH"/>
                             <constraint firstItem="vdA-ia-vgA" firstAttribute="centerY" secondItem="Ze5-6b-2t3" secondAttribute="centerY" id="hJO-bw-ZIe"/>

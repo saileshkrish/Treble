@@ -48,12 +48,7 @@ class ViewController: UIViewController {
     private var audioArtistName: String?
     
     private var musicType: MusicType = .library
-    
-    private let volumeSlider: UISlider = {
-        let slider = MPVolumeView().subviews.filter { $0 is UISlider }.map { $0 as! UISlider }.first!
-        slider.isUserInteractionEnabled = true
-        return slider
-    }()
+    private let volumeSlider: MPVolumeView = MPVolumeView()
     
     private var verticalConstraints: [NSLayoutConstraint] = []
     private var horizontalConstraints: [NSLayoutConstraint] = []
@@ -70,6 +65,8 @@ class ViewController: UIViewController {
         
         backgroundImageView.contentMode = .scaleAspectFill
         backgroundImageView.backgroundColor = .white()
+        
+        volumeSlider.showsRouteButton = false
         
         imageView.isUserInteractionEnabled = true
         imageView.contentMode = .scaleAspectFill
