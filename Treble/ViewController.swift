@@ -84,7 +84,7 @@ class ViewController: UIViewController {
         backgroundImageView.contentMode = .scaleAspectFill
         backgroundImageView.backgroundColor = .white()
         
-        volumeSlider.showsRouteButton = false
+        volumeSlider.showsRouteButton = true
         volumeSlider.sizeToFit()
         
         imageView.isUserInteractionEnabled = true
