@@ -36,7 +36,7 @@ class TrackListViewController: UITableViewController {
         tableView.tableFooterView = UIView()
         tableView.backgroundView = UIVisualEffectView(effect: UIBlurEffect(style: .dark))
         tableView.separatorEffect = UIVibrancyEffect(blurEffect: UIBlurEffect(style: .dark))
-        tableView.separatorInset.left = 32
+        tableView.separatorInset.left = 42
     }
     
     override func viewDidLoad() {
@@ -91,14 +91,15 @@ class TrackListViewController: UITableViewController {
         cell.indexString = indexPath.row == indexOfNowPlayingItem ? "▶︎" : "\(indexPath.row+1)"
         return cell
     }
-
+    
 }
 
 extension TrackListViewController: UIViewControllerTransitioningDelegate {
     
-    func presentationController(forPresentedViewController presented: UIViewController, presenting: UIViewController?, sourceViewController source: UIViewController) -> UIPresentationController? {
+    func presentationController(forPresented presented: UIViewController, presenting: UIViewController?, source: UIViewController) -> UIPresentationController? {
         return TrackListPresentationController(presentedViewController: presented, presenting: presenting)
     }
+    
 }
 
 private extension TimeInterval {
