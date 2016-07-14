@@ -7,6 +7,7 @@
 //
 
 import UIKit
+import CoreGraphics
 
 struct ColourArt {
     var backgroundColor: UIColor!
@@ -101,9 +102,17 @@ extension UIImage {
     }
     
     func resize(_ newSize: CGSize) -> UIImage {
-        let renderer = UIGraphicsImageRenderer(size: newSize)
-        return renderer.image { imageContext in
+        if #available(iOS 10.0, *) {
+            let renderer = UIGraphicsImageRenderer(size: newSize)
+            return renderer.image { imageContext in
+                self.draw(in: CGRect(origin: .zero, size: newSize))
+            }
+        } else {
+            UIGraphicsBeginImageContextWithOptions(newSize, false, UIScreen.main().scale)
             self.draw(in: CGRect(origin: .zero, size: newSize))
+            let image = UIGraphicsGetImageFromCurrentImageContext()
+            UIGraphicsEndImageContext()
+            return image ?? self
         }
     }
     
