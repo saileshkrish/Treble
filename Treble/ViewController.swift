@@ -29,8 +29,8 @@ class ViewController: UIViewController {
     
     private let containerView = UIView()
     private let imageView = UIImageView()
-    private let songTitleLabel = UILabel()
-    private let albumTitleLabel = UILabel()
+    private let songTitleLabel: MarqueeLabel = MarqueeLabel(frame: .zero, duration: 8.0, fadeLength: 8)
+    private let albumTitleLabel: MarqueeLabel = MarqueeLabel(frame: .zero, duration: 8.0, fadeLength: 8)
     
     private let backgroundImageView = UIImageView()
     private var backgroundView: UIVisualEffectView!
@@ -201,9 +201,13 @@ class ViewController: UIViewController {
         icloudDocButton.setBackgroundImage(#imageLiteral(resourceName: "Cloud"), for: UIControlState())
         icloudDocButton.addTarget(self, action: #selector(ViewController.presentCloudDocPicker), for: .touchUpInside)
         
+        songTitleLabel.text = " "
+        songTitleLabel.type = .continuous
         songTitleLabel.font = .preferredFont(for: .title2)
         songTitleLabel.textAlignment = .center
         
+        albumTitleLabel.text = " "
+        albumTitleLabel.type = .continuous
         albumTitleLabel.font = .preferredFont(for: .body)
         albumTitleLabel.textAlignment = .center
         
@@ -317,6 +321,11 @@ class ViewController: UIViewController {
             guard let artwork = songItem.artwork, let image = artwork.image(at: self.view.frame.size) else { return }
             self.updateAlbumImage(to: image)
         }
+        
+        
+        self.albumTitleLabel.restartLabel()
+        self.songTitleLabel.restartLabel()
+        
         
     }
     
