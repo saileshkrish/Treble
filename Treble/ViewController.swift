@@ -56,7 +56,8 @@ class ViewController: UIViewController {
                     try AVAudioSession.sharedInstance().setActive(true)
                     UIApplication.shared().beginReceivingRemoteControlEvents()
                 case .library:
-                    try AVAudioSession.sharedInstance().setActive(false)
+                    self.audioPlayer?.pause()
+                    try AVAudioSession.sharedInstance().setActive(false, with: .notifyOthersOnDeactivation)
                     UIApplication.shared().endReceivingRemoteControlEvents()
                 }
             } catch {
