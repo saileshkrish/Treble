@@ -281,7 +281,7 @@ class ViewController: UIViewController {
             guard let currentItem = self.audioPlayer.currentItem else { return }
             self.updatePlaybackState()
             var metadata: [MetadataKey: String] = [:]
-            var albumImage: UIImage = #imageLiteral(resourceName: "Treble.png")
+            var albumImage: UIImage = #imageLiteral(resourceName: "Treble@3x.png")            
             
             for format in currentItem.asset.availableMetadataFormats {
                 for item in currentItem.asset.metadata(forFormat: format) where item.commonKey != nil {
