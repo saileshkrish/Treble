@@ -267,6 +267,12 @@ class ViewController: UIViewController {
             return .success
         }
         
+        MPRemoteCommandCenter.shared().previousTrackCommand.isEnabled = true
+        MPRemoteCommandCenter.shared().previousTrackCommand.addTarget { _ in
+            self.togglePrevTrack()
+            return .success
+        }
+        
     }
     
     func updateCurrentTrack() {
@@ -305,15 +311,21 @@ class ViewController: UIViewController {
             self.albumTitleLabel.text = artistName.isEmpty ? albumTitle : (artistName + (!albumTitle.isEmpty ? " – \(albumTitle)" : ""))
             self.updateAlbumImage(to: albumImage)
             
-            MPNowPlayingInfoCenter.default().nowPlayingInfo = [
-                MPMediaItemPropertyTitle: metadata[.title] ?? audioFileName!,
-                MPMediaItemPropertyArtist: artistName,
-                MPMediaItemPropertyAlbumTitle: albumTitle,
-                MPMediaItemPropertyPlaybackDuration: currentItem.asset.duration.seconds,
-                MPNowPlayingInfoPropertyPlaybackRate: NSNumber(value: 1),
-                MPMediaItemPropertyArtwork: MPMediaItemArtwork(boundsSize: albumImage.size) { return albumImage.resize($0) }
-            ]
-
+            var nowPlayingInfo: [String: AnyObject] = [:]
+            nowPlayingInfo[MPMediaItemPropertyTitle] = metadata[.title] ?? audioFileName!
+            nowPlayingInfo[MPMediaItemPropertyArtist] = artistName
+            nowPlayingInfo[MPMediaItemPropertyAlbumTitle] = albumTitle
+            nowPlayingInfo[MPMediaItemPropertyPlaybackDuration] = currentItem.asset.duration.seconds
+            nowPlayingInfo[MPNowPlayingInfoPropertyPlaybackRate] = NSNumber(value: 1)
+            
+            if #available(iOS 10.0, *) {
+                nowPlayingInfo[MPMediaItemPropertyArtwork] = MPMediaItemArtwork(boundsSize: albumImage.size) { return albumImage.resize($0) }
+            } else {
+                nowPlayingInfo[MPMediaItemPropertyArtwork] = MPMediaItemArtwork(image: albumImage)
+            }
+            
+            MPNowPlayingInfoCenter.default().nowPlayingInfo = nowPlayingInfo
+            
         case .library:
             guard let songItem = musicPlayer.nowPlayingItem else { return }
             self.updatePlaybackState()
@@ -367,15 +379,15 @@ class ViewController: UIViewController {
         switch musicType {
         case .library:
             switch musicPlayer.playbackState {
-            case .playing: playPauseButton.setBackgroundImage(#imageLiteral(resourceName: "Pause"), for: UIControlState())
-            case .paused:  playPauseButton.setBackgroundImage(#imageLiteral(resourceName: "Play"),  for: UIControlState())
+            case .playing: playPauseButton.setBackgroundImage(#imageLiteral(resourceName: "Pause"), for: [])
+            case .paused:  playPauseButton.setBackgroundImage(#imageLiteral(resourceName: "Play"),  for: [])
             default:       break
             }
         case .file:
             if audioPlayer.rate == 0 { // is paused
-                playPauseButton.setBackgroundImage(#imageLiteral(resourceName: "Play"),  for: UIControlState())
+                playPauseButton.setBackgroundImage(#imageLiteral(resourceName: "Play"),  for: [])
             } else {
-                playPauseButton.setBackgroundImage(#imageLiteral(resourceName: "Pause"), for: UIControlState())
+                playPauseButton.setBackgroundImage(#imageLiteral(resourceName: "Pause"), for: [])
             }
         }
     }
@@ -397,6 +409,7 @@ class ViewController: UIViewController {
         case .file:
             guard let _ = audioPlayer.currentItem else { return }
             audioPlayer.seek(to: kCMTimeZero)
+            self.updateCurrentTrack()
         }
         
     }
