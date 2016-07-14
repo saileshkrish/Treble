@@ -236,7 +236,7 @@ class ViewController: UIViewController {
             horizontalConstraints.forEach   { $0.isActive = false }
             verticalConstraints.forEach     { $0.isActive = true }
             self.containerConstraints!.top.constant = self.view.frame.height/12
-            self.containerConstraints!.bottom.constant = -self.view.frame.height/12
+            self.containerConstraints!.bottom.constant = 0.0
         case .landscapeLeft, .landscapeRight:
             verticalConstraints.forEach     { $0.isActive = false }
             horizontalConstraints.forEach   { $0.isActive = true }
