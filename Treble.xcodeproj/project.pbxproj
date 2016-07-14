@@ -11,6 +11,7 @@
 		A12934761C65BD9A008664BA /* ColourArt.swift in Sources */ = {isa = PBXBuildFile; fileRef = A12934751C65BD9A008664BA /* ColourArt.swift */; };
 		A1430F681D161594006FC070 /* TrackListPresentationController.swift in Sources */ = {isa = PBXBuildFile; fileRef = A1430F671D161594006FC070 /* TrackListPresentationController.swift */; };
 		A15A86F01D1697C300A863E5 /* UIFont++.swift in Sources */ = {isa = PBXBuildFile; fileRef = A15A86EF1D1697C300A863E5 /* UIFont++.swift */; };
+		A16270D11D37968A008EB2F7 /* MarqueeLabel.swift in Sources */ = {isa = PBXBuildFile; fileRef = A16270D01D37968A008EB2F7 /* MarqueeLabel.swift */; };
 		A1A1A15A1C651F41004EE091 /* TrackListViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = A1A1A1591C651F41004EE091 /* TrackListViewController.swift */; };
 		A1A57FAA1C670396003D59E0 /* UIView.Constraints.swift in Sources */ = {isa = PBXBuildFile; fileRef = A1A57FA91C670396003D59E0 /* UIView.Constraints.swift */; };
 		A1D183F11C645F780017DDE0 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = A1D183F01C645F780017DDE0 /* AppDelegate.swift */; };
@@ -24,6 +25,8 @@
 		A12934751C65BD9A008664BA /* ColourArt.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ColourArt.swift; sourceTree = "<group>"; };
 		A1430F671D161594006FC070 /* TrackListPresentationController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = TrackListPresentationController.swift; sourceTree = "<group>"; };
 		A15A86EF1D1697C300A863E5 /* UIFont++.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "UIFont++.swift"; sourceTree = "<group>"; };
+		A16270D01D37968A008EB2F7 /* MarqueeLabel.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MarqueeLabel.swift; sourceTree = "<group>"; };
+		A16270D21D3796EB008EB2F7 /* Treble.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.xml; path = Treble.entitlements; sourceTree = "<group>"; };
 		A1A1A1591C651F41004EE091 /* TrackListViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = TrackListViewController.swift; sourceTree = "<group>"; };
 		A1A57FA91C670396003D59E0 /* UIView.Constraints.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = UIView.Constraints.swift; sourceTree = "<group>"; };
 		A1D183ED1C645F780017DDE0 /* Treble.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Treble.app; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -91,6 +94,8 @@
 		A1D183EF1C645F780017DDE0 /* Treble */ = {
 			isa = PBXGroup;
 			children = (
+				A16270D21D3796EB008EB2F7 /* Treble.entitlements */,
+				A16270D01D37968A008EB2F7 /* MarqueeLabel.swift */,
 				A1D183F01C645F780017DDE0 /* AppDelegate.swift */,
 				A1D183F21C645F780017DDE0 /* ViewController.swift */,
 				A1A1A1591C651F41004EE091 /* TrackListViewController.swift */,
@@ -138,6 +143,11 @@
 						DevelopmentTeam = TSCXJ4KWQ4;
 						DevelopmentTeamName = "Andy Liang";
 						LastSwiftMigration = 0800;
+						SystemCapabilities = {
+							com.apple.iCloud = {
+								enabled = 1;
+							};
+						};
 					};
 				};
 			};
@@ -176,6 +186,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				A16270D11D37968A008EB2F7 /* MarqueeLabel.swift in Sources */,
 				A15A86F01D1697C300A863E5 /* UIFont++.swift in Sources */,
 				A1D183F31C645F780017DDE0 /* ViewController.swift in Sources */,
 				A1430F681D161594006FC070 /* TrackListPresentationController.swift in Sources */,
@@ -289,10 +300,11 @@
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				CLANG_ENABLE_MODULES = YES;
+				CODE_SIGN_ENTITLEMENTS = Treble/Treble.entitlements;
 				CODE_SIGN_IDENTITY = "iPhone Developer";
 				INFOPLIST_FILE = Treble/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
-				PRODUCT_BUNDLE_IDENTIFIER = com.andyliang.Treble;
+				PRODUCT_BUNDLE_IDENTIFIER = com.andyliang.TreblePlayer;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
 				SWIFT_VERSION = 3.0;
@@ -304,10 +316,11 @@
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				CLANG_ENABLE_MODULES = YES;
+				CODE_SIGN_ENTITLEMENTS = Treble/Treble.entitlements;
 				CODE_SIGN_IDENTITY = "iPhone Developer";
 				INFOPLIST_FILE = Treble/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
-				PRODUCT_BUNDLE_IDENTIFIER = com.andyliang.Treble;
+				PRODUCT_BUNDLE_IDENTIFIER = com.andyliang.TreblePlayer;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SWIFT_OPTIMIZATION_LEVEL = "-Owholemodule";
 				SWIFT_VERSION = 3.0;
