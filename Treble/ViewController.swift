@@ -204,11 +204,13 @@ class ViewController: UIViewController {
         
         songTitleLabel.text = " "
         songTitleLabel.type = .continuous
+        songTitleLabel.trailingBuffer = 16
         songTitleLabel.font = .preferredFont(for: .title2)
         songTitleLabel.textAlignment = .center
         
         albumTitleLabel.text = " "
         albumTitleLabel.type = .continuous
+        albumTitleLabel.trailingBuffer = 16
         albumTitleLabel.font = .preferredFont(for: .body)
         albumTitleLabel.textAlignment = .center
         
