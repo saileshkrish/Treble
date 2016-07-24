@@ -712,7 +712,8 @@ public class MarqueeLabel: UILabel {
         #if !TARGET_INTERFACE_BUILDER
             if fadeLength > 0.0 {
                 // Remove any setup animation, but apply final values
-                if let setupAnim = maskLayer?.animation(forKey: "setupFade") as? CABasicAnimation, finalColors = setupAnim.toValue as? [CGColor] {
+                if let setupAnim = maskLayer?.animation(forKey: "setupFade") as? CABasicAnimation,
+                    let finalColors = setupAnim.toValue as? [CGColor] {
                     maskLayer?.colors = finalColors
                 }
                 maskLayer?.removeAnimation(forKey: "setupFade")
