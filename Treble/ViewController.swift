@@ -318,7 +318,7 @@ class ViewController: UIViewController {
             self.songTitleLabel.text = metadata[.title] ?? audioFileName ?? ""
             let artistName = metadata[.artist] ?? audioArtistName ?? ""
             let albumTitle = metadata[.albumTitle] ?? ""
-            self.albumTitleLabel.text = artistName.isEmpty ? albumTitle : (artistName + (!albumTitle.isEmpty ? " – \(albumTitle)" : ""))
+            self.albumTitleLabel.text = albumTitle.isEmpty ? artistName : (albumTitle + (!artistName.isEmpty ? " – \(artistName)" : ""))
             self.updateAlbumImage(to: albumImage)
             
             var nowPlayingInfo: [String: AnyObject] = [:]
@@ -340,7 +340,7 @@ class ViewController: UIViewController {
             guard let songItem = musicPlayer.nowPlayingItem else { return }
             self.updatePlaybackState()
             self.songTitleLabel.text = songItem.title
-            self.albumTitleLabel.text = "\(songItem.artist!) • \(songItem.albumTitle!)"
+            self.albumTitleLabel.text = "\(songItem.albumTitle!) • \(songItem.artist!)"
             guard let artwork = songItem.artwork, let image = artwork.image(at: self.view.frame.size) else { return }
             self.updateAlbumImage(to: image)
         }
