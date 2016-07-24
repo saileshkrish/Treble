@@ -416,6 +416,7 @@ class ViewController: UIViewController {
     
     func presentMusicQueueList() {
         trackListView.currentTrack = musicPlayer.nowPlayingItem
+        guard !trackListView.trackList.isEmpty else { return }
         let viewController = UINavigationController(rootViewController: trackListView)
         viewController.modalPresentationStyle = UIDevice.current().userInterfaceIdiom == .pad ? .popover : .custom
         viewController.popoverPresentationController?.backgroundColor = .clear()

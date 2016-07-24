@@ -13,7 +13,7 @@ private let reuseIdentifier = "reuseIdentifier"
 class TrackListViewController: UITableViewController {
     
     private let musicPlayer = MPMusicPlayerController.systemMusicPlayer()
-    private var trackList: [MPMediaItem] = []
+    private(set) var trackList: [MPMediaItem] = []
     
     var currentTrack: MPMediaItem! {
         didSet {
