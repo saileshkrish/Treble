@@ -288,6 +288,8 @@ class ViewController: UIViewController {
     func updateCurrentTrack() {
         switch musicType {
         case .file:
+            trackListView.currentTrack = nil
+            trackListButton.isEnabled = false
             guard let currentItem = self.audioPlayer.currentItem else { return }
             self.updatePlaybackState()
             var metadata: [MetadataKey: String] = [:]
@@ -338,6 +340,8 @@ class ViewController: UIViewController {
             
         case .library:
             guard let songItem = musicPlayer.nowPlayingItem else { return }
+            trackListView.currentTrack = songItem
+            trackListButton.isEnabled = true
             self.updatePlaybackState()
             self.songTitleLabel.text = songItem.title
             self.albumTitleLabel.text = "\(songItem.albumTitle!) • \(songItem.artist!)"
@@ -348,7 +352,6 @@ class ViewController: UIViewController {
         
         self.albumTitleLabel.restartLabel()
         self.songTitleLabel.restartLabel()
-        
         
     }
     
@@ -425,8 +428,7 @@ class ViewController: UIViewController {
     }
     
     func presentMusicQueueList() {
-        trackListView.currentTrack = musicPlayer.nowPlayingItem
-        guard !trackListView.trackList.isEmpty else { return }
+        guard let _ = trackListView.currentTrack, !trackListView.trackList.isEmpty else { return }
         let viewController = UINavigationController(rootViewController: trackListView)
         viewController.modalPresentationStyle = UIDevice.current().userInterfaceIdiom == .pad ? .popover : .custom
         viewController.popoverPresentationController?.backgroundColor = .clear()
