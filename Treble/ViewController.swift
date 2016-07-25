@@ -282,7 +282,7 @@ class ViewController: UIViewController {
     func restartPlayback() {
         guard let _ = audioPlayer.currentItem else { return }
         audioPlayer.seek(to: kCMTimeZero)
-        self.updateCurrentTrack()
+        audioPlayer.play()
     }
     
     func updateCurrentTrack() {
