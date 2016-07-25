@@ -204,18 +204,19 @@ class ViewController: UIViewController {
         icloudDocButton.setBackgroundImage(#imageLiteral(resourceName: "Cloud"), for: UIControlState())
         icloudDocButton.addTarget(self, action: #selector(ViewController.presentCloudDocPicker), for: .touchUpInside)
         
-        songTitleLabel.text = " "
+        songTitleLabel.text = "Welcome to Treble"
         songTitleLabel.type = .continuous
         songTitleLabel.trailingBuffer = 16
         songTitleLabel.font = .preferredFont(for: .title2)
         songTitleLabel.textAlignment = .center
         
-        albumTitleLabel.text = " "
+        albumTitleLabel.text = "Play from your Apple Music library, or from your iCloud Drive."
         albumTitleLabel.type = .continuous
         albumTitleLabel.trailingBuffer = 16
         albumTitleLabel.font = .preferredFont(for: .body)
         albumTitleLabel.textAlignment = .center
         
+        self.updateAlbumImage(to: nil)
         self.updateCurrentTrack()
         self.setupMediaRemote()
         
@@ -349,14 +350,13 @@ class ViewController: UIViewController {
             self.updateAlbumImage(to: image)
         }
         
-        
         self.albumTitleLabel.restartLabel()
         self.songTitleLabel.restartLabel()
         
     }
     
     func updateAlbumImage(to image: UIImage?) {
-        let image = image ?? #imageLiteral(resourceName: "image")
+        let image = image ?? #imageLiteral(resourceName: "DefaultAlbumArt")
         let isDarkColor = image.averageColor.isDarkColor
         let blurEffect = isDarkColor ? UIBlurEffect(style: .light) : UIBlurEffect(style: .dark)
         UIView.animate(withDuration: 0.5) {
