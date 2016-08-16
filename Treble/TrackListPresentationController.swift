@@ -26,26 +26,26 @@ class TrackListPresentationController: UIPresentationController {
     override func presentationTransitionWillBegin() {
         dimmingView.frame = self.containerView!.bounds
         dimmingView.alpha = 0.2
-        dimmingView.backgroundColor = .black()
+        dimmingView.backgroundColor = .black
         
         containerView!.insertSubview(dimmingView, at: 0)
-        presentedViewController.transitionCoordinator()?.animate(alongsideTransition: { context in
+        presentedViewController.transitionCoordinator?.animate(alongsideTransition: { context in
             self.dimmingView.alpha = 0.4
             }, completion: nil)
     }
     
     override func dismissalTransitionWillBegin() {
-        presentedViewController.transitionCoordinator()?.animate(alongsideTransition: { context in
+        presentedViewController.transitionCoordinator?.animate(alongsideTransition: { context in
             self.dimmingView.alpha = 0
             }, completion: nil)
     }
     
     override func containerViewWillLayoutSubviews() {
         dimmingView.frame = containerView!.bounds
-        presentedView()!.frame = frameOfPresentedViewInContainerView()
+        presentedView!.frame = frameOfPresentedViewInContainerView
     }
     
-    override func frameOfPresentedViewInContainerView() -> CGRect {
+    override var frameOfPresentedViewInContainerView: CGRect {
         let height = presentedViewController.preferredContentSize.height
         let presentedViewFrame = presentingViewController.traitCollection.horizontalSizeClass == .regular
             ? containerView!.frame
@@ -53,15 +53,15 @@ class TrackListPresentationController: UIPresentationController {
         return presentedViewFrame
     }
     
-    override func shouldPresentInFullscreen() -> Bool {
+    override var shouldPresentInFullscreen: Bool {
         return false
     }
     
     override func preferredContentSizeDidChange(forChildContentContainer container: UIContentContainer) {
         UIView.animate(withDuration: 0.3) {
-            self.presentedView()!.frame = self.containerView != nil
-                ? self.frameOfPresentedViewInContainerView()
-                : CGRect(origin: self.presentedView()!.frame.origin, size: container.preferredContentSize)
+            self.presentedView!.frame = self.containerView != nil
+                ? self.frameOfPresentedViewInContainerView
+                : CGRect(origin: self.presentedView!.frame.origin, size: container.preferredContentSize)
         }
     }
     

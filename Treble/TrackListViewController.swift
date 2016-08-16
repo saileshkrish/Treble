@@ -32,7 +32,7 @@ class TrackListViewController: UITableViewController {
     override func loadView() {
         super.loadView()
         tableView.rowHeight = 48
-        tableView.backgroundColor = .clear()
+        tableView.backgroundColor = .clear
         tableView.tableFooterView = UIView()
         tableView.backgroundView = UIVisualEffectView(effect: UIBlurEffect(style: .dark))
         tableView.separatorEffect = UIVibrancyEffect(blurEffect: UIBlurEffect(style: .dark))
@@ -42,7 +42,7 @@ class TrackListViewController: UITableViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
         tableView.register(TrackItemCell.self, forCellReuseIdentifier: reuseIdentifier)
-        guard UIDevice.current().userInterfaceIdiom == .phone else { return }
+        guard UIDevice.current.userInterfaceIdiom == .phone else { return }
         navigationItem.rightBarButtonItem = UIBarButtonItem(barButtonSystemItem: .cancel, target: self, action: #selector(TrackListViewController.dismissView))
     }
     
@@ -52,9 +52,9 @@ class TrackListViewController: UITableViewController {
     }
     
     func updatePreferredContentSize() {
-        let height = min(self.tableView.contentSize.height, UIScreen.main().bounds.height*0.8)
+        let height = min(self.tableView.contentSize.height, UIScreen.main.bounds.height*0.8)
         guard height != preferredContentSize.height else { return }
-        let contentSize = CGSize(width: UIDevice.current().userInterfaceIdiom == .pad ? 320 : self.tableView.frame.width, height: height)
+        let contentSize = CGSize(width: UIDevice.current.userInterfaceIdiom == .pad ? 320 : self.tableView.frame.width, height: height)
         self.preferredContentSize = contentSize
         self.navigationController?.preferredContentSize = contentSize
     }

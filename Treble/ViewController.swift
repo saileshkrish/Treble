@@ -25,7 +25,7 @@ enum MetadataKey {
 
 class ViewController: UIViewController {
     
-    private let musicPlayer = MPMusicPlayerController.systemMusicPlayer()
+    
     
     private let containerView = UIView()
     private let imageView = UIImageView()
@@ -43,24 +43,25 @@ class ViewController: UIViewController {
     private let icloudDocButton = UIButton(type: .custom)
     private let trackListButton = UIButton(type: .custom)
     
-    private var audioPlayer: AVPlayer!
-    private var audioFileName: String?
-    private var audioArtistName: String?
+    fileprivate let musicPlayer = MPMusicPlayerController.systemMusicPlayer()
+    fileprivate var audioPlayer: AVPlayer!
+    fileprivate var audioFileName: String?
+    fileprivate var audioArtistName: String?
     
-    private var musicType: MusicType = .library {
+    fileprivate var musicType: MusicType = .library {
         didSet {
             do {
                 switch musicType {
                 case .file:
                     try AVAudioSession.sharedInstance().setCategory(AVAudioSessionCategoryPlayback)
                     try AVAudioSession.sharedInstance().setActive(true)
-                    UIApplication.shared().beginReceivingRemoteControlEvents()
+                    UIApplication.shared.beginReceivingRemoteControlEvents()
                     NotificationCenter.default.addObserver(self, selector: #selector(ViewController.restartPlayback), name: .AVPlayerItemDidPlayToEndTime, object: nil)
                 case .library:
                     self.audioPlayer?.pause()
                     try AVAudioSession.sharedInstance().setActive(false, with: .notifyOthersOnDeactivation)
                     NotificationCenter.default.removeObserver(self, name: .AVPlayerItemDidPlayToEndTime, object: nil)
-                    UIApplication.shared().endReceivingRemoteControlEvents()
+                    UIApplication.shared.endReceivingRemoteControlEvents()
                 }
             } catch {
                 print(error)
@@ -76,6 +77,8 @@ class ViewController: UIViewController {
     
     private lazy var trackListView: TrackListViewController = TrackListViewController()
     
+    override var prefersStatusBarHidden: Bool { return true }
+    
     override func loadView() {
         super.loadView()
         
@@ -84,7 +87,7 @@ class ViewController: UIViewController {
         vibrancyEffectView = UIVisualEffectView(effect: UIVibrancyEffect(blurEffect: blurEffect))
         
         backgroundImageView.contentMode = .scaleAspectFill
-        backgroundImageView.backgroundColor = .white()
+        backgroundImageView.backgroundColor = .white
         
         volumeSlider.showsRouteButton = true
         volumeSlider.sizeToFit()
@@ -93,7 +96,7 @@ class ViewController: UIViewController {
         imageView.contentMode = .scaleAspectFill
         imageView.layer.cornerRadius = 12.0
         imageView.layer.masksToBounds = true
-        imageView.backgroundColor = .white()
+        imageView.backgroundColor = .white
         
         self.view.addSubview(backgroundImageView) // background image that is blurred
         self.view.addSubview(backgroundView) // blur view that blurs the image
@@ -207,13 +210,13 @@ class ViewController: UIViewController {
         songTitleLabel.text = "Welcome to Treble"
         songTitleLabel.type = .continuous
         songTitleLabel.trailingBuffer = 16
-        songTitleLabel.font = .preferredFont(for: .title2)
+        songTitleLabel.font = .preferredFont(forTextStyle: .title2)
         songTitleLabel.textAlignment = .center
         
         albumTitleLabel.text = "Play from your Apple Music library, or from your iCloud Drive."
         albumTitleLabel.type = .continuous
         albumTitleLabel.trailingBuffer = 16
-        albumTitleLabel.font = .preferredFont(for: .body)
+        albumTitleLabel.font = .preferredFont(forTextStyle: .body)
         albumTitleLabel.textAlignment = .center
         
         self.updateAlbumImage(to: nil)
@@ -231,12 +234,8 @@ class ViewController: UIViewController {
         self.updateViewConstraints()
     }
     
-    override func prefersStatusBarHidden() -> Bool {
-        return true
-    }
-    
     override func updateViewConstraints() {
-        switch UIDevice.current().orientation {
+        switch UIDevice.current.orientation {
         case .portrait:
             horizontalConstraints.forEach   { $0.isActive = false }
             verticalConstraints.forEach     { $0.isActive = true }
@@ -324,7 +323,7 @@ class ViewController: UIViewController {
             self.albumTitleLabel.text = albumTitle.isEmpty ? artistName : (albumTitle + (!artistName.isEmpty ? " – \(artistName)" : ""))
             self.updateAlbumImage(to: albumImage)
             
-            var nowPlayingInfo: [String: AnyObject] = [:]
+            var nowPlayingInfo: [String: Any] = [:]
             nowPlayingInfo[MPMediaItemPropertyTitle] = metadata[.title] ?? audioFileName!
             nowPlayingInfo[MPMediaItemPropertyArtist] = artistName
             nowPlayingInfo[MPMediaItemPropertyAlbumTitle] = albumTitle
@@ -430,8 +429,8 @@ class ViewController: UIViewController {
     func presentMusicQueueList() {
         guard let _ = trackListView.currentTrack, !trackListView.trackList.isEmpty else { return }
         let viewController = UINavigationController(rootViewController: trackListView)
-        viewController.modalPresentationStyle = UIDevice.current().userInterfaceIdiom == .pad ? .popover : .custom
-        viewController.popoverPresentationController?.backgroundColor = .clear()
+        viewController.modalPresentationStyle = UIDevice.current.userInterfaceIdiom == .pad ? .popover : .custom
+        viewController.popoverPresentationController?.backgroundColor = .clear
         viewController.popoverPresentationController?.sourceView = trackListButton
         viewController.popoverPresentationController?.sourceRect = CGRect(x: 0, y: trackListButton.frame.height/2, width: 0, height: 0)
         viewController.popoverPresentationController?.permittedArrowDirections = .any
@@ -480,27 +479,22 @@ extension ViewController: UIDocumentPickerDelegate {
     
     func documentPicker(_ controller: UIDocumentPickerViewController, didPickDocumentAt url: URL) {
         guard controller.documentPickerMode == .import else { return }
-        do {
-            let audioItem = AVPlayerItem(url: UIDocument(fileURL: url).presentedItemURL!)
-            let url = try url.deletingPathExtension()
-            let fullName = url.lastPathComponent!
-            if fullName.components(separatedBy: "-").count == 2 {
-                let components = fullName.components(separatedBy: "-")
-                audioArtistName = components[0]
-                audioFileName = components[1]
-            } else {
-                audioFileName = fullName
-            }
-            
-            self.musicType = .file
-            self.audioPlayer = AVPlayer(playerItem: audioItem)
-            self.audioPlayer.play()
-            
-            self.updateCurrentTrack()
-        } catch {
-            print(error)
+        let audioItem = AVPlayerItem(url: UIDocument(fileURL: url).presentedItemURL!)
+        let url = url.deletingPathExtension()
+        let fullName = url.lastPathComponent
+        if fullName.components(separatedBy: "-").count == 2 {
+            let components = fullName.components(separatedBy: "-")
+            audioArtistName = components[0]
+            audioFileName = components[1]
+        } else {
+            audioFileName = fullName
         }
         
+        self.musicType = .file
+        self.audioPlayer = AVPlayer(playerItem: audioItem)
+        self.audioPlayer.play()
+        
+        self.updateCurrentTrack()
     }
     
 }

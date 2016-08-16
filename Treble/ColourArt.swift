@@ -108,7 +108,7 @@ extension UIImage {
                 self.draw(in: CGRect(origin: .zero, size: newSize))
             }
         } else {
-            UIGraphicsBeginImageContextWithOptions(newSize, false, UIScreen.main().scale)
+            UIGraphicsBeginImageContextWithOptions(newSize, false, UIScreen.main.scale)
             self.draw(in: CGRect(origin: .zero, size: newSize))
             let image = UIGraphicsGetImageFromCurrentImageContext()
             UIGraphicsEndImageContext()
@@ -148,11 +148,11 @@ extension UIImage {
         let raw = malloc(bytesPerRow * height!)
         let bitmapInfo = CGImageAlphaInfo.premultipliedFirst.rawValue
         let ctx = CGContext(data: raw, width: width!, height: height!, bitsPerComponent: bitsPerComponent, bytesPerRow: bytesPerRow, space: colorSpace, bitmapInfo: bitmapInfo)
-        ctx?.draw(in: CGRect(x: 0, y: 0, width: CGFloat(width!), height: CGFloat(height!)), image: cgImage!)
-        let data = UnsafePointer<UInt8>(ctx?.data)
+        ctx?.draw(cgImage!, in: CGRect(x: 0, y: 0, width: CGFloat(width!), height: CGFloat(height!)))
+        let data = ctx?.data?.assumingMemoryBound(to: UInt8.self)
         
-        let leftEdgeColors = CountedSet(capacity: height!)
-        let imageColors = CountedSet(capacity: width! * height!)
+        let leftEdgeColors = NSCountedSet(capacity: height!)
+        let imageColors = NSCountedSet(capacity: width! * height!)
         
         for x in 0..<width! {
             for y in 0..<height! {
@@ -188,7 +188,7 @@ extension UIImage {
         if sortedColors.count > 0 {
             proposedEdgeColor = sortedColors.object(at: 0) as! CountedColor
         } else {
-            proposedEdgeColor = CountedColor(color: .black(), count: 1)
+            proposedEdgeColor = CountedColor(color: .black, count: 1)
         }
         
         if proposedEdgeColor.color.isBlackOrWhite && 0 < sortedColors.count {
@@ -247,15 +247,15 @@ extension UIImage {
         let isDarkBackgound = result.backgroundColor.isDarkColor
         
         if result.primaryColor == nil {
-            result.primaryColor = isDarkBackgound ? .white() : .black()
+            result.primaryColor = isDarkBackgound ? .white : .black
         }
         
         if result.secondaryColor == nil {
-            result.secondaryColor = isDarkBackgound ? .white() : .black()
+            result.secondaryColor = isDarkBackgound ? .white : .black
         }
         
         if result.detailColor == nil {
-            result.detailColor = isDarkBackgound ? .white() : .black()
+            result.detailColor = isDarkBackgound ? .white : .black
         }
         
         // Release the allocated memory
