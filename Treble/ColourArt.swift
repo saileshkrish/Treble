@@ -28,7 +28,7 @@ class CountedColor {
 
 extension UIColor {
     
-    var isDarkColor: Bool {
+    var isDark: Bool {
         let RGB = self.cgColor.components
         return (0.2126 * RGB![0] + 0.7152 * RGB![1] + 0.0722 * RGB![2]) < 0.5
     }
@@ -38,7 +38,7 @@ extension UIColor {
         return (RGB![0] > 0.91 && RGB![1] > 0.91 && RGB![2] > 0.91) || (RGB![0] < 0.09 && RGB![1] < 0.09 && RGB![2] < 0.09)
     }
     
-    func isDistinct(_ compareColor: UIColor) -> Bool {
+    func isDistinct(to compareColor: UIColor) -> Bool {
         let bg = self.cgColor.components
         let fg = compareColor.cgColor.components
         let threshold: CGFloat = 0.25
@@ -60,7 +60,7 @@ extension UIColor {
         return saturation < minSaturation ? UIColor(hue: hue, saturation: minSaturation, brightness: brightness, alpha: alpha) : self
     }
     
-    func isContrastingColor(_ compareColor: UIColor) -> Bool {
+    func isContrastingColor(to compareColor: UIColor) -> Bool {
         let bg = self.cgColor.components
         let fg = compareColor.cgColor.components
         
@@ -85,15 +85,15 @@ extension UIImage {
     
     var averageColor: UIColor {
         let context = CIContext(options: nil)
-        let convertImage = CoreImage.CIImage(image: self)
+        let convertImage = CIImage(image: self)
         let filter = CIFilter(name: "CIAreaAverage")!
         filter.setValue(convertImage, forKey: kCIInputImageKey)
         let processImage = filter.outputImage!
         let finalImage = context.createCGImage(processImage, from: processImage.extent)
-        return UIImage(cgImage: finalImage!).getPixelColor(.zero)
+        return UIImage(cgImage: finalImage!).pixelColor(at: .zero)
     }
     
-    func getPixelColor(_ pos: CGPoint) -> UIColor {
+    func pixelColor(at pos: CGPoint) -> UIColor {
         let pixelData = self.cgImage?.dataProvider?.data
         let data: UnsafePointer<UInt8> = CFDataGetBytePtr(pixelData)
         let pixelInfo: Int = ((Int(self.size.width) * Int(pos.y)) + Int(pos.x)) * 4
@@ -116,13 +116,13 @@ extension UIImage {
         }
     }
     
-    func getColors() -> ColourArt {
+    var imageColors: ColourArt {
         let ratio = self.size.width/self.size.height
         let r_width: CGFloat = 250
-        return self.getColors(CGSize(width: r_width, height: r_width/ratio))
+        return self.imageColors(CGSize(width: r_width, height: r_width/ratio))
     }
     
-    func getColors(_ scaleDownSize: CGSize) -> ColourArt {
+    func imageColors(_ scaleDownSize: CGSize) -> ColourArt {
         var result = ColourArt()
         
         let cgImage = self.resize(scaleDownSize).cgImage
@@ -210,11 +210,11 @@ extension UIImage {
         enumerator = imageColors.objectEnumerator()
         sortedColors.removeAllObjects()
         sortedColors = NSMutableArray(capacity: imageColors.count)
-        let findDarkTextColor = !result.backgroundColor.isDarkColor
+        let findDarkTextColor = !result.backgroundColor.isDark
         
         while var kolor = enumerator.nextObject() as? UIColor {
             kolor = kolor.minimumSaturation(0.15)
-            if kolor.isDarkColor == findDarkTextColor {
+            if kolor.isDark == findDarkTextColor {
                 let colorCount = imageColors.count(for: kolor)
                 sortedColors.add(CountedColor(color: kolor, count: colorCount))
             }
@@ -225,17 +225,17 @@ extension UIImage {
             let kolor = (curContainer as! CountedColor).color
             
             if result.primaryColor == nil {
-                if kolor.isContrastingColor(result.backgroundColor) {
+                if kolor.isContrastingColor(to: result.backgroundColor) {
                     result.primaryColor = kolor
                 }
             } else if result.secondaryColor == nil {
-                if !result.primaryColor.isDistinct(kolor) || !kolor.isContrastingColor(result.backgroundColor) {
+                if !result.primaryColor.isDistinct(to: kolor) || !kolor.isContrastingColor(to: result.backgroundColor) {
                     continue
                 }
                 
                 result.secondaryColor = kolor
             } else if result.detailColor == nil {
-                if !result.secondaryColor.isDistinct(kolor) || !result.primaryColor.isDistinct(kolor) || !kolor.isContrastingColor(result.backgroundColor) {
+                if !result.secondaryColor.isDistinct(to: kolor) || !result.primaryColor.isDistinct(to: kolor) || !kolor.isContrastingColor(to: result.backgroundColor) {
                     continue
                 }
                 
@@ -244,7 +244,7 @@ extension UIImage {
             }
         }
         
-        let isDarkBackgound = result.backgroundColor.isDarkColor
+        let isDarkBackgound = result.backgroundColor.isDark
         
         if result.primaryColor == nil {
             result.primaryColor = isDarkBackgound ? .white : .black
