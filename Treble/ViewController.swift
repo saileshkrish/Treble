@@ -25,8 +25,6 @@ enum MetadataKey {
 
 class ViewController: UIViewController {
     
-    
-    
     private let containerView = UIView()
     private let imageView = UIImageView()
     private let songTitleLabel: MarqueeLabel = MarqueeLabel(frame: .zero, duration: 8.0, fadeLength: 8)
@@ -124,31 +122,37 @@ class ViewController: UIViewController {
         backgroundImageView.constrain(to: self.view)
         vibrancyEffectView.constrain(to: self.view)
         
-        containerView.constrain(.leading, .equal, to: self.view, .leading)
-        containerView.constrain(.trailing, .equal, to: self.view, .trailing)
-        self.containerConstraints = (top:    containerView.constrain(.top, .equal, to: self.view, .top),
-                                     bottom: containerView.constrain(.bottom, .equal, to: self.view, .bottom))
+        NSLayoutConstraint.activate(containerView.leading == self.view.leading, containerView.trailing == self.view.trailing)
+        self.containerConstraints = ((containerView.top == self.view.top).activate(), (containerView.bottom == self.view.bottom).activate())
         
         self.verticalConstraints = [
-            imageView.constrain(.top, .equal, to: containerView, .top, active: false),
-            imageView.constrain(.width, .equal, to: containerView, .width, times: 0.85, active: false),
-            imageView.constrain(.height, .equal, to: imageView, .width, active: false),
-            imageView.constrain(.centerX, .equal, to: containerView, .centerX, active: false),
-            songTitleLabel.constrain(.leading, .equal, to: imageView, .leading, active: false),
-            songTitleLabel.constrain(.trailing, .equal, to: imageView, .trailing, active: false),
-            songTitleLabel.constrain(.top, .equal, to: imageView, .bottom, plus: 28.0, active: false),
-            playPauseButton.constrain(.centerX, .equal, to: songTitleLabel, .centerX, active: false)
+            imageView.top == containerView.top,
+            imageView.width == containerView.width * 0.85,
+            imageView.height == imageView.width,
+            imageView.centerX == containerView.centerX,
         ]
         
+        // separating the extra constraints because of swift limitations
+        self.verticalConstraints.append(contentsOf: [
+            songTitleLabel.leading == imageView.leading,
+            songTitleLabel.trailing == imageView.trailing,
+            songTitleLabel.top == imageView.bottom + 28,
+            playPauseButton.centerX == songTitleLabel.centerX
+        ])
+        
         self.horizontalConstraints = [
-            imageView.constrain(.height, .equal, to: containerView, .height, active: false),
-            imageView.constrain(.width,  .equal, to: imageView, .height, atPriority: 900, active: false),
-            imageView.constrain(.leading, .equal, to: containerView, .leading, plus: 24.0, active: false),
-            imageView.constrain(.centerY, .equal, to: containerView, .centerY, active: false),
-            songTitleLabel.constrain(.leading, .equal, to: imageView, .trailing, plus: 16, active: false),
-            songTitleLabel.constrain(.trailing, .equal, to: containerView, .trailing, plus: -16, active: false),
-            playPauseButton.constrain(.centerY, .equal, to: containerView, .centerY, active: false)
+            imageView.height == containerView.height,
+            imageView.width == imageView.height ~ 900,
+            imageView.leading == containerView.leading + 24,
+            imageView.centerY == containerView.centerY
         ]
+        
+        // separating the extra constraints because of swift limitations
+        self.horizontalConstraints.append(contentsOf: [
+            songTitleLabel.leading == imageView.trailing + 16,
+            songTitleLabel.trailing == containerView.trailing - 16,
+            playPauseButton.centerY == containerView.centerY
+        ])
         
         let buttonSize: CGFloat = 48.0, margin: CGFloat = 24.0
         
@@ -159,31 +163,26 @@ class ViewController: UIViewController {
         prevTrackButton.constrainSize(to: buttonSize)
         nextTrackButton.constrainSize(to: buttonSize)
         
-        musPickerButton.constrain(.bottom, .equal, to: volumeSlider, .top, plus: -16)
-        musPickerButton.constrain(.left, .equal, to: volumeSlider, .left)
+        NSLayoutConstraint.activate(musPickerButton.bottom == volumeSlider.top - 16,
+                                    musPickerButton.left == volumeSlider.left,
+                                    icloudDocButton.top == musPickerButton.top,
+                                    icloudDocButton.centerX == albumTitleLabel.centerX,
+                                    trackListButton.top == musPickerButton.top,
+                                    trackListButton.right == volumeSlider.right,
+                                    songTitleLabel.bottom == albumTitleLabel.top - 16,
+                                    albumTitleLabel.leading == songTitleLabel.leading,
+                                    albumTitleLabel.trailing == songTitleLabel.trailing,
+                                    albumTitleLabel.bottom == playPauseButton.top - margin,
+                                    playPauseButton.centerX == albumTitleLabel.centerX,
+                                    nextTrackButton.leading == playPauseButton.trailing + margin,
+                                    nextTrackButton.centerY == playPauseButton.centerY,
+                                    prevTrackButton.trailing == playPauseButton.leading - margin,
+                                    prevTrackButton.centerY == playPauseButton.centerY,
+                                    volumeSlider.leading == albumTitleLabel.leading + margin,
+                                    volumeSlider.trailing == albumTitleLabel.trailing - margin,
+                                    volumeSlider.top == playPauseButton.bottom + 80,
+                                    volumeSlider.height == volumeSlider.frame.height)
         
-        icloudDocButton.constrain(.top, .equal, to: musPickerButton, .top)
-        icloudDocButton.constrain(.centerX, .equal, to: albumTitleLabel, .centerX)
-        
-        trackListButton.constrain(.top, .equal, to: musPickerButton, .top)
-        trackListButton.constrain(.right, .equal, to: volumeSlider, .right)
-        
-        songTitleLabel.constrain(.bottom, .equal, to: albumTitleLabel, .top, plus: -16)
-        
-        albumTitleLabel.constrain(.leading,  .equal, to: songTitleLabel, .leading)
-        albumTitleLabel.constrain(.trailing, .equal, to: songTitleLabel, .trailing)
-        albumTitleLabel.constrain(.bottom, .equal, to: playPauseButton, .top, plus: -margin)
-        
-        playPauseButton.constrain(.centerX, .equal, to: albumTitleLabel, .centerX)
-        nextTrackButton.constrain(.leading, .equal, to: playPauseButton, .trailing, plus: margin)
-        nextTrackButton.constrain(.centerY, .equal, to: playPauseButton, .centerY)
-        prevTrackButton.constrain(.trailing, .equal, to: playPauseButton, .leading, plus: -margin)
-        prevTrackButton.constrain(.centerY, .equal, to: playPauseButton, .centerY)
-        
-        volumeSlider.constrain(.leading, .equal, to: albumTitleLabel, .leading, plus: margin)
-        volumeSlider.constrain(.trailing, .equal, to: albumTitleLabel, .trailing, plus: -margin)
-        volumeSlider.constrain(.top, .equal, to: playPauseButton, .bottom, plus: 80.0)
-        volumeSlider.constrain(.height, .equal, to: volumeSlider.frame.height)
     }
     
     override func viewDidLoad() {
@@ -237,13 +236,13 @@ class ViewController: UIViewController {
     override func updateViewConstraints() {
         switch UIDevice.current.orientation {
         case .portrait:
-            horizontalConstraints.forEach   { $0.isActive = false }
-            verticalConstraints.forEach     { $0.isActive = true }
+            NSLayoutConstraint.deactivate(horizontalConstraints)
+            NSLayoutConstraint.activate(verticalConstraints)
             self.containerConstraints!.top.constant = self.view.frame.height/12
             self.containerConstraints!.bottom.constant = 0.0
         case .landscapeLeft, .landscapeRight:
-            verticalConstraints.forEach     { $0.isActive = false }
-            horizontalConstraints.forEach   { $0.isActive = true }
+            NSLayoutConstraint.deactivate(verticalConstraints)
+            NSLayoutConstraint.activate(horizontalConstraints)
             self.containerConstraints!.top.constant = min(self.view.frame.width, self.view.frame.height)/8
             self.containerConstraints!.bottom.constant = -min(self.view.frame.width, self.view.frame.height)/8
         default:

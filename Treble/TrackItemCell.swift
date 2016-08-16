@@ -43,8 +43,7 @@ class TrackItemCell: UITableViewCell {
         indexLabel.font = .preferredFont(forTextStyle: .title3)
         indexLabel.translatesAutoresizingMaskIntoConstraints = false
         indexLabel.textAlignment = .right
-        indexLabel.constrain(.leading, .equal, to: contentView, .leading, plus: 8)
-        indexLabel.constrain(.height, .equal, to: contentView, .height)
+        NSLayoutConstraint.activate(indexLabel.leading == contentView.leading + 8, indexLabel.height == contentView.height)
     }
     
 }
