@@ -343,7 +343,7 @@ class ViewController: UIViewController {
             trackListButton.isEnabled = true
             self.updatePlaybackState()
             self.songTitleLabel.text = songItem.title
-            self.albumTitleLabel.text = "\(songItem.albumTitle!) • \(songItem.artist!)"
+            self.albumTitleLabel.text = "\(songItem.artist!) — \(songItem.albumTitle!)"
             guard let artwork = songItem.artwork, let image = artwork.image(at: self.view.frame.size) else { return }
             self.updateAlbumImage(to: image)
         }
@@ -355,7 +355,7 @@ class ViewController: UIViewController {
     
     func updateAlbumImage(to image: UIImage?) {
         let image = image ?? #imageLiteral(resourceName: "DefaultAlbumArt")
-        let isDarkColor = image.averageColor.isDarkColor
+        let isDarkColor = image.averageColor.isDark
         let blurEffect = isDarkColor ? UIBlurEffect(style: .light) : UIBlurEffect(style: .dark)
         UIView.animate(withDuration: 0.5) {
             self.imageView.image = image
