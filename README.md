@@ -1,10 +1,19 @@
 # Treble
 Simple iOS Music Player
 
-Something simple and fun I made a while ago; decided it was time to share it. 
-The only reason I made this was because my dock blocks my iPhone speakers, and since the native Music app doesn't support Landscape mode, I decided to make one w/ Landscape mode.
+Something simple and func I made a while back; decided it was time to open source it. The only reason this app exists was because my dock blocks my iPhone's speakers, and since the native Music app doesn't support Landscape, I decided to write a nicer app with Landscape support.
 
-Enjoy :p
+### Swift 3 Updates
+
+Since Swift 3 changed quite a lot of Foundation, I migrated the project to use Swift 3 and support iOS 10. While I was at it, I added multiple features, including:
+
+1. iPad Support
+2. Display Current Album instead of Music Queue
+3. Removed all traces of Objective-C, so it's now a pure-Swift project
+4. Play from iCloud Drive using `AVPlayer`
+
+
+Enjoy! :P
 
 ## LICENSE
 The MIT License (MIT)
