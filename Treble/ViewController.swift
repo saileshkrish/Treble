@@ -26,7 +26,8 @@ enum MetadataKey {
 class ViewController: UIViewController {
     
     private let containerView = UIView()
-    private let imageView = UIImageView()
+    private let imageOuterView = UIView()
+    private let imageInnerView = UIImageView()
     private let songTitleLabel: MarqueeLabel = MarqueeLabel(frame: .zero, duration: 8.0, fadeLength: 8)
     private let albumTitleLabel: MarqueeLabel = MarqueeLabel(frame: .zero, duration: 8.0, fadeLength: 8)
     
@@ -72,6 +73,7 @@ class ViewController: UIViewController {
     private var verticalConstraints: [NSLayoutConstraint] = []
     private var horizontalConstraints: [NSLayoutConstraint] = []
     private var containerConstraints: (top: NSLayoutConstraint, bottom: NSLayoutConstraint)!
+    private var albumImageConstraints: (left: NSLayoutConstraint, right: NSLayoutConstraint, top: NSLayoutConstraint, bottom: NSLayoutConstraint)!
     
     private lazy var trackListView: TrackListViewController = TrackListViewController()
     
@@ -90,18 +92,20 @@ class ViewController: UIViewController {
         volumeSlider.showsRouteButton = true
         volumeSlider.sizeToFit()
         
-        imageView.isUserInteractionEnabled = true
-        imageView.contentMode = .scaleAspectFill
-        imageView.layer.cornerRadius = 12.0
-        imageView.layer.masksToBounds = true
-        imageView.backgroundColor = .white
+        imageOuterView.backgroundColor = .clear
+        imageInnerView.isUserInteractionEnabled = true
+        imageInnerView.contentMode = .scaleAspectFill
+        imageInnerView.layer.cornerRadius = 12.0
+        imageInnerView.layer.masksToBounds = true
+        imageInnerView.backgroundColor = .white
         
         self.view.addSubview(backgroundImageView) // background image that is blurred
         self.view.addSubview(backgroundView) // blur view that blurs the image
         self.view.addSubview(containerView) // add one so I can use constraints
         containerView.addSubview(vibrancyEffectView) // the vibrancy view where everything else is added
         containerView.addSubview(volumeSlider) // add volume slider here so that it doesn't have the vibrancy effect
-        containerView.addSubview(imageView)
+        containerView.addSubview(imageOuterView)
+        imageOuterView.addSubview(imageInnerView)
         
         vibrancyEffectView.contentView.addSubview(musPickerButton)
         vibrancyEffectView.contentView.addSubview(songTitleLabel)
@@ -112,7 +116,7 @@ class ViewController: UIViewController {
         vibrancyEffectView.contentView.addSubview(trackListButton)
         vibrancyEffectView.contentView.addSubview(icloudDocButton)
         
-        let views: [UIView] = [containerView, backgroundImageView, backgroundView, vibrancyEffectView, imageView, musPickerButton, volumeSlider, songTitleLabel, albumTitleLabel, playPauseButton, prevTrackButton, nextTrackButton, trackListButton, icloudDocButton]
+        let views: [UIView] = [containerView, backgroundImageView, backgroundView, vibrancyEffectView, imageOuterView, imageInnerView, musPickerButton, volumeSlider, songTitleLabel, albumTitleLabel, playPauseButton, prevTrackButton, nextTrackButton, trackListButton, icloudDocButton]
             
         views.forEach {
             $0.translatesAutoresizingMaskIntoConstraints = false
@@ -126,33 +130,38 @@ class ViewController: UIViewController {
         self.containerConstraints = ((containerView.top == self.view.top).activate(), (containerView.bottom == self.view.bottom).activate())
         
         self.verticalConstraints = [
-            imageView.top == containerView.top,
-            imageView.width == containerView.width * 0.85,
-            imageView.height == imageView.width,
-            imageView.centerX == containerView.centerX,
+            imageOuterView.top == containerView.top,
+            imageOuterView.width == containerView.width * 0.85,
+            imageOuterView.height == imageOuterView.width,
+            imageOuterView.centerX == containerView.centerX,
         ]
         
         // separating the extra constraints because of swift limitations
         self.verticalConstraints.append(contentsOf: [
-            songTitleLabel.leading == imageView.leading,
-            songTitleLabel.trailing == imageView.trailing,
-            songTitleLabel.top == imageView.bottom + 28,
+            songTitleLabel.leading == imageOuterView.leading,
+            songTitleLabel.trailing == imageOuterView.trailing,
+            songTitleLabel.top == imageOuterView.bottom + 28,
             playPauseButton.centerX == songTitleLabel.centerX
         ])
         
         self.horizontalConstraints = [
-            imageView.height == containerView.height,
-            imageView.width == imageView.height ~ 900,
-            imageView.leading == containerView.leading + 24,
-            imageView.centerY == containerView.centerY
+            imageOuterView.height == containerView.height,
+            imageOuterView.width == imageOuterView.height ~ 900,
+            imageOuterView.leading == containerView.leading + 24,
+            imageOuterView.centerY == containerView.centerY
         ]
         
         // separating the extra constraints because of swift limitations
         self.horizontalConstraints.append(contentsOf: [
-            songTitleLabel.leading == imageView.trailing + 16,
+            songTitleLabel.leading == imageOuterView.trailing + 16,
             songTitleLabel.trailing == containerView.trailing - 16,
             playPauseButton.centerY == containerView.centerY
         ])
+        
+        self.albumImageConstraints = ((imageInnerView.left  == imageOuterView.left).activate(),
+                                      (imageInnerView.right == imageOuterView.right).activate(),
+                                      (imageInnerView.top   == imageOuterView.top).activate(),
+                                      (imageInnerView.bottom == imageOuterView.bottom).activate())
         
         let buttonSize: CGFloat = 48.0, margin: CGFloat = 24.0
         
@@ -163,7 +172,9 @@ class ViewController: UIViewController {
         prevTrackButton.constrainSize(to: buttonSize)
         nextTrackButton.constrainSize(to: buttonSize)
         
-        NSLayoutConstraint.activate(musPickerButton.bottom == volumeSlider.top - 16,
+        NSLayoutConstraint.activate(imageInnerView.width <= imageOuterView.width,
+                                    imageInnerView.height <= imageOuterView.height,
+                                    musPickerButton.bottom == volumeSlider.top - 16,
                                     musPickerButton.left == volumeSlider.left,
                                     icloudDocButton.top == musPickerButton.top,
                                     icloudDocButton.centerX == albumTitleLabel.centerX,
@@ -182,28 +193,27 @@ class ViewController: UIViewController {
                                     volumeSlider.trailing == albumTitleLabel.trailing - margin,
                                     volumeSlider.top == playPauseButton.bottom + 80,
                                     volumeSlider.height == volumeSlider.frame.height)
-        
     }
     
     override func viewDidLoad() {
         super.viewDidLoad()
         
-        playPauseButton.setBackgroundImage(#imageLiteral(resourceName: "Play"), for: UIControlState())
+        playPauseButton.setBackgroundImage(#imageLiteral(resourceName: "Play"), for: .normal)
         playPauseButton.addTarget(self, action: #selector(ViewController.togglePlayback), for: .touchUpInside)
         
-        nextTrackButton.setBackgroundImage(#imageLiteral(resourceName: "Next"), for: UIControlState())
+        nextTrackButton.setBackgroundImage(#imageLiteral(resourceName: "Next"), for: .normal)
         nextTrackButton.addTarget(self, action: #selector(ViewController.toggleNextTrack), for: .touchUpInside)
         
-        prevTrackButton.setBackgroundImage(#imageLiteral(resourceName: "Prev"), for: UIControlState())
+        prevTrackButton.setBackgroundImage(#imageLiteral(resourceName: "Prev"), for: .normal)
         prevTrackButton.addTarget(self, action: #selector(ViewController.togglePrevTrack), for: .touchUpInside)
         
-        musPickerButton.setBackgroundImage(#imageLiteral(resourceName: "Music"), for: UIControlState())
+        musPickerButton.setBackgroundImage(#imageLiteral(resourceName: "Music"), for: .normal)
         musPickerButton.addTarget(self, action: #selector(ViewController.presentMusicPicker), for: .touchUpInside)
         
-        trackListButton.setBackgroundImage(#imageLiteral(resourceName: "List"), for: UIControlState())
+        trackListButton.setBackgroundImage(#imageLiteral(resourceName: "List"), for: .normal)
         trackListButton.addTarget(self, action: #selector(ViewController.presentMusicQueueList), for: .touchUpInside)
         
-        icloudDocButton.setBackgroundImage(#imageLiteral(resourceName: "Cloud"), for: UIControlState())
+        icloudDocButton.setBackgroundImage(#imageLiteral(resourceName: "Cloud"), for: .normal)
         icloudDocButton.addTarget(self, action: #selector(ViewController.presentCloudDocPicker), for: .touchUpInside)
         
         songTitleLabel.text = "Welcome to Treble"
@@ -218,8 +228,6 @@ class ViewController: UIViewController {
         albumTitleLabel.font = .preferredFont(forTextStyle: .body)
         albumTitleLabel.textAlignment = .center
         
-        self.updateAlbumImage(to: nil)
-        self.updateCurrentTrack()
         self.setupMediaRemote()
         
         NotificationCenter.default.addObserver(self, selector: #selector(ViewController.updateCurrentTrack), name: .MPMusicPlayerControllerNowPlayingItemDidChange, object: musicPlayer)
@@ -358,7 +366,7 @@ class ViewController: UIViewController {
         let isDarkColor = image.averageColor.isDark
         let blurEffect = isDarkColor ? UIBlurEffect(style: .light) : UIBlurEffect(style: .dark)
         UIView.animate(withDuration: 0.5) {
-            self.imageView.image = image
+            self.imageInnerView.image = image
             self.backgroundImageView.image = image
             self.backgroundView.effect = blurEffect
             self.vibrancyEffectView.effect = UIVibrancyEffect(blurEffect: blurEffect)
@@ -390,15 +398,31 @@ class ViewController: UIViewController {
         switch musicType {
         case .library:
             switch musicPlayer.playbackState {
-            case .playing: playPauseButton.setBackgroundImage(#imageLiteral(resourceName: "Pause"), for: [])
-            case .paused:  playPauseButton.setBackgroundImage(#imageLiteral(resourceName: "Play"),  for: [])
+            case .playing: playPauseButton.setBackgroundImage(#imageLiteral(resourceName: "Pause"), for: .normal)
+            case .paused:  playPauseButton.setBackgroundImage(#imageLiteral(resourceName: "Play"),  for: .normal)
             default:       break
             }
+            self.updateAlbumImageConstraints(for: musicPlayer.playbackState)
         case .file:
             if audioPlayer.rate == 0 { // is paused
-                playPauseButton.setBackgroundImage(#imageLiteral(resourceName: "Play"),  for: [])
+                playPauseButton.setBackgroundImage(#imageLiteral(resourceName: "Play"),  for: .normal)
+                self.updateAlbumImageConstraints(for: .paused)
             } else {
-                playPauseButton.setBackgroundImage(#imageLiteral(resourceName: "Pause"), for: [])
+                playPauseButton.setBackgroundImage(#imageLiteral(resourceName: "Pause"), for: .normal)
+                self.updateAlbumImageConstraints(for: .playing)
+            }
+        }
+    }
+    
+    func updateAlbumImageConstraints(for playingState: MPMusicPlaybackState) {
+        DispatchQueue.main.async {
+            let constant: CGFloat = playingState == .paused ? 8 : 0
+            self.albumImageConstraints.left.constant = constant
+            self.albumImageConstraints.right.constant = -constant
+            self.albumImageConstraints.top.constant = constant
+            self.albumImageConstraints.bottom.constant = -constant
+            UIView.animate(withDuration: 0.25) {
+                self.imageOuterView.layoutIfNeeded()
             }
         }
     }
