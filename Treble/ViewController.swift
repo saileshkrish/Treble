@@ -112,7 +112,7 @@ class ViewController: UIViewController {
         vibrancyEffectView.contentView.addSubview(trackListButton)
         vibrancyEffectView.contentView.addSubview(icloudDocButton)
         
-        let views = [containerView, backgroundImageView, backgroundView, vibrancyEffectView, imageView, musPickerButton, volumeSlider, songTitleLabel, albumTitleLabel, playPauseButton, prevTrackButton, nextTrackButton, trackListButton, icloudDocButton]
+        let views: [UIView] = [containerView, backgroundImageView, backgroundView, vibrancyEffectView, imageView, musPickerButton, volumeSlider, songTitleLabel, albumTitleLabel, playPauseButton, prevTrackButton, nextTrackButton, trackListButton, icloudDocButton]
             
         views.forEach {
             $0.translatesAutoresizingMaskIntoConstraints = false
@@ -311,7 +311,7 @@ class ViewController: UIViewController {
                         guard let data: Data = item.value as? Data, let image = UIImage(data: data) else { continue }
                         albumImage = image
                     default:
-                        print("no-tag", item.commonKey)
+                        print("no-tag", item.commonKey!)
                     }
                 }
             }
