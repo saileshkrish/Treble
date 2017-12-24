@@ -125,37 +125,45 @@ class ViewController: UIViewController {
         backgroundView.constrain(to: self.view)
         backgroundImageView.constrain(to: self.view)
         vibrancyEffectView.constrain(to: self.view)
-        
-        NSLayoutConstraint.activate(containerView.leading == self.view.leading, containerView.trailing == self.view.trailing)
-        self.containerConstraints = ((containerView.top == self.view.top).activate(), (containerView.bottom == self.view.bottom).activate())
+		if #available(iOS 11.0, *) {
+			containerView.leadingAnchor.constraint(equalTo: self.view.safeAreaLayoutGuide.leadingAnchor).activate()
+			containerView.trailingAnchor.constraint(equalTo: self.view.safeAreaLayoutGuide.trailingAnchor).activate()
+		} else {
+			NSLayoutConstraint.activate(containerView.leading == self.view.leading, containerView.trailing == self.view.trailing)
+		}
+		
+		
+		
+        self.containerConstraints = (containerView.topAnchor.constraint(equalTo: topLayoutGuide.bottomAnchor).activate(),
+									 containerView.bottomAnchor.constraint(equalTo: bottomLayoutGuide.topAnchor).activate())
         
         self.verticalConstraints = [
             imageOuterView.top == containerView.top,
             imageOuterView.width == containerView.width * 0.85,
             imageOuterView.height == imageOuterView.width,
             imageOuterView.centerX == containerView.centerX,
+			playPauseButton.centerX == songTitleLabel.centerX
         ]
         
         // separating the extra constraints because of swift limitations
         self.verticalConstraints.append(contentsOf: [
             songTitleLabel.leading == imageOuterView.leading,
             songTitleLabel.trailing == imageOuterView.trailing,
-            songTitleLabel.top == imageOuterView.bottom + 28,
-            playPauseButton.centerX == songTitleLabel.centerX
+            songTitleLabel.top == imageOuterView.bottom + 28
         ])
         
         self.horizontalConstraints = [
             imageOuterView.height == containerView.height,
             imageOuterView.width == imageOuterView.height ~ UILayoutPriority(rawValue: 900),
             imageOuterView.leading == containerView.leading + 24,
-            imageOuterView.centerY == containerView.centerY
+            imageOuterView.centerY == containerView.centerY,
+			playPauseButton.centerY == containerView.centerY
         ]
         
         // separating the extra constraints because of swift limitations
         self.horizontalConstraints.append(contentsOf: [
             songTitleLabel.leading == imageOuterView.trailing + 16,
-            songTitleLabel.trailing == containerView.trailing - 16,
-            playPauseButton.centerY == containerView.centerY
+            songTitleLabel.trailing == containerView.trailing - 16
         ])
         
         self.albumImageConstraints = ((imageInnerView.left  == imageOuterView.left).activate(),
@@ -305,17 +313,17 @@ class ViewController: UIViewController {
             for format in currentItem.asset.availableMetadataFormats {
                 for item in currentItem.asset.metadata(forFormat: format) where item.commonKey != nil {
                     switch item.commonKey! {
-                    case "artist":
+                    case .commonKeyArtist:
                         metadata[.artist] = item.value as? String
-                    case "title":
+					case .commonKeyTitle:
                         metadata[.title] = item.value as? String
-                    case "albumName":
+                    case .commonKeyAlbumName:
                         metadata[.albumTitle] = item.value as? String
-                    case "type":
+                    case .commonKeyType:
                         metadata[.type] = item.value as? String
-                    case "creator":
+                    case .commonKeyCreator:
                         metadata[.creator] = item.value as? String
-                    case "artwork":
+                    case .commonKeyArtwork:
                         guard let data: Data = item.value as? Data, let image = UIImage(data: data) else { continue }
                         albumImage = image
                     default:
