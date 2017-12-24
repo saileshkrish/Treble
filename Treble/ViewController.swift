@@ -42,7 +42,7 @@ class ViewController: UIViewController {
     private let icloudDocButton = UIButton(type: .custom)
     private let trackListButton = UIButton(type: .custom)
     
-    fileprivate let musicPlayer = MPMusicPlayerController.systemMusicPlayer()
+    fileprivate let musicPlayer = MPMusicPlayerController.systemMusicPlayer
     fileprivate var audioPlayer: AVPlayer!
     fileprivate var audioFileName: String?
     fileprivate var audioArtistName: String?
@@ -146,7 +146,7 @@ class ViewController: UIViewController {
         
         self.horizontalConstraints = [
             imageOuterView.height == containerView.height,
-            imageOuterView.width == imageOuterView.height ~ 900,
+            imageOuterView.width == imageOuterView.height ~ UILayoutPriority(rawValue: 900),
             imageOuterView.leading == containerView.leading + 24,
             imageOuterView.centerY == containerView.centerY
         ]
@@ -286,13 +286,13 @@ class ViewController: UIViewController {
         
     }
     
-    func restartPlayback() {
+    @objc func restartPlayback() {
         guard let _ = audioPlayer.currentItem else { return }
         audioPlayer.seek(to: kCMTimeZero)
         audioPlayer.play()
     }
     
-    func updateCurrentTrack() {
+    @objc func updateCurrentTrack() {
         switch musicType {
         case .file:
             trackListView.currentTrack = nil
@@ -374,7 +374,7 @@ class ViewController: UIViewController {
         }
     }
     
-    func togglePlayback() {
+    @objc func togglePlayback() {
         switch musicType {
         case .library:
             guard let _ = musicPlayer.nowPlayingItem else { return }
@@ -394,7 +394,7 @@ class ViewController: UIViewController {
         self.updatePlaybackState()
     }
     
-    func updatePlaybackState() {
+    @objc func updatePlaybackState() {
         switch musicType {
         case .library:
             switch musicPlayer.playbackState {
@@ -427,12 +427,12 @@ class ViewController: UIViewController {
         }
     }
     
-    func toggleNextTrack() {
+    @objc func toggleNextTrack() {
         guard let _ = musicPlayer.nowPlayingItem else { return }
         musicPlayer.skipToNextItem()
     }
     
-    func togglePrevTrack() {
+    @objc func togglePrevTrack() {
         switch musicType {
         case .library:
             guard let _ = musicPlayer.nowPlayingItem else { return }
@@ -449,7 +449,7 @@ class ViewController: UIViewController {
         
     }
     
-    func presentMusicQueueList() {
+    @objc func presentMusicQueueList() {
         guard let _ = trackListView.currentTrack, !trackListView.trackList.isEmpty else { return }
         let viewController = UINavigationController(rootViewController: trackListView)
         viewController.modalPresentationStyle = UIDevice.current.userInterfaceIdiom == .pad ? .popover : .custom
@@ -461,7 +461,7 @@ class ViewController: UIViewController {
         self.present(viewController, animated: true, completion: nil)
     }
     
-    func presentMusicPicker() {
+    @objc func presentMusicPicker() {
         let musicPickerViewController = MPMediaPickerController(mediaTypes: .anyAudio)
         musicPickerViewController.delegate = self
         musicPickerViewController.allowsPickingMultipleItems = true
@@ -469,7 +469,7 @@ class ViewController: UIViewController {
         self.present(musicPickerViewController, animated: true, completion: nil)
     }
     
-    func presentCloudDocPicker() {
+    @objc func presentCloudDocPicker() {
         let documentPicker = UIDocumentPickerViewController(documentTypes: ["public.audio"], in: .import)
         documentPicker.delegate = self
         self.present(documentPicker, animated: true, completion: nil)

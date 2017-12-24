@@ -19,7 +19,7 @@ class TrackListPresentationController: UIPresentationController {
         dimmingView.addGestureRecognizer(tapGesture)
     }
     
-    func dimmingViewTapped(_ tapRecognizer: UITapGestureRecognizer) {
+    @objc func dimmingViewTapped(_ tapRecognizer: UITapGestureRecognizer) {
         presentingViewController.dismiss(animated: true, completion: nil)
     }
     

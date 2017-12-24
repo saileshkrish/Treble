@@ -12,7 +12,7 @@ import MediaPlayer
 private let reuseIdentifier = "reuseIdentifier"
 class TrackListViewController: UITableViewController {
     
-    private let musicPlayer = MPMusicPlayerController.systemMusicPlayer()
+    private let musicPlayer = MPMusicPlayerController.systemMusicPlayer
     private(set) var trackList: [MPMediaItem] = []
     
     var currentTrack: MPMediaItem! {
@@ -59,7 +59,7 @@ class TrackListViewController: UITableViewController {
         self.navigationController?.preferredContentSize = contentSize
     }
     
-    func dismissView() {
+    @objc func dismissView() {
         self.dismiss(animated: true, completion: nil)
     }
     
