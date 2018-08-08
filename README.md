@@ -1,24 +1,13 @@
 # Treble
-Simple iOS Music Player
 
-Something simple and func I made a while back; decided it was time to open source it. The only reason this app exists was because my dock blocks my iPhone's speakers, and since the native Music app doesn't support Landscape, I decided to write a nicer app with Landscape support.
-
-### Swift 3 Updates
-
-Since Swift 3 changed quite a lot of Foundation, I migrated the project to use Swift 3 and support iOS 10. While I was at it, I added multiple features, including:
-
-1. iPad Support
-2. Display Current Album instead of Music Queue
-3. Removed all traces of Objective-C, so it's now a pure-Swift project
-4. Play from iCloud Drive using `AVPlayer`
-
+Treble is a simple iOS Music Player app that can play directly from Apple Music or any music files from your iCloud Drive. Made this a couple of years ago as a simple and fun side project that I thought would be perfect for open source. The main reason this app exists is that my iPhone dock blocks the speaker grills under the iPhone, and since the native Apple Music app does *not* support landscape mode (rip Coverflow), I decided to write my own with proper landscape support and some nice features. Pull requests are welcome!
 
 Enjoy! :P
 
 ## LICENSE
 The MIT License (MIT)
 
-Copyright (c) 2016 Andy Liang
+Copyright (c) 2018 Andy Liang
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files (the "Software"), to deal
