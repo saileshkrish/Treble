@@ -69,7 +69,7 @@ class TrackListViewController: UITableViewController {
     
     var indexOfNowPlayingItem: Int {
         guard let title = musicPlayer.nowPlayingItem?.title else { return -1 }
-        return self.trackList.map { $0.title! }.index(of: title) ?? -1
+        return self.trackList.map { $0.title! }.firstIndex(of: title) ?? -1
     }
     
     override func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {

@@ -20,7 +20,7 @@ class TrackItemCell: UITableViewCell {
     
     let indexLabel: UILabel = UILabel()
     
-    override init(style: UITableViewCellStyle, reuseIdentifier: String?) {
+    override init(style: UITableViewCell.CellStyle, reuseIdentifier: String?) {
         super.init(style: .value1, reuseIdentifier: reuseIdentifier)
         self.commonInit()
     }

@@ -30,22 +30,22 @@ struct Length: Axis {}
 struct LayoutItem<Axis> {
     
     var item: Any
-    var attribute: NSLayoutAttribute
+    var attribute: NSLayoutConstraint.Attribute
     var constant: CGFloat
     var multiplier: CGFloat
     
-    init(item: Any, attribute: NSLayoutAttribute, times multiplier: CGFloat, plus constant: CGFloat) {
+    init(item: Any, attribute: NSLayoutConstraint.Attribute, times multiplier: CGFloat, plus constant: CGFloat) {
         self.item = item
         self.attribute = attribute
         self.multiplier = multiplier
         self.constant = constant
     }
     
-    fileprivate func constrain(to secondItem: LayoutItem, relation: NSLayoutRelation) -> NSLayoutConstraint {
+    fileprivate func constrain(to secondItem: LayoutItem, relation: NSLayoutConstraint.Relation) -> NSLayoutConstraint {
         return NSLayoutConstraint(item: item, attribute: attribute, relatedBy: relation, toItem: secondItem.item, attribute: secondItem.attribute, multiplier: secondItem.multiplier, constant: secondItem.constant)
     }
     
-    fileprivate func constrain(to constant: CGFloat, relation: NSLayoutRelation) -> NSLayoutConstraint {
+    fileprivate func constrain(to constant: CGFloat, relation: NSLayoutConstraint.Relation) -> NSLayoutConstraint {
         return NSLayoutConstraint(item: item, attribute: attribute, relatedBy: relation, toItem: nil, attribute: .notAnAttribute, multiplier: 1.0, constant: constant)
     }
     
@@ -162,7 +162,7 @@ extension UIView {
         return self.layoutItem(for: .centerYWithinMargins)
     }
     
-    private func layoutItem<T>(for attribute: NSLayoutAttribute) -> LayoutItem<T> {
+    private func layoutItem<T>(for attribute: NSLayoutConstraint.Attribute) -> LayoutItem<T> {
         return LayoutItem(item: self, attribute: attribute, times: 1.0, plus: 0.0)
     }
     

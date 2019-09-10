@@ -63,7 +63,7 @@ public class MarqueeLabel: UILabel {
      
      Defaults to `UIViewAnimationOptionCurveEaseInOut`.
      */
-    public var animationCurve: UIViewAnimationCurve = .linear
+    public var animationCurve: UIView.AnimationCurve = .linear
     
     /**
      A boolean property that sets whether the `MarqueeLabel` should behave like a normal `UILabel`.
@@ -418,8 +418,8 @@ public class MarqueeLabel: UILabel {
         NotificationCenter.default.addObserver(self, selector: #selector(MarqueeLabel.labelizeForController(_:)), name: MarqueeKeys.labelize.notification, object: nil)
         NotificationCenter.default.addObserver(self, selector: #selector(MarqueeLabel.animateForController(_:)), name: MarqueeKeys.animate.notification, object: nil)
         // UIApplication state notifications
-        NotificationCenter.default.addObserver(self, selector: #selector(MarqueeLabel.restartLabel), name: .UIApplicationDidBecomeActive, object: nil)
-        NotificationCenter.default.addObserver(self, selector: #selector(MarqueeLabel.shutdownLabel), name: .UIApplicationDidEnterBackground, object: nil)
+        NotificationCenter.default.addObserver(self, selector: #selector(MarqueeLabel.restartLabel), name: UIApplication.didBecomeActiveNotification, object: nil)
+        NotificationCenter.default.addObserver(self, selector: #selector(MarqueeLabel.shutdownLabel), name: UIApplication.didEnterBackgroundNotification, object: nil)
     }
     
     override public func awakeFromNib() {
@@ -910,7 +910,7 @@ public class MarqueeLabel: UILabel {
             let colorAnimation = GradientSetupAnimation(keyPath: "colors")
             colorAnimation.fromValue = gradientMask.colors
             colorAnimation.toValue = adjustedColors
-            colorAnimation.fillMode = kCAFillModeForwards
+            colorAnimation.fillMode = CAMediaTimingFillMode.forwards
             colorAnimation.isRemovedOnCompletion = false
             colorAnimation.delegate = self
             gradientMask.add(colorAnimation, forKey: "setupFade")
@@ -1094,21 +1094,21 @@ public class MarqueeLabel: UILabel {
         return animation
     }
     
-    private func timingFunction(for curve:  UIViewAnimationCurve) -> CAMediaTimingFunction {
+    private func timingFunction(for curve:  UIView.AnimationCurve) -> CAMediaTimingFunction {
         let timingFunction: String?
         
         switch curve {
         case .easeIn:
-            timingFunction = kCAMediaTimingFunctionEaseIn
+            timingFunction = convertFromCAMediaTimingFunctionName(CAMediaTimingFunctionName.easeIn)
         case .easeInOut:
-            timingFunction = kCAMediaTimingFunctionEaseInEaseOut
+            timingFunction = convertFromCAMediaTimingFunctionName(CAMediaTimingFunctionName.easeInEaseOut)
         case .easeOut:
-            timingFunction = kCAMediaTimingFunctionEaseOut
+            timingFunction = convertFromCAMediaTimingFunctionName(CAMediaTimingFunctionName.easeOut)
         default:
-            timingFunction = kCAMediaTimingFunctionLinear
+            timingFunction = convertFromCAMediaTimingFunctionName(CAMediaTimingFunctionName.linear)
         }
         
-        return CAMediaTimingFunction(name: timingFunction!)
+        return CAMediaTimingFunction(name: convertToCAMediaTimingFunctionName(timingFunction!))
     }
     
     private func transactionDurationType(_ labelType: Type, interval: CGFloat, delay: CGFloat) -> TimeInterval {
@@ -1700,4 +1700,14 @@ extension CAMediaTimingFunction {
     
 
     
+}
+
+// Helper function inserted by Swift 4.2 migrator.
+fileprivate func convertFromCAMediaTimingFunctionName(_ input: CAMediaTimingFunctionName) -> String {
+	return input.rawValue
+}
+
+// Helper function inserted by Swift 4.2 migrator.
+fileprivate func convertToCAMediaTimingFunctionName(_ input: String) -> CAMediaTimingFunctionName {
+	return CAMediaTimingFunctionName(rawValue: input)
 }

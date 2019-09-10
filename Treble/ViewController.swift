@@ -52,13 +52,13 @@ class ViewController: UIViewController {
             do {
                 switch musicType {
                 case .file:
-                    try AVAudioSession.sharedInstance().setCategory(AVAudioSessionCategoryPlayback)
+                    try AVAudioSession.sharedInstance().setCategory(.playback)
                     try AVAudioSession.sharedInstance().setActive(true)
                     UIApplication.shared.beginReceivingRemoteControlEvents()
                     NotificationCenter.default.addObserver(self, selector: #selector(ViewController.restartPlayback), name: .AVPlayerItemDidPlayToEndTime, object: nil)
                 case .library:
                     self.audioPlayer?.pause()
-                    try AVAudioSession.sharedInstance().setActive(false, with: .notifyOthersOnDeactivation)
+                    try AVAudioSession.sharedInstance().setActive(false, options: .notifyOthersOnDeactivation)
                     NotificationCenter.default.removeObserver(self, name: .AVPlayerItemDidPlayToEndTime, object: nil)
                     UIApplication.shared.endReceivingRemoteControlEvents()
                 }
@@ -132,10 +132,10 @@ class ViewController: UIViewController {
 			NSLayoutConstraint.activate(containerView.leading == self.view.leading, containerView.trailing == self.view.trailing)
 		}
 		
-		
-		
-        self.containerConstraints = (containerView.topAnchor.constraint(equalTo: topLayoutGuide.bottomAnchor).activate(),
-									 containerView.bottomAnchor.constraint(equalTo: bottomLayoutGuide.topAnchor).activate())
+
+        let top = containerView.topAnchor.constraint(equalTo: view.safeAreaLayoutGuide.topAnchor).activate()
+        let bottom = containerView.bottomAnchor.constraint(equalTo: view.safeAreaLayoutGuide.bottomAnchor).activate()
+        self.containerConstraints = (top, bottom)
         
         self.verticalConstraints = [
             imageOuterView.top == containerView.top,
@@ -296,7 +296,7 @@ class ViewController: UIViewController {
     
     @objc func restartPlayback() {
         guard let _ = audioPlayer.currentItem else { return }
-        audioPlayer.seek(to: kCMTimeZero)
+        audioPlayer.seek(to: .zero)
         audioPlayer.play()
     }
     
@@ -451,7 +451,7 @@ class ViewController: UIViewController {
             }
         case .file:
             guard let _ = audioPlayer.currentItem else { return }
-            audioPlayer.seek(to: kCMTimeZero)
+            audioPlayer.seek(to: .zero)
             self.updateCurrentTrack()
         }
         
