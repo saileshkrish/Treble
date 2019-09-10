@@ -22,7 +22,6 @@ class PlayerViewController: UIViewController {
 
     override func loadView() {
         super.loadView()
-        view.translatesAutoresizingMaskIntoConstraints = false
         view.backgroundColor = .systemBackground
         view.tintColor = .white
         
@@ -37,7 +36,7 @@ class PlayerViewController: UIViewController {
         albumImageView.contentMode = .scaleAspectFill
         albumImageView.layer.cornerRadius = 13
         albumImageView.layer.masksToBounds = true
-        albumImageView.backgroundColor = .tertiarySystemBackground
+        albumImageView.backgroundColor = .systemFill
 
         let imageContentView = UIView()
         imageContentView.backgroundColor = .clear
@@ -102,8 +101,11 @@ class PlayerViewController: UIViewController {
         // the content view for the controls and album art
         view.addSubview(contentView)
 
+        // 5. setup the other constraints
+        let imageConstraint = imageContentView.widthAnchor.constraint(equalTo: imageContentView.heightAnchor)
+        imageConstraint.priority = .defaultHigh
         NSLayoutConstraint.activate([
-            imageContentView.widthAnchor.constraint(equalTo: imageContentView.heightAnchor),
+            imageConstraint,
             volumeSlider.heightAnchor.constraint(equalToConstant: 44),
             contentView.centerXAnchor.constraint(equalTo: view.centerXAnchor),
             contentView.centerYAnchor.constraint(equalTo: view.centerYAnchor),
@@ -129,9 +131,9 @@ class PlayerViewController: UIViewController {
         albumLabel.font = roundedFont(for: .body)
     }
 
-    override func willTransition(to newCollection: UITraitCollection, with coordinator: UIViewControllerTransitionCoordinator) {
-        super.willTransition(to: newCollection, with: coordinator)
-        coordinator.animateAlongsideTransition(in: contentView, animation: { coordinator in
+    override func viewWillTransition(to size: CGSize, with coordinator: UIViewControllerTransitionCoordinator) {
+        super.viewWillTransition(to: size, with: coordinator)
+        coordinator.animate(alongsideTransition: { _ in
             let isLandscape = UIDevice.current.orientation.isLandscape
             self.contentView.axis = isLandscape ? .horizontal : .vertical
         }, completion: nil)
@@ -217,14 +219,26 @@ extension PlayerViewController : UIDocumentPickerDelegate {
 
 
 private extension UIView {
-    func addSubviewAndConstrain(_ subview: UIView) {
+    func addSubviewAndConstrain(toMarginsGuide: Bool = false, _ subview: UIView) {
         addSubview(subview)
         subview.translatesAutoresizingMaskIntoConstraints = false
+        let guide: Anchorable = toMarginsGuide ? layoutMarginsGuide : self
         NSLayoutConstraint.activate([
-            subview.leadingAnchor.constraint(equalTo: leadingAnchor),
-            subview.trailingAnchor.constraint(equalTo: trailingAnchor),
-            subview.topAnchor.constraint(equalTo: topAnchor),
-            subview.bottomAnchor.constraint(equalTo: bottomAnchor)
+            subview.leadingAnchor.constraint(equalTo: guide.leadingAnchor),
+            subview.trailingAnchor.constraint(equalTo: guide.trailingAnchor),
+            subview.topAnchor.constraint(equalTo: guide.topAnchor),
+            subview.bottomAnchor.constraint(equalTo: guide.bottomAnchor)
         ])
     }
 }
+
+protocol Anchorable {
+    var leadingAnchor: NSLayoutXAxisAnchor { get }
+    var trailingAnchor: NSLayoutXAxisAnchor { get }
+    var topAnchor: NSLayoutYAxisAnchor { get }
+    var bottomAnchor: NSLayoutYAxisAnchor { get }
+}
+
+extension UIView : Anchorable {}
+extension UILayoutGuide : Anchorable {}
+
