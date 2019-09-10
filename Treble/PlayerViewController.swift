@@ -26,7 +26,7 @@ class PlayerViewController: UIViewController {
         view.tintColor = .white
         
         // 1. setup the background
-        let blurEffect = UIBlurEffect(style: .systemMaterial)
+        let blurEffect = UIBlurEffect(style: .systemThinMaterial)
         let backgroundView = UIVisualEffectView(effect: blurEffect)
         backgroundImageView.contentMode = .scaleAspectFill
         backgroundImageView.backgroundColor = .secondarySystemBackground
@@ -260,6 +260,7 @@ extension PlayerViewController : MediaPlayerDelegate {
 
     func updateTrackInfo(with trackInfo: TrackInfo) {
         albumImageView.image = trackInfo.albumArtwork
+        backgroundImageView.image = trackInfo.albumArtwork
         songLabel.text = trackInfo.songTitle
         albumLabel.text = [trackInfo.albumTitle, trackInfo.artistName]
             .compactMap { $0 }
