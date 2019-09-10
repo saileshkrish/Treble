@@ -15,42 +15,42 @@ enum MediaPlaybackType {
 }
 
 class MediaController: NSObject {
-    private var currentMediaPlayer: MediaPlayer!
+    private var currentMediaPlayer: MediaPlayer?
 
-    var musicType: MediaPlaybackType = .system {
-        didSet { updateMusicType() }
+    override init() {
+        super.init()
+        // setup the remote
+        let remote = MPRemoteCommandCenter.shared()
+        remote.togglePlayPauseCommand.addTarget(togglePlayback)
+        remote.playCommand.addTarget(play)
+        remote.pauseCommand.addTarget(pause)
+        remote.previousTrackCommand.addTarget(previousTrack)
+        remote.nextTrackCommand.addTarget(nextTrack)
     }
 
-    func setupRemote() {
-        let remote = MPRemoteCommandCenter.shared()
-        remote.togglePlayPauseCommand.addTarget(currentMediaPlayer.togglePlayback)
-        remote.playCommand.addTarget(currentMediaPlayer.play)
-        remote.pauseCommand.addTarget(currentMediaPlayer.pause)
-        remote.previousTrackCommand.addTarget(currentMediaPlayer.previousTrack)
-        remote.nextTrackCommand.addTarget(currentMediaPlayer.nextTrack)
+    func update(player: MediaPlayer) {
+        currentMediaPlayer = player
+        player.play()
     }
 
     func togglePlayback() {
-        currentMediaPlayer.togglePlayback()
+        currentMediaPlayer?.togglePlayback()
     }
 
     func play() {
-        currentMediaPlayer.play()
+        currentMediaPlayer?.play()
     }
 
     func pause() {
-        currentMediaPlayer.pause()
+        currentMediaPlayer?.pause()
     }
 
     func previousTrack() {
-        currentMediaPlayer.previousTrack()
+        currentMediaPlayer?.previousTrack()
     }
 
     func nextTrack() {
-        currentMediaPlayer.nextTrack()
-    }
-
-    private func updateMusicType() {
+        currentMediaPlayer?.nextTrack()
     }
 
 }

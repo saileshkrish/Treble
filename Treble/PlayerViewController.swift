@@ -82,11 +82,14 @@ class PlayerViewController: UIViewController {
             optionsContentView,
             volumeSlider
         ])
+        innerContentView.setCustomSpacing(8, after: songLabel)
         innerContentView.axis = .vertical
         innerContentView.spacing = 24
 
         let vibrancyEffect = UIVibrancyEffect(blurEffect: blurEffect)
         let vibrancyView = UIVisualEffectView(effect: vibrancyEffect)
+        vibrancyView.layer.masksToBounds = false
+        vibrancyView.contentView.layer.masksToBounds = false
         vibrancyView.contentView.addSubviewAndConstrain(innerContentView)
 
         contentView = UIStackView(arrangedSubviews: [imageContentView, vibrancyView])
@@ -122,13 +125,15 @@ class PlayerViewController: UIViewController {
         songLabel.textAlignment = .center
         songLabel.type = .continuous
         songLabel.trailingBuffer = 16
-        songLabel.font = roundedFont(for: .title2)
+        songLabel.font = roundedFont(for: .title1)
 
         albumLabel.text = "Play from your Apple Music Library, or from your iCloud Drive."
         albumLabel.textAlignment = .center
         albumLabel.type = .continuous
         albumLabel.trailingBuffer = 16
         albumLabel.font = roundedFont(for: .body)
+
+        mediaController.update(player: SystemMediaPlayer(delegate: self))
     }
 
     override func viewWillTransition(to size: CGSize, with coordinator: UIViewControllerTransitionCoordinator) {
@@ -198,13 +203,14 @@ extension PlayerViewController : MPMediaPickerControllerDelegate {
         _ mediaPicker: MPMediaPickerController,
         didPickMediaItems mediaItemCollection: MPMediaItemCollection)
     {
-        print(mediaItemCollection)
+        let mediaPlayer = SystemMediaPlayer(queue: mediaItemCollection, delegate: self)
+        mediaController.update(player: mediaPlayer)
+        mediaPicker.dismiss(animated: true, completion: nil)
     }
 
 }
 
 extension PlayerViewController : UIDocumentPickerDelegate {
-
     func documentPickerWasCancelled(_ controller: UIDocumentPickerViewController) {
         controller.dismiss(animated: true, completion: nil)
     }
@@ -212,11 +218,43 @@ extension PlayerViewController : UIDocumentPickerDelegate {
     func documentPicker(_ controller: UIDocumentPickerViewController, didPickDocumentAt url: URL) {
         guard controller.documentPickerMode == .import else { return }
         let audioItem = AVPlayerItem(url: UIDocument(fileURL: url).presentedItemURL!)
-        print(audioItem)
+        let player = AVPlayer(playerItem: audioItem)
+        let url = url.deletingPathExtension()
+        let fullName = url.lastPathComponent
+        var fileName: String
+        var artistName: String?
+        if fullName.components(separatedBy: "-").count == 2 {
+            let components = fullName.components(separatedBy: "-")
+            artistName = components[0]
+            fileName = components[1]
+        } else {
+            fileName = fullName
+        }
+        let mediaPlayer = FileMediaPlayer(
+            player: player, fileName: fileName, artistName: artistName, delegate: self)
+        mediaController.update(player: mediaPlayer)
+        controller.dismiss(animated: true, completion: nil)
+    }
+}
+
+extension PlayerViewController : MediaPlayerDelegate {
+
+    func updatePlaybackState(isPlaying: Bool) {
+        let image = isPlaying
+            ? UIImage(systemName: "pause.fill")
+            : UIImage(systemName: "play.fill")
+        playbackButton.setImage(image, for: .normal)
+    }
+
+    func updateTrackInfo(with trackInfo: TrackInfo) {
+        albumImageView.image = trackInfo.albumArtwork
+        songLabel.text = trackInfo.songTitle
+        albumLabel.text = [trackInfo.albumTitle, trackInfo.artistName]
+            .compactMap { $0 }
+            .joined(separator: " - ")
     }
 
 }
-
 
 private extension UIView {
     func addSubviewAndConstrain(toMarginsGuide: Bool = false, _ subview: UIView) {
