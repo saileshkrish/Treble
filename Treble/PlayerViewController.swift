@@ -40,15 +40,15 @@ class PlayerViewController: UIViewController {
 
         let imageContentView = UIView()
         imageContentView.backgroundColor = .clear
-        imageContentView.addSubviewAndConstrain(albumImageView)
+        imageContentView.addSubviewAndConstrain(toMarginsGuide: true, albumImageView)
 
         // 3. setup the buttons and controls
         playbackButton = createButton(
-            systemName: "play.fill", action: #selector(didTapPlaybackButton), style: .title1)
+            systemName: "play.fill", action: #selector(didTapPlaybackButton), style: .largeTitle)
         let previousButton = createButton(
-            systemName: "backward.fill", action: #selector(didTapPreviousButton), style: .title1)
+            systemName: "backward.fill", action: #selector(didTapPreviousButton), style: .title2)
         let nextButton = createButton(
-            systemName: "forward.fill", action: #selector(didTapNextButton), style: .title1)
+            systemName: "forward.fill", action: #selector(didTapNextButton), style: .title2)
         let libraryButton = createButton(
             systemName: "music.note", action: #selector(didTapLibraryButton), style: .body)
         let cloudButton = createButton(
@@ -65,7 +65,6 @@ class PlayerViewController: UIViewController {
         ])
         controlContentView.distribution = .fillEqually
         controlContentView.alignment = .center
-        controlContentView.spacing = 32
         controlContentView.axis = .horizontal
 
         let optionsContentView = UIStackView(arrangedSubviews: [
@@ -244,6 +243,19 @@ extension PlayerViewController : MediaPlayerDelegate {
             ? UIImage(systemName: "pause.fill")
             : UIImage(systemName: "play.fill")
         playbackButton.setImage(image, for: .normal)
+        // update the constraints for the album art
+        guard let contentView = albumImageView.superview else { return }
+        let padding: CGFloat = !isPlaying ? 12 : 0
+        let insets = UIEdgeInsets(top: padding, left: padding, bottom: padding, right: padding)
+        contentView.layoutMargins = insets
+        UIView.animate(
+            withDuration: 0.8,
+            delay: 0,
+            usingSpringWithDamping: 0.7,
+            initialSpringVelocity: 0.8,
+            options: .beginFromCurrentState,
+            animations: contentView.layoutIfNeeded,
+            completion: nil)
     }
 
     func updateTrackInfo(with trackInfo: TrackInfo) {
