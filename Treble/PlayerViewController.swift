@@ -14,6 +14,7 @@ class PlayerViewController: UIViewController {
     private let mediaController = MediaController()
 
     private var playbackButton: UIButton!
+    private var listButton: UIButton!
     private let backgroundImageView = UIImageView()
     private let albumImageView = UIImageView()
     private let songLabel = MarqueeLabel(frame: .zero, duration: 8, fadeLength: 8)
@@ -53,7 +54,7 @@ class PlayerViewController: UIViewController {
             systemName: "music.note", action: #selector(didTapLibraryButton), style: .body)
         let cloudButton = createButton(
             systemName: "icloud.fill", action: #selector(didTapCloudButton), style: .body)
-        let listButton = createButton(
+        listButton = createButton(
             systemName: "list.dash", action: #selector(didTapListButton), style: .body)
 
         let routePickerView = AVRoutePickerView()
@@ -203,6 +204,7 @@ extension PlayerViewController : MPMediaPickerControllerDelegate {
         didPickMediaItems mediaItemCollection: MPMediaItemCollection)
     {
         mediaController.mediaPlayer = SystemMediaPlayer(queue: mediaItemCollection, delegate: self)
+        listButton.isHidden = false
         mediaPicker.dismiss(animated: true) {
             self.mediaController.play()
         }
@@ -232,6 +234,7 @@ extension PlayerViewController : UIDocumentPickerDelegate {
         }
         mediaController.mediaPlayer = FileMediaPlayer(
             player: player, fileName: fileName, artistName: artistName, delegate: self)
+        listButton.isHidden = true
         controller.dismiss(animated: true) {
             self.mediaController.play()
         }
