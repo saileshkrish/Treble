@@ -41,20 +41,20 @@ class FileMediaPlayer : MediaPlayer {
     func togglePlayback() {
         guard let _ = player.currentItem else { return }
         if player.rate == 0 {
-            player.play()
+            play()
         } else {
-            player.pause()
+            pause()
         }
     }
 
     func play() {
         player.play()
-        delegate?.updatePlaybackState(isPlaying: player.rate > 0)
+        delegate?.updatePlaybackState(isPlaying: true)
     }
 
     func pause() {
         player.pause()
-        delegate?.updatePlaybackState(isPlaying: player.rate > 0)
+        delegate?.updatePlaybackState(isPlaying: false)
     }
 
     func previousTrack() {
