@@ -12,7 +12,7 @@ struct TrackInfo {
     let songTitle: String
     let albumTitle: String?
     let artistName: String?
-    let albumArtwork: UIImage?
+    let albumArtwork: UIImage
 }
 
 protocol MediaPlayerDelegate : class {

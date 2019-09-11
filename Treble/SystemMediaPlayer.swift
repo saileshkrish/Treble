@@ -72,11 +72,13 @@ class SystemMediaPlayer : MediaPlayer {
 
     @objc private func updateNowPlaying() {
         guard let item = player.nowPlayingItem else { return }
+        let size = CGSize(width: 400, height: 400)
+        let image = item.artwork?.image(at: size) ?? UIImage(named: "DefaultAlbumArt")!
         let trackInfo = TrackInfo(
             songTitle: item.title ?? "",
             albumTitle: item.albumTitle,
             artistName: item.artist,
-            albumArtwork: item.artwork?.image(at: CGSize(width: 512, height: 512)))
+            albumArtwork: image)
         delegate?.updateTrackInfo(with: trackInfo)
     }
 

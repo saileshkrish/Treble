@@ -10,6 +10,14 @@ import UIKit
 import MediaPlayer
 import AVFoundation
 
+private enum MetadataKey {
+    case title
+    case albumTitle
+    case artist
+    case type
+    case creator
+}
+
 class FileMediaPlayer : MediaPlayer {
     let player: AVPlayer
     let fileName: String
@@ -68,7 +76,7 @@ class FileMediaPlayer : MediaPlayer {
 
     private func updateNowPlaying() {
         guard let item = player.currentItem else { return }
-        var albumImage: UIImage = UIImage()
+        var albumImage = UIImage(named: "DefaultAlbumArt")!
         var info: [MetadataKey: String] = [:]
 
         for format in item.asset.availableMetadataFormats {
@@ -112,8 +120,10 @@ class FileMediaPlayer : MediaPlayer {
             MPMediaItemPropertyArtist: info[.artist] ?? artistName ?? "",
             MPMediaItemPropertyPlaybackDuration: item.asset.duration.seconds,
             MPNowPlayingInfoPropertyPlaybackRate: 1 as NSNumber,
-            MPMediaItemPropertyArtwork: MPMediaItemArtwork(boundsSize: albumImage.size) {
-                albumImage.resize($0)
+            MPMediaItemPropertyArtwork: MPMediaItemArtwork(boundsSize: albumImage.size) { size in
+                UIGraphicsImageRenderer(size: size).image { _ in
+                    albumImage.draw(in: CGRect(origin: .zero, size: size))
+                }
             }
         ]
     }
