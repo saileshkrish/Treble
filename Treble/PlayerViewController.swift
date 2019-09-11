@@ -132,7 +132,7 @@ class PlayerViewController: UIViewController {
         albumLabel.trailingBuffer = 16
         albumLabel.font = roundedFont(for: .body)
 
-        mediaController.update(player: SystemMediaPlayer(delegate: self))
+        mediaController.mediaPlayer = SystemMediaPlayer(delegate: self)
     }
 
     override func viewWillTransition(to size: CGSize, with coordinator: UIViewControllerTransitionCoordinator) {
@@ -202,9 +202,10 @@ extension PlayerViewController : MPMediaPickerControllerDelegate {
         _ mediaPicker: MPMediaPickerController,
         didPickMediaItems mediaItemCollection: MPMediaItemCollection)
     {
-        let mediaPlayer = SystemMediaPlayer(queue: mediaItemCollection, delegate: self)
-        mediaController.update(player: mediaPlayer)
-        mediaPicker.dismiss(animated: true, completion: nil)
+        mediaController.mediaPlayer = SystemMediaPlayer(queue: mediaItemCollection, delegate: self)
+        mediaPicker.dismiss(animated: true) {
+            self.mediaController.play()
+        }
     }
 
 }
@@ -229,10 +230,11 @@ extension PlayerViewController : UIDocumentPickerDelegate {
         } else {
             fileName = fullName
         }
-        let mediaPlayer = FileMediaPlayer(
+        mediaController.mediaPlayer = FileMediaPlayer(
             player: player, fileName: fileName, artistName: artistName, delegate: self)
-        mediaController.update(player: mediaPlayer)
-        controller.dismiss(animated: true, completion: nil)
+        controller.dismiss(animated: true) {
+            self.mediaController.play()
+        }
     }
 }
 

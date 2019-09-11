@@ -6,16 +6,10 @@
 //  Copyright © 2019 Andy Liang. All rights reserved.
 //
 
-import UIKit
 import MediaPlayer
 
-enum MediaPlaybackType {
-    case file(AVPlayerItem)
-    case system
-}
-
 class MediaController: NSObject {
-    private var currentMediaPlayer: MediaPlayer?
+    var mediaPlayer: MediaPlayer?
 
     override init() {
         super.init()
@@ -28,29 +22,24 @@ class MediaController: NSObject {
         remote.nextTrackCommand.addTarget(nextTrack)
     }
 
-    func update(player: MediaPlayer) {
-        currentMediaPlayer = player
-        player.play()
-    }
-
     func togglePlayback() {
-        currentMediaPlayer?.togglePlayback()
+        mediaPlayer?.togglePlayback()
     }
 
     func play() {
-        currentMediaPlayer?.play()
+        mediaPlayer?.play()
     }
 
     func pause() {
-        currentMediaPlayer?.pause()
+        mediaPlayer?.pause()
     }
 
     func previousTrack() {
-        currentMediaPlayer?.previousTrack()
+        mediaPlayer?.previousTrack()
     }
 
     func nextTrack() {
-        currentMediaPlayer?.nextTrack()
+        mediaPlayer?.nextTrack()
     }
 
 }
