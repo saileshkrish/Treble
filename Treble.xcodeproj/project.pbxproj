@@ -10,6 +10,7 @@
 		A11D4DB11D630FEB008BF3DB /* ColourArt.swift in Sources */ = {isa = PBXBuildFile; fileRef = A11D4DB01D630FEB008BF3DB /* ColourArt.swift */; };
 		A129346D1C657282008664BA /* TrackItemCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = A129346C1C657282008664BA /* TrackItemCell.swift */; };
 		A1430F681D161594006FC070 /* TrackListPresentationController.swift in Sources */ = {isa = PBXBuildFile; fileRef = A1430F671D161594006FC070 /* TrackListPresentationController.swift */; };
+		A15010592328A2E5001241B5 /* UIView+Anchorable.swift in Sources */ = {isa = PBXBuildFile; fileRef = A15010582328A2E5001241B5 /* UIView+Anchorable.swift */; };
 		A16270D11D37968A008EB2F7 /* MarqueeLabel.swift in Sources */ = {isa = PBXBuildFile; fileRef = A16270D01D37968A008EB2F7 /* MarqueeLabel.swift */; };
 		A1A1A15A1C651F41004EE091 /* TrackListViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = A1A1A1591C651F41004EE091 /* TrackListViewController.swift */; };
 		A1A57FAA1C670396003D59E0 /* UIView.Constraints.swift in Sources */ = {isa = PBXBuildFile; fileRef = A1A57FA91C670396003D59E0 /* UIView.Constraints.swift */; };
@@ -29,6 +30,7 @@
 		A11D4DB01D630FEB008BF3DB /* ColourArt.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ColourArt.swift; sourceTree = "<group>"; };
 		A129346C1C657282008664BA /* TrackItemCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = TrackItemCell.swift; sourceTree = "<group>"; };
 		A1430F671D161594006FC070 /* TrackListPresentationController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = TrackListPresentationController.swift; sourceTree = "<group>"; };
+		A15010582328A2E5001241B5 /* UIView+Anchorable.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "UIView+Anchorable.swift"; sourceTree = "<group>"; };
 		A16270D01D37968A008EB2F7 /* MarqueeLabel.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MarqueeLabel.swift; sourceTree = "<group>"; };
 		A16270D21D3796EB008EB2F7 /* Treble.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.xml; path = Treble.entitlements; sourceTree = "<group>"; };
 		A1A1A1591C651F41004EE091 /* TrackListViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = TrackListViewController.swift; sourceTree = "<group>"; };
@@ -69,6 +71,16 @@
 			name = "Supporting Files";
 			sourceTree = "<group>";
 		};
+		A150105A2328A2FB001241B5 /* UI */ = {
+			isa = PBXGroup;
+			children = (
+				A1D34B21232754EC00EDD2CE /* PlayerViewController.swift */,
+				A16270D01D37968A008EB2F7 /* MarqueeLabel.swift */,
+				A15010582328A2E5001241B5 /* UIView+Anchorable.swift */,
+			);
+			name = UI;
+			sourceTree = "<group>";
+		};
 		A1D183E41C645F780017DDE0 = {
 			isa = PBXGroup;
 			children = (
@@ -91,9 +103,7 @@
 				A1D183F01C645F780017DDE0 /* AppDelegate.swift */,
 				A1D34B1F232754A200EDD2CE /* SceneDelegate.swift */,
 				A1D34B2B23276EBC00EDD2CE /* Controller */,
-				A1D34B21232754EC00EDD2CE /* PlayerViewController.swift */,
-				A11D4DB01D630FEB008BF3DB /* ColourArt.swift */,
-				A16270D01D37968A008EB2F7 /* MarqueeLabel.swift */,
+				A150105A2328A2FB001241B5 /* UI */,
 				A1D34B232327698D00EDD2CE /* Old Implementation */,
 				A12934741C6592FE008664BA /* Supporting Files */,
 			);
@@ -107,6 +117,7 @@
 				A1A1A1591C651F41004EE091 /* TrackListViewController.swift */,
 				A129346C1C657282008664BA /* TrackItemCell.swift */,
 				A1430F671D161594006FC070 /* TrackListPresentationController.swift */,
+				A11D4DB01D630FEB008BF3DB /* ColourArt.swift */,
 				A1A57FA91C670396003D59E0 /* UIView.Constraints.swift */,
 			);
 			name = "Old Implementation";
@@ -205,6 +216,7 @@
 				A1D34B2923276DFE00EDD2CE /* FileMediaPlayer.swift in Sources */,
 				A16270D11D37968A008EB2F7 /* MarqueeLabel.swift in Sources */,
 				A1D183F31C645F780017DDE0 /* ViewController.swift in Sources */,
+				A15010592328A2E5001241B5 /* UIView+Anchorable.swift in Sources */,
 				A1D34B1E2327529700EDD2CE /* SystemMediaPlayer.swift in Sources */,
 				A1430F681D161594006FC070 /* TrackListPresentationController.swift in Sources */,
 				A1A57FAA1C670396003D59E0 /* UIView.Constraints.swift in Sources */,
