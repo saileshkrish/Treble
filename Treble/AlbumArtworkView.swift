@@ -42,7 +42,7 @@ class AlbumArtworkView: UIView {
         addSubview(imageView)
         // configure the image view
         image = nil
-        imageView.layer.cornerRadius = 16
+        imageView.layer.cornerRadius = 32
         imageView.layer.cornerCurve = .continuous
         imageView.layer.masksToBounds = true
         imageView.transform = AlbumArtworkView.pausedTransform
@@ -50,6 +50,7 @@ class AlbumArtworkView: UIView {
         setContentCompressionResistancePriority(.defaultLow, for: .vertical)
         imageView.setContentCompressionResistancePriority(.defaultLow, for: .vertical)
         imageView.widthAnchor.constraint(equalTo: imageView.heightAnchor).isActive = true
+        imageView.widthAnchor.constraint(lessThanOrEqualToConstant: 375).isActive = true
 
         compactWidthConstraints = [
             imageView.widthAnchor.constraint(lessThanOrEqualTo: widthAnchor),
