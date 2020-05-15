@@ -1,14 +1,14 @@
 # Treble
 
-Treble is a simple iOS music player app that can play music directly from Apple Music or via iCloud Drive. This app was originally built to support a landscape version of the Now Playing screen since my dock blocked the speaker grills under the iPhone. Decided to write this nice and simple app as a fun open-source side project to support that.
+Treble is a simple iOS audio player app that plays music directly from your Apple Music library or audio files from your iCloud Drive. The app was originally built to support a landscape-orientation Now Playing screen as Apple Music no longer supported that on iPhone and my iPhone dock blocks the speaker grills while in portrait orientation. Later, I decided to expand this app a bit as a fun little open-source project to support playing audio files from iCloud.
 
-Most recently, this app was rewritten to use UIStackView instead of manual Auto Layout constraint building, and to also make the MediaPlayer source generic. Pull requests are welcome!
+Pull requests are welcome!
 
 ## LICENSE
 
 The MIT License (MIT)
 
-Copyright (c) 2019 Andy Liang
+Copyright © 2020 Andy Liang
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files (the "Software"), to deal
