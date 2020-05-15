@@ -1,10 +1,4 @@
-//
-//  AppDelegate.swift
-//  Treble
-//
-//  Created by Andy Liang on 2016-02-04.
-//  Copyright © 2016 Andy Liang. All rights reserved.
-//
+//  Copyright © 2020 Andy Liang. All rights reserved.
 
 import UIKit
 

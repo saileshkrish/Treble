@@ -1,36 +1,33 @@
-//
-//  SystemMediaPlayer.swift
-//  Treble
-//
-//  Created by Andy Liang on 2019-09-09.
-//  Copyright © 2019 Andy Liang. All rights reserved.
-//
+//  Copyright © 2020 Andy Liang. All rights reserved.
 
 import MediaPlayer
 
 class SystemMediaPlayer : MediaPlayer {
-    let player: MPMusicPlayerController = .systemMusicPlayer
+    private let player = MPMusicPlayerController.systemMusicPlayer
+    private var previousTime = -1.0
+    private var timer: Timer?
     weak var delegate: MediaPlayerDelegate?
 
-    init(delegate: MediaPlayerDelegate?) {
+    init(queue: MPMediaItemCollection? = nil, delegate: MediaPlayerDelegate?) {
         self.delegate = delegate
-
+        if let queue = queue {
+            player.setQueue(with: queue)
+        }
         updateNowPlaying()
+        updatePlaybackState()
+        // if we're already playing something, then setup the timer
+        if case .playing = player.playbackState {
+            addPeriodicTimeObserver()
+        }
         NotificationCenter.default.addObserver(
             self,
             selector: #selector(updateNowPlaying),
             name: .MPMusicPlayerControllerNowPlayingItemDidChange,
             object: nil)
-    }
-
-    init(queue: MPMediaItemCollection, delegate: MediaPlayerDelegate?) {
-        self.delegate = delegate
-        player.setQueue(with: queue)
-        updateNowPlaying()
         NotificationCenter.default.addObserver(
             self,
-            selector: #selector(updateNowPlaying),
-            name: .MPMusicPlayerControllerNowPlayingItemDidChange,
+            selector: #selector(updatePlaybackState),
+            name: .MPMusicPlayerControllerPlaybackStateDidChange,
             object: nil)
     }
 
@@ -38,7 +35,7 @@ class SystemMediaPlayer : MediaPlayer {
         switch player.playbackState {
         case .playing:
             pause()
-        case .paused:
+        case .paused, .stopped:
             play()
         default:
             break
@@ -46,13 +43,15 @@ class SystemMediaPlayer : MediaPlayer {
     }
 
     func play() {
+        addPeriodicTimeObserver()
         player.play()
-        delegate?.updatePlaybackState(isPlaying: player.playbackState == .playing)
+        updatePlaybackState()
     }
 
     func pause() {
+        removePeriodicTimeObserver()
         player.pause()
-        delegate?.updatePlaybackState(isPlaying: player.playbackState == .playing)
+        updatePlaybackState()
     }
 
     func previousTrack() {
@@ -62,24 +61,51 @@ class SystemMediaPlayer : MediaPlayer {
         } else {
             player.skipToBeginning()
         }
-        delegate?.updatePlaybackState(isPlaying: player.playbackState == .playing)
+        updatePlaybackState()
     }
 
     func nextTrack() {
         player.skipToNextItem()
-        delegate?.updatePlaybackState(isPlaying: player.playbackState == .playing)
+        updatePlaybackState()
+    }
+
+    func seek(to time: TimeInterval, completion: @escaping () -> Void) {
+        player.currentPlaybackTime = time
+        updatePlaybackState()
+        completion()
+    }
+
+    private func addPeriodicTimeObserver() {
+        timer = Timer.scheduledTimer(withTimeInterval: 0.5, repeats: true) { [weak self] _ in
+            guard let time = self?.player.currentPlaybackTime, time != self?.previousTime else { return }
+            self?.previousTime = time
+            self?.delegate?.updatePlaybackProgress(elapsedTime: time)
+        }
+    }
+
+    private func removePeriodicTimeObserver() {
+        guard let timer = self.timer else { return }
+        timer.invalidate()
+        self.timer = nil
     }
 
     @objc private func updateNowPlaying() {
         guard let item = player.nowPlayingItem else { return }
         let size = CGSize(width: 400, height: 400)
-        let image = item.artwork?.image(at: size) ?? UIImage(named: "DefaultAlbumArt")!
-        let trackInfo = TrackInfo(
-            songTitle: item.title ?? "",
-            albumTitle: item.albumTitle,
-            artistName: item.artist,
-            albumArtwork: image)
-        delegate?.updateTrackInfo(with: trackInfo)
+        let image = item.artwork?.image(at: size) ?? ImageAssets.defaultAlbumArt
+        let trackInfo = TrackInfo(title: item.title ?? "", album: item.albumTitle, artist: item.artist)
+        delegate?.updateTrackInfo(with: trackInfo, artwork: image)
     }
 
+    @objc private func updatePlaybackState() {
+        let isPlaying = player.playbackState == .playing
+        let progress = NowPlayingProgress(
+            elapsedTime: player.currentPlaybackTime,
+            duration: player.nowPlayingItem!.playbackDuration)
+        delegate?.updatePlaybackState(isPlaying: isPlaying, progress: progress)
+    }
+
+    deinit {
+        removePeriodicTimeObserver()
+    }
 }

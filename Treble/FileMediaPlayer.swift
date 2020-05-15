@@ -1,54 +1,31 @@
-//
-//  FileMediaPlayer.swift
-//  Treble
-//
-//  Created by Andy Liang on 2019-09-10.
-//  Copyright © 2019 Andy Liang. All rights reserved.
-//
+//  Copyright © 2020 Andy Liang. All rights reserved.
 
-import UIKit
 import MediaPlayer
 import AVFoundation
 
-private enum MetadataKey {
-    case title
-    case albumTitle
-    case artist
-    case type
-    case creator
-}
-
 class FileMediaPlayer : MediaPlayer {
-    let player: AVPlayer
-    let fileName: String
-    let artistName: String?
+    private let avPlayer: AVQueuePlayer
+    private var itemUrls: [AVPlayerItem: URL] = [:]
+    private var timeObserverToken: Any?
     weak var delegate: MediaPlayerDelegate?
 
-    init(player: AVPlayer, fileName: String, artistName: String?, delegate: MediaPlayerDelegate) {
-        self.player = player
+    init?(itemUrls: [URL], delegate: MediaPlayerDelegate?) {
+        guard !itemUrls.isEmpty else { return nil }
+        let items = itemUrls.compactMap { UIDocument(fileURL: $0).presentedItemURL }.map { AVPlayerItem(url: $0) }
+        avPlayer = AVQueuePlayer(items: items)
+        avPlayer.actionAtItemEnd = .advance
         self.delegate = delegate
-        self.fileName = fileName
-        self.artistName = artistName
-        // setup the remote
-        do {
-            let audioSession = AVAudioSession.sharedInstance()
-            try audioSession.setCategory(.playback)
-            try audioSession.setActive(true)
-            UIApplication.shared.beginReceivingRemoteControlEvents()
-            NotificationCenter.default.addObserver(
-                self,
-                selector: #selector(restartPlayback),
-                name: .AVPlayerItemDidPlayToEndTime,
-                object: nil)
-        } catch {
-            print("Error Activating the AVAudioSession: \(error)")
+        for (url, item) in zip(itemUrls, items) {
+            self.itemUrls[item] = url
         }
-        updateNowPlaying()
+        configureMediaPlayerRemote()
+        updateNowPlayingInfo()
+        addPeriodicTimeObserver()
     }
 
     func togglePlayback() {
-        guard let _ = player.currentItem else { return }
-        if player.rate == 0 {
+        guard avPlayer.currentItem != nil else { return }
+        if avPlayer.rate == 0.0 {
             play()
         } else {
             pause()
@@ -56,31 +33,46 @@ class FileMediaPlayer : MediaPlayer {
     }
 
     func play() {
-        player.play()
-        delegate?.updatePlaybackState(isPlaying: true)
+        avPlayer.play()
+        updatePlaybackInfo()
     }
 
     func pause() {
-        player.pause()
-        delegate?.updatePlaybackState(isPlaying: false)
+        avPlayer.pause()
+        updatePlaybackInfo()
     }
 
     func previousTrack() {
-        player.seek(to: .zero)
-        delegate?.updatePlaybackState(isPlaying: player.rate > 0)
+        avPlayer.seek(to: .zero)
+        updatePlaybackInfo()
     }
 
-    func nextTrack() {
-        // no-op
+    @objc func nextTrack() {
+        avPlayer.advanceToNextItem()
+        updatePlaybackInfo()
+        updateNowPlayingInfo()
     }
 
-    private func updateNowPlaying() {
-        guard let item = player.currentItem else { return }
-        var albumImage = UIImage(named: "DefaultAlbumArt")!
+    func seek(to time: TimeInterval, completion: @escaping () -> Void) {
+        avPlayer.seek(to: CMTime(seconds: time, preferredTimescale: 1000)) { [weak self] completed in
+            completion()
+            guard completed else { return }
+            self?.updateNowPlayingInfo()
+        }
+    }
+
+    private func updateNowPlayingInfo() {
+        guard let currentItem = avPlayer.currentItem else {
+            delegate?.updateTrackInfo(with: .defaultItem, artwork: ImageAssets.defaultAlbumArt)
+            updatePlaybackInfo()
+            MPNowPlayingInfoCenter.default().nowPlayingInfo = nil
+            return
+        }
+        var albumImage = ImageAssets.defaultAlbumArt
         var info: [MetadataKey: String] = [:]
-
-        for format in item.asset.availableMetadataFormats {
-            for metadata in item.asset.metadata(forFormat: format) {
+        // Read the metadata from the file
+        for format in currentItem.asset.availableMetadataFormats {
+            for metadata in currentItem.asset.metadata(forFormat: format) {
                 guard let key = metadata.commonKey else { continue }
                 switch key {
                 case .commonKeyArtist:
@@ -104,44 +96,120 @@ class FileMediaPlayer : MediaPlayer {
             }
         }
 
-        let songTitle = info[.title] ?? fileName
+        let trackInfo: TrackInfo
+        if let title = info[.title] {
+            trackInfo = TrackInfo(title: title, album: info[.albumTitle], artist: info[.artist])
+        } else {
+            trackInfo = TrackInfo.parsedTrackInfo(from: itemUrls[currentItem]!)
+        }
 
-        let trackInfo = TrackInfo(
-            songTitle: songTitle,
-            albumTitle: info[.albumTitle],
-            artistName: info[.artist] ?? artistName,
-            albumArtwork: albumImage)
-        delegate?.updateTrackInfo(with: trackInfo)
-        delegate?.updatePlaybackState(isPlaying: player.rate > 0)
+        // Update UI
+        delegate?.updateTrackInfo(with: trackInfo, artwork: albumImage)
+        updatePlaybackInfo()
 
-        MPNowPlayingInfoCenter.default().nowPlayingInfo = [
-            MPMediaItemPropertyTitle: songTitle,
-            MPMediaItemPropertyAlbumTitle: info[.albumTitle] ?? "",
-            MPMediaItemPropertyArtist: info[.artist] ?? artistName ?? "",
-            MPMediaItemPropertyPlaybackDuration: item.asset.duration.seconds,
+        // Update the Now Playing Info
+        var nowPlayingInfo: [String : Any] = [
+            MPNowPlayingInfoPropertyElapsedPlaybackTime: 0 as NSNumber,
             MPNowPlayingInfoPropertyPlaybackRate: 1 as NSNumber,
+            MPMediaItemPropertyTitle: trackInfo.title,
+            MPMediaItemPropertyPlaybackDuration: currentItem.asset.duration.seconds,
             MPMediaItemPropertyArtwork: MPMediaItemArtwork(boundsSize: albumImage.size) { size in
-                UIGraphicsImageRenderer(size: size).image { _ in
+                return UIGraphicsImageRenderer(size: size).image { _ in
                     albumImage.draw(in: CGRect(origin: .zero, size: size))
                 }
             }
         ]
+        if let album = trackInfo.album {
+            nowPlayingInfo[MPMediaItemPropertyAlbumTitle] = album
+        }
+        if let artist = trackInfo.artist {
+            nowPlayingInfo[MPMediaItemPropertyArtist] = artist
+        }
+        MPNowPlayingInfoCenter.default().nowPlayingInfo = nowPlayingInfo
     }
 
-    @objc private func restartPlayback() {
-        guard player.currentItem != nil else { return }
-        player.seek(to: .zero)
-        player.play()
+    @objc private func updatePlaybackInfo() {
+        let isPlaying = avPlayer.rate != 0
+        let progress = NowPlayingProgress(
+            elapsedTime: avPlayer.currentTime().seconds,
+            duration: avPlayer.currentItem?.asset.duration.seconds ?? 0.0
+        )
+        delegate?.updatePlaybackState(isPlaying: isPlaying, progress: progress)
+        guard var info = MPNowPlayingInfoCenter.default().nowPlayingInfo else { return }
+        info[MPNowPlayingInfoPropertyElapsedPlaybackTime] = progress.elapsedTime
+        info[MPNowPlayingInfoPropertyPlaybackRate] = avPlayer.rate
+        MPNowPlayingInfoCenter.default().nowPlayingInfo = info
+    }
+
+    private func configureMediaPlayerRemote() {
+        // Configure the Session
+        do {
+            let session = AVAudioSession.sharedInstance()
+            try session.setCategory(.playback)
+            try session.setActive(true)
+            UIApplication.shared.beginReceivingRemoteControlEvents()
+            NotificationCenter.default.addObserver(
+                self,
+                selector: #selector(nextTrack),
+                name: .AVPlayerItemDidPlayToEndTime,
+                object: nil)
+        } catch {
+            print("Failed to activate the AVAudioSession: \(error)")
+        }
+        // Configure the Remote
+        let remote = MPRemoteCommandCenter.shared()
+        remote.togglePlayPauseCommand.addTarget(self) { $0.togglePlayback() }
+        remote.playCommand.addTarget(self) { $0.play() }
+        remote.pauseCommand.addTarget(self) { $0.pause() }
+        remote.previousTrackCommand.addTarget(self) { $0.previousTrack() }
+        remote.nextTrackCommand.addTarget(self) { $0.nextTrack() }
+    }
+
+    private func addPeriodicTimeObserver() {
+        // Notify every half second
+        let timeScale = CMTimeScale(NSEC_PER_SEC)
+        let time = CMTime(seconds: 0.5, preferredTimescale: timeScale)
+
+        timeObserverToken = avPlayer.addPeriodicTimeObserver(forInterval: time, queue: .main) {
+            [weak self] time in // update player transport UI
+            self?.delegate?.updatePlaybackProgress(elapsedTime: time.seconds)
+        }
+    }
+
+    private func removePeriodicTimeObserver() {
+        guard let token = timeObserverToken else { return }
+        avPlayer.removeTimeObserver(token)
+        timeObserverToken = nil
     }
 
     deinit {
-        player.pause()
+        avPlayer.pause()
+        removePeriodicTimeObserver()
         do {
             try AVAudioSession.sharedInstance().setActive(false, options: .notifyOthersOnDeactivation)
             NotificationCenter.default.removeObserver(self, name: .AVPlayerItemDidPlayToEndTime, object: nil)
             UIApplication.shared.endReceivingRemoteControlEvents()
         } catch {
-            print("Error Deactivating the AVAudioSession: \(error)")
+            print("Failed to deactivate the AVAudioSession: \(error)")
+        }
+    }
+}
+
+private enum MetadataKey {
+    case title
+    case albumTitle
+    case artist
+    case type
+    case creator
+}
+
+private extension MPRemoteCommand {
+    func addTarget(_ player: FileMediaPlayer, handler: @escaping (FileMediaPlayer) -> Void) {
+        isEnabled = true
+        addTarget { [weak player] _ in
+            guard let player = player else { return .noSuchContent }
+            handler(player)
+            return .success
         }
     }
 }
