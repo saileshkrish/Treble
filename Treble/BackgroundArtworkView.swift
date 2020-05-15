@@ -3,7 +3,7 @@
 import UIKit
 
 class BackgroundArtworkView: UIView {
-    static let blurEffect = UIBlurEffect(style: .systemThinMaterial)
+    static let blurEffect = UIBlurEffect(style: .systemMaterial)
     private let imageView = UIImageView()
 
     /// The album artwork

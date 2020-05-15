@@ -38,12 +38,12 @@ class NowPlayingProgressBar : UIView {
 
     override init(frame: CGRect) {
         super.init(frame: frame)
-        elapsedLabel.font = .preferredFont(forTextStyle: .footnote, design: .rounded)
+        elapsedLabel.font = .preferredFont(forTextStyle: .callout, design: .rounded)
         elapsedLabel.textColor = .secondaryLabel
         elapsedLabel.textAlignment = .left
         elapsedLabel.text = "0:00"
 
-        remainingLabel.font = .preferredFont(forTextStyle: .footnote, design: .rounded)
+        remainingLabel.font = .preferredFont(forTextStyle: .callout, design: .rounded)
         remainingLabel.textColor = .secondaryLabel
         remainingLabel.textAlignment = .right
         remainingLabel.text = "-0:00"
