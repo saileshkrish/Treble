@@ -7,6 +7,7 @@ class AlbumArtworkView: UIView {
     private let imageView = UIImageView()
     private var compactWidthConstraints: [NSLayoutConstraint] = []
     private var regularWidthConstraints: [NSLayoutConstraint] = []
+    private var doubleTapAction: ActionHandler?
 
     /// The current playback state of the media control
     var isPlaying = false {
@@ -65,6 +66,23 @@ class AlbumArtworkView: UIView {
         ]
 
         NSLayoutConstraint.activate(compactWidthConstraints)
+    }
+
+    func addDoubleTapAction(handler: ActionHandler?) {
+        if doubleTapAction == nil && handler != nil {
+            let gestureRecognizer = UITapGestureRecognizer(target: self, action: #selector(didDoubleTapArtwork))
+            gestureRecognizer.numberOfTapsRequired = 2
+            addGestureRecognizer(gestureRecognizer)
+        } else if handler == nil && doubleTapAction != nil {
+            if let recognizer = gestureRecognizers?.first(where: { $0 is UITapGestureRecognizer }) {
+                removeGestureRecognizer(recognizer)
+            }
+        }
+        self.doubleTapAction = handler
+    }
+
+    @objc private func didDoubleTapArtwork() {
+        doubleTapAction?()
     }
 
     required init?(coder: NSCoder) {

@@ -129,6 +129,11 @@ class PlayerViewController : UIViewController {
         backwardButton.addAction { [unowned self] in self.mediaPlayer?.previousTrack()  }
         forwardButton.addAction  { [unowned self] in self.mediaPlayer?.nextTrack()      }
 
+        // Setup Double Tap on Album Art
+        albumArtwork.addDoubleTapAction { [unowned self] in
+            self.mediaPlayer?.togglePlayback()
+        }
+
         // Load the current media queue
         mediaPlayer = SystemMediaPlayer(delegate: self)
     }
