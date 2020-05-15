@@ -35,10 +35,8 @@ class SystemMediaPlayer : MediaPlayer {
         switch player.playbackState {
         case .playing:
             pause()
-        case .paused, .stopped:
-            play()
         default:
-            break
+            play()
         }
     }
 
