@@ -10,9 +10,9 @@ class PlayerViewController : UIViewController {
     private var mediaPlayer: MediaPlayer?
 
     // MARK: - UI Properties
-    private let playbackButton = ActionButton(image: ImageAssets.play, style: .largeTitle, scale: .large)
-    private let backwardButton = ActionButton(image: ImageAssets.backward, style: .largeTitle)
-    private let forwardButton = ActionButton(image: ImageAssets.forward, style: .largeTitle)
+    private let playbackButton = PlaybackButton(style: .largeTitle, scale: .large)
+    private let backwardButton = ActionButton(image: ImageAssets.backward, style: .title1)
+    private let forwardButton = ActionButton(image: ImageAssets.forward, style: .title1)
     private let albumArtwork = AlbumArtworkView()
     private let backgroundArtwork = BackgroundArtworkView()
     private let progressBar = NowPlayingProgressBar()
@@ -173,7 +173,7 @@ extension PlayerViewController : MediaPlayerDelegate {
 
     func updatePlaybackState(isPlaying: Bool, progress: NowPlayingProgress) {
         albumArtwork.isPlaying = isPlaying
-        playbackButton.setImage(isPlaying ? ImageAssets.pause : ImageAssets.play, for: .normal)
+        playbackButton.isPlaying = isPlaying
         progressBar.progress = progress
     }
 }

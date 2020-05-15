@@ -13,6 +13,7 @@
 		1199B1BE246B6BD10077A35C /* BackgroundArtworkView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1199B1BD246B6BD10077A35C /* BackgroundArtworkView.swift */; };
 		1199B1C0246B6D060077A35C /* ActionButton.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1199B1BF246B6D060077A35C /* ActionButton.swift */; };
 		1199B1C2246B6EAC0077A35C /* ImageAssets.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1199B1C1246B6EAC0077A35C /* ImageAssets.swift */; };
+		11FBDA26246F10DC00FA4530 /* PlaybackButton.swift in Sources */ = {isa = PBXBuildFile; fileRef = 11FBDA25246F10DC00FA4530 /* PlaybackButton.swift */; };
 		A16270D11D37968A008EB2F7 /* MarqueeLabel.swift in Sources */ = {isa = PBXBuildFile; fileRef = A16270D01D37968A008EB2F7 /* MarqueeLabel.swift */; };
 		A1D183F11C645F780017DDE0 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = A1D183F01C645F780017DDE0 /* AppDelegate.swift */; };
 		A1D183F81C645F780017DDE0 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = A1D183F71C645F780017DDE0 /* Assets.xcassets */; };
@@ -31,6 +32,7 @@
 		1199B1BD246B6BD10077A35C /* BackgroundArtworkView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BackgroundArtworkView.swift; sourceTree = "<group>"; };
 		1199B1BF246B6D060077A35C /* ActionButton.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ActionButton.swift; sourceTree = "<group>"; };
 		1199B1C1246B6EAC0077A35C /* ImageAssets.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ImageAssets.swift; sourceTree = "<group>"; };
+		11FBDA25246F10DC00FA4530 /* PlaybackButton.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PlaybackButton.swift; sourceTree = "<group>"; };
 		A150105F2328A653001241B5 /* Treble.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = Treble.entitlements; sourceTree = "<group>"; };
 		A16270D01D37968A008EB2F7 /* MarqueeLabel.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MarqueeLabel.swift; sourceTree = "<group>"; };
 		A1D183ED1C645F780017DDE0 /* Treble.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Treble.app; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -75,6 +77,7 @@
 				1199B1BB246B691A0077A35C /* AlbumArtworkView.swift */,
 				1199B1BD246B6BD10077A35C /* BackgroundArtworkView.swift */,
 				11076BC4246DC278001800F7 /* NowPlayingProgressBar.swift */,
+				11FBDA25246F10DC00FA4530 /* PlaybackButton.swift */,
 				1199B1C1246B6EAC0077A35C /* ImageAssets.swift */,
 				A16270D01D37968A008EB2F7 /* MarqueeLabel.swift */,
 				11076BC2246D2105001800F7 /* UIFont+Design.swift */,
@@ -204,6 +207,7 @@
 				11076BC3246D2105001800F7 /* UIFont+Design.swift in Sources */,
 				A1D34B1E2327529700EDD2CE /* SystemMediaPlayer.swift in Sources */,
 				A1D34B20232754A200EDD2CE /* SceneDelegate.swift in Sources */,
+				11FBDA26246F10DC00FA4530 /* PlaybackButton.swift in Sources */,
 				1199B1BE246B6BD10077A35C /* BackgroundArtworkView.swift in Sources */,
 				A1D34B2723276D0B00EDD2CE /* MediaPlayer.swift in Sources */,
 				1199B1C2246B6EAC0077A35C /* ImageAssets.swift in Sources */,
