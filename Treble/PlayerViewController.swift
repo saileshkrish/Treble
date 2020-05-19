@@ -71,6 +71,7 @@ class PlayerViewController : UIViewController {
         contentView.spacing = 32
         contentView.translatesAutoresizingMaskIntoConstraints = false
 
+        view.addInteraction(UIDropInteraction(delegate: self))
         view.addSubview(contentView)
         view.layoutMargins = UIEdgeInsets(top: 16, left: 16, bottom: 16, right: 16)
         view.backgroundColor = .systemBackground
@@ -206,6 +207,38 @@ extension PlayerViewController : UIDocumentPickerDelegate {
         mediaPlayer = FileMediaPlayer(itemUrls: urls, delegate: self)
         controller.dismiss(animated: true) {
             self.mediaPlayer?.play()
+        }
+    }
+}
+
+extension PlayerViewController : UIDropInteractionDelegate {
+    func dropInteraction(
+        _ interaction: UIDropInteraction,
+        sessionDidUpdate session: UIDropSession
+    ) -> UIDropProposal {
+        return UIDropProposal(operation: .copy)
+    }
+
+    func dropInteraction(
+        _ interaction: UIDropInteraction,
+        canHandle session: UIDropSession
+    ) -> Bool {
+        return session.hasItemsConforming(toTypeIdentifiers: ["public.audio"])
+    }
+
+    func dropInteraction(_ interaction: UIDropInteraction, performDrop session: UIDropSession) {
+        for item in session.items where item.itemProvider.hasItemConformingToTypeIdentifier("public.audio") {
+            item.itemProvider.loadInPlaceFileRepresentation(forTypeIdentifier: "public.audio") { url, inPlace, _ in
+                // Currently don't support files that we can't open in place.
+                guard inPlace else { return }
+                // Append the item if we already have a file media player, otherwise create one.
+                if let filePlayer = self.mediaPlayer as? FileMediaPlayer {
+                    filePlayer.appendItem(with: url)
+                } else if let url = url {
+                    self.mediaPlayer = FileMediaPlayer(itemUrls: [url], delegate: self)
+                    self.mediaPlayer?.play()
+                }
+            }
         }
     }
 }

@@ -23,6 +23,13 @@ class FileMediaPlayer : MediaPlayer {
         addPeriodicTimeObserver()
     }
 
+    func appendItem(with url: URL?) {
+        guard let url = url, let itemUrl = UIDocument(fileURL: url).presentedItemURL else { return }
+        let item = AVPlayerItem(url: itemUrl)
+        itemUrls[item] = itemUrl
+        avPlayer.insert(item, after: nil)
+    }
+
     func togglePlayback() {
         guard avPlayer.currentItem != nil else { return }
         if avPlayer.rate == 0.0 {
