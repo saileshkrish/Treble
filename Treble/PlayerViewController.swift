@@ -90,6 +90,11 @@ class PlayerViewController : UIViewController {
             contentView.centerYAnchor.constraint(equalTo: view.layoutMarginsGuide.centerYAnchor)
         ])
 
+        // Setup Content Compression Resistance for required elements
+        playbackButton.setContentCompressionResistancePriority(.required, for: .vertical)
+        titleLabel.setContentCompressionResistancePriority(.required, for: .vertical)
+        subtitleLabel.setContentCompressionResistancePriority(.required, for: .vertical)
+
         // Configure Button Actions
         fileButton.addAction { [unowned self] in
             let documentPicker = UIDocumentPickerViewController(documentTypes: ["public.audio"], in: .import)
@@ -115,12 +120,14 @@ class PlayerViewController : UIViewController {
         titleLabel.type = .continuous
         titleLabel.trailingBuffer = 16
         titleLabel.font = .preferredFont(forTextStyle: .title1, design: .rounded)
+        titleLabel.text = TrackInfo.defaultItem.title
 
         subtitleLabel.textAlignment = .center
         subtitleLabel.textColor = .secondaryLabel
         subtitleLabel.type = .continuous
         subtitleLabel.trailingBuffer = 16
         subtitleLabel.font = .preferredFont(forTextStyle: .body, design: .rounded)
+        subtitleLabel.text = TrackInfo.defaultItem.subtitleText
 
         // progress bar
         progressBar.delegate = self
