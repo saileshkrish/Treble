@@ -241,11 +241,13 @@ extension PlayerViewController : UIDropInteractionDelegate {
                 // Currently don't support files that we can't open in place.
                 guard inPlace else { return }
                 // Append the item if we already have a file media player, otherwise create one.
-                if let filePlayer = self.mediaPlayer as? FileMediaPlayer {
-                    filePlayer.appendItem(with: url)
-                } else if let url = url {
-                    self.mediaPlayer = FileMediaPlayer(itemUrls: [url], delegate: self)
-                    self.mediaPlayer?.play()
+                DispatchQueue.main.async {
+                    if let filePlayer = self.mediaPlayer as? FileMediaPlayer {
+                        filePlayer.appendItem(with: url)
+                    } else if let url = url {
+                        self.mediaPlayer = FileMediaPlayer(itemUrls: [url], delegate: self)
+                        self.mediaPlayer?.play()
+                    }
                 }
             }
         }
