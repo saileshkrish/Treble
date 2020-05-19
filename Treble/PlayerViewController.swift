@@ -98,6 +98,7 @@ class PlayerViewController : UIViewController {
         // Configure Button Actions
         fileButton.addAction { [unowned self] in
             let documentPicker = UIDocumentPickerViewController(documentTypes: ["public.audio"], in: .import)
+            documentPicker.view.tintColor = .systemPink
             documentPicker.allowsMultipleSelection = true
             documentPicker.delegate = self
             self.present(documentPicker, animated: true, completion: nil)
@@ -105,6 +106,7 @@ class PlayerViewController : UIViewController {
 
         libraryButton.addAction { [unowned self] in
             let musicPicker = MPMediaPickerController(mediaTypes: .anyAudio)
+            musicPicker.view.tintColor = .systemPink
             musicPicker.delegate = self
             musicPicker.allowsPickingMultipleItems = true
             musicPicker.showsCloudItems = true
