@@ -60,9 +60,9 @@ class FileMediaPlayer : MediaPlayer {
         updateNowPlayingInfo()
     }
 
-    func seek(to time: TimeInterval, completion: @escaping () -> Void) {
+    func seek(to time: TimeInterval, completion: ActionHandler?) {
         avPlayer.seek(to: CMTime(seconds: time, preferredTimescale: 1000)) { [weak self] completed in
-            completion()
+            completion?()
             guard completed else { return }
             self?.updateNowPlayingInfo()
         }
@@ -170,6 +170,18 @@ class FileMediaPlayer : MediaPlayer {
         remote.pauseCommand.addTarget(self) { $0.pause() }
         remote.previousTrackCommand.addTarget(self) { $0.previousTrack() }
         remote.nextTrackCommand.addTarget(self) { $0.nextTrack() }
+        // Support playback moving
+        remote.changePlaybackPositionCommand.isEnabled = true
+        remote.changePlaybackPositionCommand.addTarget { [weak self] event in
+            guard let _self = self,
+                  let event = event as? MPChangePlaybackPositionCommandEvent
+            else { return .noSuchContent }
+            _self.seek(to: event.positionTime) {}
+            return .success
+        }
+        remote.changePlaybackPositionCommand.addTarget(self) { player in
+
+        }
     }
 
     private func addPeriodicTimeObserver() {

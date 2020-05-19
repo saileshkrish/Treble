@@ -67,10 +67,10 @@ class SystemMediaPlayer : MediaPlayer {
         updatePlaybackState()
     }
 
-    func seek(to time: TimeInterval, completion: @escaping () -> Void) {
+    func seek(to time: TimeInterval, completion: ActionHandler?) {
         player.currentPlaybackTime = time
         updatePlaybackState()
-        completion()
+        completion?()
     }
 
     private func addPeriodicTimeObserver() {

@@ -62,5 +62,5 @@ protocol MediaPlayer {
     func pause()
     func previousTrack()
     func nextTrack()
-    func seek(to time: TimeInterval, completion: @escaping () -> Void)
+    func seek(to time: TimeInterval, completion: ActionHandler?)
 }
