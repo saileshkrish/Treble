@@ -99,7 +99,7 @@ class SystemMediaPlayer : MediaPlayer {
         let isPlaying = player.playbackState == .playing
         let progress = NowPlayingProgress(
             elapsedTime: player.currentPlaybackTime,
-            duration: player.nowPlayingItem!.playbackDuration)
+            duration: player.nowPlayingItem?.playbackDuration ?? 0.0)
         delegate?.updatePlaybackState(isPlaying: isPlaying, progress: progress)
     }
 
