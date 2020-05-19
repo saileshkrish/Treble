@@ -16,8 +16,8 @@ class PlayerViewController : UIViewController {
     private let albumArtwork = AlbumArtworkView()
     private let backgroundArtwork = BackgroundArtworkView()
     private let progressBar = NowPlayingProgressBar()
-    private let titleLabel = MarqueeLabel(frame: .zero, duration: 8, fadeLength: 8)
-    private let subtitleLabel = MarqueeLabel(frame: .zero, duration: 8, fadeLength: 8)
+    private let titleLabel = MarqueeLabel(frame: .zero, rate: 72, fadeLength: 8)
+    private let subtitleLabel = MarqueeLabel(frame: .zero, rate: 64, fadeLength: 8)
     private let contentView = UIStackView()
 
     // MARK: - UIKit Methods
