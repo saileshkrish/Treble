@@ -94,7 +94,7 @@ class NowPlayingProgressBar : UIView {
         let formatter = DateComponentsFormatter()
         formatter.allowedUnits = [.minute, .second]
         formatter.zeroFormattingBehavior = .pad
-        elapsedLabel.text = formatter.string(from: time)
+        elapsedLabel.text = formatter.string(from: time.isNaN ? 0.0 : time)
         remainingLabel.text = formatter.string(from: progress.duration)
     }
 
