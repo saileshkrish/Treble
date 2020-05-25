@@ -9,6 +9,14 @@ class FileMediaPlayer : MediaPlayer {
     private var timeObserverToken: Any?
     weak var delegate: MediaPlayerDelegate?
 
+    var playbackRate: PlaybackRate {
+        get { PlaybackRate(rate: avPlayer.rate) }
+        set {
+            avPlayer.rate = newValue.rate
+            updatePlaybackInfo()
+        }
+    }
+
     init?(itemUrls: [URL], delegate: MediaPlayerDelegate?) {
         guard !itemUrls.isEmpty else { return nil }
         let items = itemUrls.compactMap { UIDocument(fileURL: $0).presentedItemURL }.map { AVPlayerItem(url: $0) }

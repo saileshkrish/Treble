@@ -34,6 +34,7 @@ class PlayerViewController : UIViewController {
         // Main UI
         let libraryButton = ActionButton(image: ImageAssets.musicNote)
         let fileButton = ActionButton(image: ImageAssets.icloud)
+        let playbackRateButton = PlaybackRateButton()
         let routePickerButton = AVRoutePickerView()
         let volumeSlider = MPVolumeView()
 
@@ -44,7 +45,7 @@ class PlayerViewController : UIViewController {
         playbackStackView.axis = .horizontal
         playbackStackView.alignment = .center
 
-        let controlStackView = UIStackView(arrangedSubviews: [libraryButton, fileButton, routePickerButton])
+        let controlStackView = UIStackView(arrangedSubviews: [libraryButton, fileButton, playbackRateButton, routePickerButton])
         controlStackView.setContentCompressionResistancePriority(.required, for: .vertical)
         controlStackView.setContentHuggingPriority(.defaultLow, for: .vertical)
         controlStackView.distribution = .equalCentering
@@ -112,6 +113,8 @@ class PlayerViewController : UIViewController {
             musicPicker.showsCloudItems = true
             self.present(musicPicker, animated: true, completion: nil)
         }
+
+        playbackRateButton.onRateChange { self.mediaPlayer?.playbackRate = $0 }
     }
 
     override func viewDidLoad() {

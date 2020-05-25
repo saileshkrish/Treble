@@ -57,6 +57,7 @@ protocol MediaPlayerDelegate : class {
 
 protocol MediaPlayer {
     var delegate: MediaPlayerDelegate? { get set }
+    var playbackRate: PlaybackRate { get set }
     func togglePlayback()
     func play()
     func pause()

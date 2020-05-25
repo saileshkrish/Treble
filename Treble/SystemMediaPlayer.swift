@@ -8,6 +8,15 @@ class SystemMediaPlayer : MediaPlayer {
     private var timer: Timer?
     weak var delegate: MediaPlayerDelegate?
 
+    var playbackRate: PlaybackRate {
+        get { PlaybackRate(rate: player.currentPlaybackRate) }
+        set {
+            player.currentPlaybackRate = newValue.rate
+            addPeriodicTimeObserver() 
+            updatePlaybackState()
+        }
+    }
+
     init(queue: MPMediaItemCollection? = nil, delegate: MediaPlayerDelegate?) {
         self.delegate = delegate
         if let queue = queue {
