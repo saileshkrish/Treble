@@ -17,6 +17,13 @@ class FileMediaPlayer : MediaPlayer {
         }
     }
 
+    var nowPlayingProgress: NowPlayingProgress {
+        return NowPlayingProgress(
+            elapsedTime: avPlayer.currentTime().seconds,
+            duration: avPlayer.currentItem?.asset.duration.seconds ?? 0.0
+        )
+    }
+
     init?(itemUrls: [URL], delegate: MediaPlayerDelegate?) {
         guard !itemUrls.isEmpty else { return nil }
         let items = itemUrls.compactMap { UIDocument(fileURL: $0).presentedItemURL }.map { AVPlayerItem(url: $0) }
@@ -119,13 +126,15 @@ class FileMediaPlayer : MediaPlayer {
         }
 
         // Update UI
+        let progress = nowPlayingProgress
+        let isPlaying = avPlayer.rate != 0
         delegate?.updateTrackInfo(with: trackInfo, artwork: albumImage)
-        updatePlaybackInfo()
+        delegate?.updatePlaybackState(isPlaying: isPlaying, progress: progress)
 
         // Update the Now Playing Info
         var nowPlayingInfo: [String : Any] = [
-            MPNowPlayingInfoPropertyElapsedPlaybackTime: 0 as NSNumber,
-            MPNowPlayingInfoPropertyPlaybackRate: 1 as NSNumber,
+            MPNowPlayingInfoPropertyElapsedPlaybackTime: progress.elapsedTime as NSNumber,
+            MPNowPlayingInfoPropertyPlaybackRate: avPlayer.rate as NSNumber,
             MPMediaItemPropertyTitle: trackInfo.title,
             MPMediaItemPropertyPlaybackDuration: currentItem.asset.duration.seconds,
             MPMediaItemPropertyArtwork: MPMediaItemArtwork(boundsSize: albumImage.size) { size in
@@ -145,10 +154,7 @@ class FileMediaPlayer : MediaPlayer {
 
     @objc private func updatePlaybackInfo() {
         let isPlaying = avPlayer.rate != 0
-        let progress = NowPlayingProgress(
-            elapsedTime: avPlayer.currentTime().seconds,
-            duration: avPlayer.currentItem?.asset.duration.seconds ?? 0.0
-        )
+        let progress = nowPlayingProgress
         delegate?.updatePlaybackState(isPlaying: isPlaying, progress: progress)
         guard var info = MPNowPlayingInfoCenter.default().nowPlayingInfo else { return }
         info[MPNowPlayingInfoPropertyElapsedPlaybackTime] = progress.elapsedTime
@@ -186,9 +192,6 @@ class FileMediaPlayer : MediaPlayer {
             else { return .noSuchContent }
             _self.seek(to: event.positionTime) {}
             return .success
-        }
-        remote.changePlaybackPositionCommand.addTarget(self) { player in
-
         }
     }
 
