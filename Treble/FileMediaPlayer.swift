@@ -7,6 +7,7 @@ class FileMediaPlayer : MediaPlayer {
     private let avPlayer: AVQueuePlayer
     private var itemUrls: [AVPlayerItem: URL] = [:]
     private var timeObserverToken: Any?
+    private var lastPlaybackRate: PlaybackRate = .normal
     weak var delegate: MediaPlayerDelegate?
 
     var playbackRate: PlaybackRate {
@@ -55,11 +56,12 @@ class FileMediaPlayer : MediaPlayer {
     }
 
     func play() {
-        avPlayer.play()
+        playbackRate = lastPlaybackRate
         updatePlaybackInfo()
     }
 
     func pause() {
+        lastPlaybackRate = playbackRate
         avPlayer.pause()
         updatePlaybackInfo()
     }

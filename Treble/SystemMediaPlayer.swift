@@ -6,6 +6,7 @@ class SystemMediaPlayer : MediaPlayer {
     private let player = MPMusicPlayerController.systemMusicPlayer
     private var previousTime = -1.0
     private var timer: Timer?
+    private var lastPlaybackRate: PlaybackRate = .normal
     weak var delegate: MediaPlayerDelegate?
 
     var playbackRate: PlaybackRate {
@@ -51,12 +52,13 @@ class SystemMediaPlayer : MediaPlayer {
 
     func play() {
         addPeriodicTimeObserver()
-        player.play()
+        playbackRate = lastPlaybackRate
         updatePlaybackState()
     }
 
     func pause() {
         removePeriodicTimeObserver()
+        lastPlaybackRate = playbackRate
         player.pause()
         updatePlaybackState()
     }
