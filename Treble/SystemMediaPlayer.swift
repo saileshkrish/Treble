@@ -53,6 +53,7 @@ class SystemMediaPlayer : MediaPlayer {
     func play() {
         addPeriodicTimeObserver()
         playbackRate = lastPlaybackRate
+        player.play()
         updatePlaybackState()
     }
 
