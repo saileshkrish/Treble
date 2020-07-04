@@ -2,6 +2,6 @@
 <Workspace
    version = "1.0">
    <FileRef
-      location = "self:Treble.xcodeproj">
+      location = "self:/Users/sailesh/Desktop/Projects/Treble/Repeator.xcodeproj">
    </FileRef>
 </Workspace>
