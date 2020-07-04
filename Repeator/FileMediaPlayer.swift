@@ -251,7 +251,7 @@ class FileMediaPlayer : MediaPlayer {
                      let currSegment = self?.segmentTimes[self!.segment].timeValue
                      let nextSegment = self?.segmentTimes[self!.segment + 1].timeValue
                      
-                     print("[self?.segment ",self?.reps, "] [self?.segment ", self?.segment, "]")
+//                     print("[self?.segment ",self?.reps, "] [self?.segment ", self?.segment, "]")
                      if (self!.reps < 2) {
                          self!.reps += 1
                          self?.avPlayer.seek(to: currSegment!)
@@ -267,7 +267,7 @@ class FileMediaPlayer : MediaPlayer {
                              self?.avPlayer.play()
                          }
                      }
-                     print("self?.reps ", self?.reps)
+//                     print("self?.reps ", self?.reps)
                  }
          }
      }

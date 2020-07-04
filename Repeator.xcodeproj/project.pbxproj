@@ -38,6 +38,7 @@
 		11FBDA25246F10DC00FA4530 /* PlaybackButton.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PlaybackButton.swift; sourceTree = "<group>"; };
 		122EA20224B1034300D8108A /* Default-568h@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "Default-568h@2x.png"; sourceTree = "<group>"; };
 		1254F37324B10DFE0003299F /* CloudKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CloudKit.framework; path = System/Library/Frameworks/CloudKit.framework; sourceTree = SDKROOT; };
+		12EE329A24B135E0005B5731 /* RepeatorDebug.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = RepeatorDebug.entitlements; sourceTree = "<group>"; };
 		A150105F2328A653001241B5 /* Repeator.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = Repeator.entitlements; sourceTree = "<group>"; };
 		A16270D01D37968A008EB2F7 /* MarqueeLabel.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MarqueeLabel.swift; sourceTree = "<group>"; };
 		A1D183ED1C645F780017DDE0 /* Repeator.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Repeator.app; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -120,6 +121,7 @@
 		A1D183EF1C645F780017DDE0 /* Repeator */ = {
 			isa = PBXGroup;
 			children = (
+				12EE329A24B135E0005B5731 /* RepeatorDebug.entitlements */,
 				A1D183F01C645F780017DDE0 /* AppDelegate.swift */,
 				A1D34B1F232754A200EDD2CE /* SceneDelegate.swift */,
 				A1D34B2B23276EBC00EDD2CE /* Controller */,
@@ -359,7 +361,7 @@
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				CLANG_ENABLE_MODULES = YES;
-				CODE_SIGN_ENTITLEMENTS = Repeator/Repeator.entitlements;
+				CODE_SIGN_ENTITLEMENTS = Repeator/RepeatorDebug.entitlements;
 				CODE_SIGN_IDENTITY = "Apple Development";
 				CODE_SIGN_STYLE = Automatic;
 				DEVELOPMENT_TEAM = 77696YY35U;
