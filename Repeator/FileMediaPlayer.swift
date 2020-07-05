@@ -46,7 +46,7 @@ class FileMediaPlayer : MediaPlayer {
         configureMediaPlayerRemote()
         updateNowPlayingInfo()
         addPeriodicTimeObserver()
-        addBoundaryTimeObserver()
+        // addBoundaryTimeObserver()
     }
 
     func appendItem(with url: URL?) {
@@ -243,9 +243,19 @@ class FileMediaPlayer : MediaPlayer {
         avPlayer.removeTimeObserver(token)
         timeObserverToken = nil
     }
-
-    private func addBoundaryTimeObserver() {
-         // Repeat every 5 second duration 5 times
+    
+    public func addMark() {
+        if (self.segmentTimes.count == 0) {
+            self.segmentTimes.append(NSValue(time: CMTime.zero))
+            self.previousTrack()
+        }
+        else {
+            self.segmentTimes.append(NSValue(time: self.avPlayer.currentItem!.currentTime()))
+        }
+    }
+    
+    public func addDefaultMarks() {
+        // Repeat every 5 second duration 5 times
          
          // Set initial time to zero
          var currentTime = CMTime.zero
@@ -262,9 +272,25 @@ class FileMediaPlayer : MediaPlayer {
              currentTime = currentTime + interval
          }
          segmentTimes.append(NSValue(time: asset!.duration))
-         
-         self.reps = 0
-         self.segment = 0
+    }
+
+    public func addBoundaryTimeObserver() {
+        
+        if (segmentTimes.count == 0) {
+            addDefaultMarks()
+        }
+        else {
+            let asset = avPlayer.currentItem?.asset
+
+            segmentTimes.append(NSValue(time: asset!.duration))
+        }
+        
+        segmentTimes.forEach {
+            print("Segment: ",$0.timeValue.seconds)
+        }
+        
+        self.reps = 0
+        self.segment = 0
          
          // Add time observer. Observe boundary time changes on the main queue.
          boundaryObserverToken = avPlayer.addBoundaryTimeObserver(forTimes: segmentTimes, queue: .main)
@@ -292,6 +318,7 @@ class FileMediaPlayer : MediaPlayer {
                      }
                  }
          }
+        self.previousTrack()
      }
 
      private func removeBoundaryTimeObserver() {

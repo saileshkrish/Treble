@@ -10,6 +10,8 @@ enum ImageAssets {
     static let forward = UIImage(systemName: "forward.fill")
     static let musicNote = UIImage(systemName: "music.note")
     static let icloud = UIImage(systemName: "icloud.fill")
-    static let repeating = UIImage(systemName: "pause.circle")
+    static let repeating = UIImage(systemName: "repeat")
     static let waveform = UIImage(systemName: "waveform")
+    static let flag = UIImage(systemName: "flag.fill")
+    static let P = UIImage(systemName: "p.circle.fill")
 }

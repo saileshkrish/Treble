@@ -37,6 +37,8 @@ class PlayerViewController : UIViewController {
         let playbackRateButton = PlaybackRateButton()
         let routePickerButton = AVRoutePickerView()
         let volumeSlider = MPVolumeView()
+        let markerButton = ActionButton(image: ImageAssets.flag)
+        let practiceButton = ActionButton(image: ImageAssets.P)
 
         let playbackStackView = UIStackView(arrangedSubviews: [backwardButton, playbackButton, forwardButton])
         playbackStackView.setContentCompressionResistancePriority(.required, for: .vertical)
@@ -45,7 +47,7 @@ class PlayerViewController : UIViewController {
         playbackStackView.axis = .horizontal
         playbackStackView.alignment = .center
 
-        let controlStackView = UIStackView(arrangedSubviews: [libraryButton, fileButton, playbackRateButton, routePickerButton])
+        let controlStackView = UIStackView(arrangedSubviews: [libraryButton, fileButton, playbackRateButton, routePickerButton, markerButton, practiceButton])
         controlStackView.setContentCompressionResistancePriority(.required, for: .vertical)
         controlStackView.setContentHuggingPriority(.defaultLow, for: .vertical)
         controlStackView.distribution = .equalCentering
@@ -105,6 +107,14 @@ class PlayerViewController : UIViewController {
             self.present(documentPicker, animated: true, completion: nil)
         }
 
+        markerButton.addAction { [unowned self] in
+            (self.mediaPlayer as! FileMediaPlayer).addMark()
+        }
+
+        practiceButton.addAction { [unowned self] in
+            (self.mediaPlayer as! FileMediaPlayer).addBoundaryTimeObserver()
+        }
+        
         libraryButton.addAction { [unowned self] in
             let musicPicker = MPMediaPickerController(mediaTypes: .anyAudio)
             musicPicker.view.tintColor = .systemPink
