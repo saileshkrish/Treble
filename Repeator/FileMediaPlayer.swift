@@ -15,6 +15,7 @@ class FileMediaPlayer : MediaPlayer {
     private var segment: Int = 0
     private var segmentTimes = [NSValue]()
     private var boundaryObserverToken: Any?
+    private var pbState: PlaybackState = PlaybackState.Paused
     // END   SAILESH
 
     var playbackRate: PlaybackRate {
@@ -41,6 +42,7 @@ class FileMediaPlayer : MediaPlayer {
         for (url, item) in zip(itemUrls, items) {
             self.itemUrls[item] = url
         }
+        self.pbState = PlaybackState.Playing
         configureMediaPlayerRemote()
         updateNowPlayingInfo()
         addPeriodicTimeObserver()
@@ -65,15 +67,24 @@ class FileMediaPlayer : MediaPlayer {
 
     func play() {
         playbackRate = lastPlaybackRate
+        pbState = PlaybackState.Playing
         updatePlaybackInfo()
     }
 
     func pause() {
         lastPlaybackRate = playbackRate
+        pbState = PlaybackState.Paused
         avPlayer.pause()
         updatePlaybackInfo()
     }
-
+    
+    func pause(pbState: PlaybackState) {
+        lastPlaybackRate = playbackRate
+        self.pbState = pbState
+        avPlayer.pause()
+        updatePlaybackInfo()
+    }
+    
     func previousTrack() {
         avPlayer.seek(to: .zero)
         updatePlaybackInfo()
@@ -87,6 +98,14 @@ class FileMediaPlayer : MediaPlayer {
 
     func seek(to time: TimeInterval, completion: ActionHandler?) {
         avPlayer.seek(to: CMTime(seconds: time, preferredTimescale: 1000)) { [weak self] completed in
+            completion?()
+            guard completed else { return }
+            self?.updateNowPlayingInfo()
+        }
+    }
+    
+    func seek(to time: CMTime, completion: ActionHandler?) {
+        avPlayer.seek(to: time) { [weak self] completed in
             completion?()
             guard completed else { return }
             self?.updateNowPlayingInfo()
@@ -139,8 +158,10 @@ class FileMediaPlayer : MediaPlayer {
         let progress = nowPlayingProgress
         let isPlaying = avPlayer.rate != 0
         delegate?.updateTrackInfo(with: trackInfo, artwork: albumImage)
-        delegate?.updatePlaybackState(isPlaying: isPlaying, progress: progress)
+        // delegate?.updatePlaybackState(isPlaying: isPlaying, progress: progress)
+        delegate?.updatePlaybackState(isPlaying: isPlaying, pbState: pbState, progress: progress)
 
+        
         // Update the Now Playing Info
         var nowPlayingInfo: [String : Any] = [
             MPNowPlayingInfoPropertyElapsedPlaybackTime: progress.elapsedTime as NSNumber,
@@ -165,7 +186,8 @@ class FileMediaPlayer : MediaPlayer {
     @objc private func updatePlaybackInfo() {
         let isPlaying = avPlayer.rate != 0
         let progress = nowPlayingProgress
-        delegate?.updatePlaybackState(isPlaying: isPlaying, progress: progress)
+        // delegate?.updatePlaybackState(isPlaying: isPlaying, progress: progress)
+        delegate?.updatePlaybackState(isPlaying: isPlaying, pbState: pbState, progress: progress)
         guard var info = MPNowPlayingInfoCenter.default().nowPlayingInfo else { return }
         info[MPNowPlayingInfoPropertyElapsedPlaybackTime] = progress.elapsedTime
         info[MPNowPlayingInfoPropertyPlaybackRate] = avPlayer.rate
@@ -251,23 +273,23 @@ class FileMediaPlayer : MediaPlayer {
                      let currSegment = self?.segmentTimes[self!.segment].timeValue
                      let nextSegment = self?.segmentTimes[self!.segment + 1].timeValue
                      
-//                     print("[self?.segment ",self?.reps, "] [self?.segment ", self?.segment, "]")
+                    print("Repeating segment ", String(self!.segment) , " ", String(self!.reps)," times")
                      if (self!.reps < 2) {
-                         self!.reps += 1
-                         self?.avPlayer.seek(to: currSegment!)
+                        self!.reps += 1
+                        self?.seek(to: currSegment!) { self?.pbState = PlaybackState.Repeating }
                      }
                      else {
-                         self!.reps = 0
-                         self?.avPlayer.pause()
-                         let seconds = nextSegment!.seconds - currSegment!.seconds + 1.0
-                         self!.segment += 1
-                         print("Sleep time is: ", seconds)
-                         DispatchQueue.main.asyncAfter(deadline: .now() + seconds) {
+                        self!.reps = 0
+                        self?.pause(pbState:PlaybackState.Listening)
+                        let seconds = nextSegment!.seconds - currSegment!.seconds + 1.0
+                        self!.segment += 1
+                        print("Listening for ", String(seconds), " seconds")
+                        DispatchQueue.main.asyncAfter(deadline: .now() + seconds) {
                              // Put your code which should be executed with a delay here
-                             self?.avPlayer.play()
-                         }
+                            print("Playing")
+                            self?.play()
+                        }
                      }
-//                     print("self?.reps ", self?.reps)
                  }
          }
      }

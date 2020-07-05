@@ -52,6 +52,7 @@ extension TrackInfo {
 protocol MediaPlayerDelegate : class {
     func updatePlaybackProgress(elapsedTime: TimeInterval)
     func updatePlaybackState(isPlaying: Bool, progress: NowPlayingProgress)
+    func updatePlaybackState(isPlaying: Bool, pbState: PlaybackState, progress: NowPlayingProgress)
     func updateTrackInfo(with trackInfo: TrackInfo, artwork: UIImage)
 }
 

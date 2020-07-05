@@ -189,6 +189,12 @@ extension PlayerViewController : MediaPlayerDelegate {
         playbackButton.isPlaying = isPlaying
         progressBar.progress = progress
     }
+    
+    func updatePlaybackState(isPlaying: Bool, pbState: PlaybackState, progress: NowPlayingProgress) {
+        albumArtwork.isPlaying = isPlaying
+        playbackButton.pbState = pbState
+        progressBar.progress = progress
+    }
 }
 
 // MARK: MPMediaPickerControllerDelegate
