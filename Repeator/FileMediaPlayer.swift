@@ -13,9 +13,9 @@ class FileMediaPlayer : MediaPlayer {
     // BEGIN SAILESH
     private var reps: Int = 0
     private var segment: Int = 0
-    private var segmentTimes = [NSValue]()
     private var boundaryObserverToken: Any?
     private var pbState: PlaybackState = PlaybackState.Paused
+    private var itemSegments: [AVPlayerItem: [NSValue]] = [:]
     // END   SAILESH
 
     var playbackRate: PlaybackRate {
@@ -46,7 +46,9 @@ class FileMediaPlayer : MediaPlayer {
         configureMediaPlayerRemote()
         updateNowPlayingInfo()
         addPeriodicTimeObserver()
-        // addBoundaryTimeObserver()
+        if (itemSegments[items[0]] != nil) {
+            addBoundaryTimeObserver()
+        }
     }
 
     func appendItem(with url: URL?) {
@@ -54,6 +56,9 @@ class FileMediaPlayer : MediaPlayer {
         let item = AVPlayerItem(url: itemUrl)
         itemUrls[item] = itemUrl
         avPlayer.insert(item, after: nil)
+        if (itemSegments[item] != nil) {
+            addBoundaryTimeObserver()
+        }
     }
 
     func togglePlayback() {
@@ -244,48 +249,51 @@ class FileMediaPlayer : MediaPlayer {
         timeObserverToken = nil
     }
     
-    public func addMark() {
-        if (self.segmentTimes.count == 0) {
-            self.segmentTimes.append(NSValue(time: CMTime.zero))
-            self.previousTrack()
-        }
-        else {
-            self.segmentTimes.append(NSValue(time: self.avPlayer.currentItem!.currentTime()))
+    public func addMark() {        
+        if (avPlayer.currentItem != nil) {
+            let segmentTimes = itemSegments[avPlayer.currentItem!]
+        
+            if (segmentTimes == nil) {
+                itemSegments[avPlayer.currentItem!] = [NSValue(time: CMTime.zero)]
+            }
+            itemSegments[avPlayer.currentItem!]?.append(NSValue(time: self.avPlayer.currentItem!.currentTime()))
         }
     }
     
     public func addDefaultMarks() {
         // Repeat every 5 second duration 5 times
+        
+        assert(itemSegments[avPlayer.currentItem!] == nil)
+                    
+        // Set initial time to zero
+        var currentTime = CMTime.zero
+               
+        itemSegments[avPlayer.currentItem!] = [NSValue(time: currentTime)]
          
-         // Set initial time to zero
-         var currentTime = CMTime.zero
+        let asset = avPlayer.currentItem?.asset
          
-         let asset = avPlayer.currentItem?.asset
-         
-         // Divide the asset's duration into quarters.
+         // Divide the asset's duration into 5 second chunks
          let timeScale = CMTimeScale(NSEC_PER_SEC)
          let interval = CMTime(seconds: 5, preferredTimescale: timeScale)
          
          // Build boundary times for every 5 second interval
          while currentTime < asset!.duration {
-             segmentTimes.append(NSValue(time: currentTime))
-             currentTime = currentTime + interval
+            itemSegments[avPlayer.currentItem!]!.append(NSValue(time: currentTime))
+            currentTime = currentTime + interval
          }
-         segmentTimes.append(NSValue(time: asset!.duration))
     }
 
     public func addBoundaryTimeObserver() {
         
-        if (segmentTimes.count == 0) {
-            addDefaultMarks()
-        }
-        else {
-            let asset = avPlayer.currentItem?.asset
-
-            segmentTimes.append(NSValue(time: asset!.duration))
-        }
+        var segmentTimes = itemSegments[avPlayer.currentItem!]
+        let asset = avPlayer.currentItem?.asset
         
-        segmentTimes.forEach {
+        if (segmentTimes == nil) {
+            addDefaultMarks()
+            segmentTimes = itemSegments[avPlayer.currentItem!]
+        }
+        segmentTimes!.append(NSValue(time: asset!.duration))
+        segmentTimes!.forEach {
             print("Segment: ",$0.timeValue.seconds)
         }
         
@@ -293,21 +301,23 @@ class FileMediaPlayer : MediaPlayer {
         self.segment = 0
          
          // Add time observer. Observe boundary time changes on the main queue.
-         boundaryObserverToken = avPlayer.addBoundaryTimeObserver(forTimes: segmentTimes, queue: .main)
+        boundaryObserverToken = avPlayer.addBoundaryTimeObserver(forTimes: segmentTimes!, queue: .main)
              { [weak self] in
-                 if (self!.segment < self!.segmentTimes.count) {
-                     let currSegment = self?.segmentTimes[self!.segment].timeValue
-                     let nextSegment = self?.segmentTimes[self!.segment + 1].timeValue
+                
+                let segmentTimes = self!.itemSegments[self!.avPlayer.currentItem!]
+                if (self!.segment < segmentTimes!.count) {
+                    let currSegment = segmentTimes![self!.segment].timeValue
+                    let nextSegment = segmentTimes![self!.segment + 1].timeValue
                      
-                    print("Repeating segment ", String(self!.segment) , " ", String(self!.reps)," times")
+                     print("Repeating segment ", String(self!.segment) , " ", String(self!.reps)," times")
                      if (self!.reps < 2) {
                         self!.reps += 1
-                        self?.seek(to: currSegment!) { self?.pbState = PlaybackState.Repeating }
+                        self?.seek(to: currSegment) { self?.pbState = PlaybackState.Repeating }
                      }
                      else {
                         self!.reps = 0
                         self?.pause(pbState:PlaybackState.Listening)
-                        let seconds = nextSegment!.seconds - currSegment!.seconds + 1.0
+                        let seconds = nextSegment.seconds - currSegment.seconds + 0.5
                         self!.segment += 1
                         print("Listening for ", String(seconds), " seconds")
                         DispatchQueue.main.asyncAfter(deadline: .now() + seconds) {
@@ -317,6 +327,9 @@ class FileMediaPlayer : MediaPlayer {
                         }
                      }
                  }
+                 else {
+                    self?.previousTrack()
+                }
          }
         self.previousTrack()
      }
