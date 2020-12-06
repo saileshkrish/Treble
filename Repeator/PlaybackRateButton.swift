@@ -71,7 +71,7 @@ enum PlaybackRate: Equatable {
 }
 
 typealias PlaybackRateHandler = (PlaybackRate) -> Void
-class PlaybackRateButton : UIButton, UIContextMenuInteractionDelegate {
+class PlaybackRateButton : UIButton {
     private var onRateChangeHandler: PlaybackRateHandler?
     private var rate: PlaybackRate = .normal {
         didSet {
@@ -96,7 +96,7 @@ class PlaybackRateButton : UIButton, UIContextMenuInteractionDelegate {
         self.onRateChangeHandler = handler
     }
 
-    func contextMenuInteraction(
+    override func contextMenuInteraction(
         _ interaction: UIContextMenuInteraction,
         configurationForMenuAtLocation location: CGPoint
     ) -> UIContextMenuConfiguration? {

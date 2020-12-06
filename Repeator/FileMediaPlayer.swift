@@ -196,7 +196,7 @@ class FileMediaPlayer : MediaPlayer {
         guard var info = MPNowPlayingInfoCenter.default().nowPlayingInfo else { return }
         info[MPNowPlayingInfoPropertyElapsedPlaybackTime] = progress.elapsedTime
         info[MPNowPlayingInfoPropertyPlaybackRate] = avPlayer.rate
-        MPNowPlayingInfoCenter.default().nowPlayingInfo = info
+        MPNowPlayingInfoCenter.default().nowPlayingInfo = info 
     }
 
     private func configureMediaPlayerRemote() {
